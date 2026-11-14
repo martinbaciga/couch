@@ -1,0 +1,27 @@
+{
+  "id": 550,
+  "results": {
+    "IE": {
+      "link": "https://www.themoviedb.org/movie/550/watch?locale=IE",
+      "flatrate": [
+        {
+          "provider_id": 8,
+          "provider_name": "Netflix",
+          "logo_path": "/netflix.png",
+          "display_priority": 1
+        }
+      ]
+    },
+    "GG": {
+      "link": "https://www.themoviedb.org/movie/550/watch?locale=GG",
+      "free": [
+        {
+          "provider_id": 99,
+          "provider_name": "Local Free",
+          "logo_path": null,
+          "display_priority": 4
+        }
+      ]
+    }
+  }
+}

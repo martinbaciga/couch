@@ -1,0 +1,35 @@
+{
+  "id": 550,
+  "title": "Fight Club",
+  "original_title": "Fight Club",
+  "release_date": "1999-10-15",
+  "poster_path": "/fight.jpg",
+  "runtime": 139,
+  "overview": "An insomniac office worker starts a fight club.",
+  "genres": [{ "id": 18, "name": "Drama" }],
+  "release_dates": {
+    "results": [
+      {
+        "iso_3166_1": "IE",
+        "release_dates": [
+          { "certification": "15A", "type": 3 },
+          { "certification": "15", "type": 4 }
+        ]
+      },
+      {
+        "iso_3166_1": "US",
+        "release_dates": [
+          { "certification": "", "type": 3 },
+          { "certification": "R", "type": 4 }
+        ]
+      }
+    ]
+  },
+  "external_ids": { "imdb_id": "tt0137523" },
+  "videos": {
+    "results": [
+      { "site": "YouTube", "type": "Teaser", "key": "teaser" },
+      { "site": "YouTube", "type": "Trailer", "key": "trailer-key" }
+    ]
+  }
+}
