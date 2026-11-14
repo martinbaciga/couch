@@ -1,0 +1,1 @@
+Design tokens and global styles. `tokens.css` is generated from the Figma variables (MAR-37). Components use those tokens through the Tailwind theme. No hex colours, no `px` magic numbers, and no arbitrary values such as `bg-[#f6bb74]` outside this folder.

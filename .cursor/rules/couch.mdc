@@ -1,0 +1,8 @@
+---
+description: Couch project rules. Follow the repo AGENTS.md.
+alwaysApply: true
+---
+
+Follow `AGENTS.md` at the repo root. It is the working copy of the Linear document "Development guide (for the coding agent)". If this rule or `AGENTS.md` disagrees with that document, re-read the Linear guide and follow it.
+
+The PRD is background only. Where it disagrees with the guide (milestone numbers, fonts, rent and buy placement, watchlist filters, a database cache), follow the guide.
