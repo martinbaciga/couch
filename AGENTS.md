@@ -16,7 +16,13 @@ Working copy of the Linear document "Development guide (for the coding agent)" (
 
 The PRD is product background from 30 Oct 2026. Ignore it where it conflicts with the guide: milestone numbers, Calistoga, rent and buy always inside the home card, five watchlist filters, optional per-plan selection, and a database cache.
 
-One Linear issue per branch and pull request. Branch names match the issue `gitBranchName`. Do not start an issue whose blockers are open. Set the issue to In Progress when you start, In Review when the pull request is open, and Done only after it is merged and the acceptance criteria are met.
+One branch per milestone, not per issue. Branch from current `main` when the milestone starts: `m2-data-layer`, `m3-core-lookup`, `m4-watchlist`, `m5-polish`. Push straight to that branch. A push does not need a pull request.
+
+Still one issue at a time, and do not start an issue whose blockers are open. Set it to In Progress when you start and Done when its acceptance criteria are met and `pnpm lint`, `pnpm typecheck`, `pnpm test`, and `pnpm build` pass on the milestone branch.
+
+Open one pull request from the milestone branch into `main` only after every issue in the milestone is Done and Martin has confirmed the milestone. Do not merge before that confirmation.
+
+MAR-9 is already on `main`. The `m2-data-layer` branch is for the remaining M2 issues.
 
 Ask the owner only when something only they can do is missing. Otherwise choose the most reasonable option, note it on the issue, and continue.
 
@@ -85,7 +91,7 @@ Build a small design system. One change to a component or token updates every sc
 5. States live in the component: hover, focus-visible, active, disabled, loading, selected (`aria-pressed`). Actions are `Button` (square). Navigation is `NavItem` (plain text or icon, no fill). Selections are pills. Icon-only controls are `NavItem` with an `aria-label` and a `Tooltip`.
 6. The same thing uses the same component on every screen, including mobile and desktop. Use responsive classes, not duplicated markup.
 7. Keep a living style page at `/dev/components` (not linked, hidden in production, excluded from the sitemap). Add each component to it.
-8. Before a pull request, search the change for raw `<button`, `style=`, hex colours, and arbitrary Tailwind values outside `src/components/ui` and `src/styles`.
+8. Before pushing, search the change for raw `<button`, `style=`, hex colours, and arbitrary Tailwind values outside `src/components/ui` and `src/styles`.
 
 ## Copy
 
@@ -106,7 +112,7 @@ Build a small design system. One change to a component or token updates every sc
 - Comments explain why. No TODOs without an issue key.
 - No dead code. When you change something, tidy what you touched and leave unrelated code alone.
 - Test logic and contracts. Do not snapshot markup.
-- Small pull requests. If an issue is larger than expected, say so and split it.
+- Small commits. If an issue is larger than expected, say so and split it.
 
 ## Design
 
@@ -126,7 +132,7 @@ Motion tokens are defined in MAR-37. The motion spec is MAR-52, after the screen
 
 ## Definition of done
 
-1. Every acceptance criterion is met, or the pull request says which one is not and why.
+1. Every acceptance criterion is met, or a comment on the issue says which one is not and why.
 2. `pnpm lint`, `pnpm typecheck`, `pnpm test`, and `pnpm build` pass.
 3. New logic has unit tests. Routes have tests with mocked TMDB.
 4. UI uses shared components and tokens only. New shared components are on `/dev/components`.
@@ -135,7 +141,7 @@ Motion tokens are defined in MAR-37. The motion spec is MAR-52, after the screen
 7. Mobile and desktop checked for UI issues.
 8. Accessibility basics checked by keyboard.
 9. No TMDB token or TMDB client code in the client bundle.
-10. The pull request links the issue, lists what changed, and records any decision.
+10. Decisions are noted on the issue. The milestone pull request summarises the issues it contains when it is opened.
 
 ## Build order
 
