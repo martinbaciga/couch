@@ -1,0 +1,1 @@
+Shared presentational components. One implementation per element, variants through props. Add a component the second time an element appears. Every interactive component owns its hover, focus-visible, active, disabled, loading, and selected states. New components go on `/dev/components` once that page exists.

@@ -1,0 +1,1 @@
+Feature components live in folders next to this file. Build them from `ui` components. A feature component may arrange layout (flex, grid, gap) and may pass `className` only for layout (margin, width, alignment).
