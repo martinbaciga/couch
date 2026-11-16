@@ -357,15 +357,12 @@ function ageRatingsFromReleaseDates(value: unknown): Record<string, string> {
 }
 
 function preferredCertification(releases: unknown[]): string | null {
-  let fallback: string | null = null;
   for (const release of releases) {
     if (!isRecord(release)) continue;
     const certification = asString(release.certification);
-    if (!certification) continue;
-    if (asNumber(release.type) === 3) return certification;
-    fallback ??= certification;
+    if (certification) return certification;
   }
-  return fallback;
+  return null;
 }
 
 function ageRatingsFromContentRatings(value: unknown): Record<string, string> {
@@ -387,14 +384,16 @@ function imdbId(value: unknown): string | null {
 
 function trailerKey(value: unknown): string | null {
   if (!isRecord(value)) return null;
+  const official: Array<{ key: string; english: boolean }> = [];
   for (const video of asArray(value.results)) {
-    if (!isRecord(video)) continue;
+    if (!isRecord(video) || video.official !== true) continue;
     if (asString(video.site) !== "YouTube") continue;
     if (asString(video.type) !== "Trailer") continue;
     const key = asString(video.key);
-    if (key) return key;
+    if (!key) continue;
+    official.push({ key, english: asString(video.iso_639_1) === "en" });
   }
-  return null;
+  return (official.find((video) => video.english) ?? official[0])?.key ?? null;
 }
 
 function yearFromDate(value: string | null): number | null {

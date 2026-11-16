@@ -28,8 +28,34 @@
   "external_ids": { "imdb_id": "tt0137523" },
   "videos": {
     "results": [
-      { "site": "YouTube", "type": "Teaser", "key": "teaser" },
-      { "site": "YouTube", "type": "Trailer", "key": "trailer-key" }
+      {
+        "site": "YouTube",
+        "type": "Teaser",
+        "key": "teaser",
+        "official": true,
+        "iso_639_1": "en"
+      },
+      {
+        "site": "YouTube",
+        "type": "Trailer",
+        "key": "unofficial",
+        "official": false,
+        "iso_639_1": "en"
+      },
+      {
+        "site": "YouTube",
+        "type": "Trailer",
+        "key": "german",
+        "official": true,
+        "iso_639_1": "de"
+      },
+      {
+        "site": "YouTube",
+        "type": "Trailer",
+        "key": "trailer-key",
+        "official": true,
+        "iso_639_1": "en"
+      }
     ]
   }
 }
