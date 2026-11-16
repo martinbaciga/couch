@@ -56,6 +56,7 @@ export type CountryOffers = {
 export type WatchProviders = {
   id: number;
   results: Record<string, CountryOffers>;
+  fetchedAt: string;
 };
 
 export type Region = {

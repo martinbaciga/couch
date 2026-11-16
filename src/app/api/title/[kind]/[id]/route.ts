@@ -23,7 +23,7 @@ export async function GET(_request: Request, context: RouteContext) {
     return Response.json(
       {
         title: toTitle(details),
-        availability: normalizeProviders(providers, new Date().toISOString()),
+        availability: normalizeProviders(providers, providers.fetchedAt),
       },
       { headers: { "Cache-Control": TITLE_CACHE_CONTROL } },
     );

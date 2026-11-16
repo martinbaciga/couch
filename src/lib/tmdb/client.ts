@@ -1,6 +1,11 @@
 import "server-only";
 
 import {
+  CATALOGUE_REVALIDATE_SECONDS,
+  SEARCH_REVALIDATE_SECONDS,
+  TITLE_REVALIDATE_SECONDS,
+} from "@/config/cache";
+import {
   MissingTokenError,
   RateLimitedError,
   UpstreamError,
@@ -36,61 +41,99 @@ const OFFER_TYPES = ["flatrate", "rent", "buy", "ads", "free"] as const;
 let inFlight = 0;
 const waiters: Array<() => void> = [];
 
+type CachedPayload = {
+  payload: unknown;
+  fetchedAt: string;
+  freshUntil: number;
+};
+
+const freshPayloads = new Map<string, CachedPayload>();
+const pendingPayloads = new Map<string, Promise<CachedPayload>>();
+
+export function clearTmdbCache(): void {
+  freshPayloads.clear();
+  pendingPayloads.clear();
+}
+
 export async function searchMulti(
   query: string,
   page: number,
 ): Promise<SearchPage> {
-  const body = await tmdbGet("/search/multi", { query, page: String(page) });
-  return parseSearchPage(body, null);
+  const { payload } = await tmdbGet(
+    "/search/multi",
+    { query, page: String(page) },
+    SEARCH_REVALIDATE_SECONDS,
+  );
+  return parseSearchPage(payload, null);
 }
 
 export async function searchMovie(
   query: string,
   year?: number,
 ): Promise<SearchPage> {
-  const body = await tmdbGet("/search/movie", {
-    query,
-    ...(year !== undefined ? { year: String(year) } : {}),
-  });
-  return parseSearchPage(body, "movie");
+  const { payload } = await tmdbGet(
+    "/search/movie",
+    {
+      query,
+      ...(year !== undefined ? { year: String(year) } : {}),
+    },
+    SEARCH_REVALIDATE_SECONDS,
+  );
+  return parseSearchPage(payload, "movie");
 }
 
 export async function searchTv(
   query: string,
   year?: number,
 ): Promise<SearchPage> {
-  const body = await tmdbGet("/search/tv", {
-    query,
-    ...(year !== undefined ? { first_air_date_year: String(year) } : {}),
-  });
-  return parseSearchPage(body, "tv");
+  const { payload } = await tmdbGet(
+    "/search/tv",
+    {
+      query,
+      ...(year !== undefined ? { first_air_date_year: String(year) } : {}),
+    },
+    SEARCH_REVALIDATE_SECONDS,
+  );
+  return parseSearchPage(payload, "tv");
 }
 
 export async function getMovie(id: number): Promise<TitleDetails> {
-  const body = await tmdbGet(`/movie/${id}`, {
-    append_to_response: "release_dates,external_ids,videos",
-  });
-  return parseTitle(body, "movie");
+  const { payload } = await tmdbGet(
+    `/movie/${id}`,
+    { append_to_response: "release_dates,external_ids,videos" },
+    TITLE_REVALIDATE_SECONDS,
+  );
+  return parseTitle(payload, "movie");
 }
 
 export async function getTv(id: number): Promise<TitleDetails> {
-  const body = await tmdbGet(`/tv/${id}`, {
-    append_to_response: "content_ratings,external_ids,videos",
-  });
-  return parseTitle(body, "tv");
+  const { payload } = await tmdbGet(
+    `/tv/${id}`,
+    { append_to_response: "content_ratings,external_ids,videos" },
+    TITLE_REVALIDATE_SECONDS,
+  );
+  return parseTitle(payload, "tv");
 }
 
 export async function getWatchProviders(
   kind: MediaKind,
   id: number,
 ): Promise<WatchProviders> {
-  const body = await tmdbGet(`/${kind}/${id}/watch/providers`);
-  return parseWatchProviders(body);
+  const { payload, fetchedAt } = await tmdbGet(
+    `/${kind}/${id}/watch/providers`,
+    {},
+    TITLE_REVALIDATE_SECONDS,
+  );
+  return { ...parseWatchProviders(payload), fetchedAt };
 }
 
 export async function getRegions(): Promise<Region[]> {
-  const body = await tmdbGet("/watch/providers/regions");
-  const record = expectRecord(body);
+  const { payload } = await tmdbGet(
+    "/watch/providers/regions",
+    {},
+    CATALOGUE_REVALIDATE_SECONDS,
+  );
+  const record = expectRecord(payload);
   return asArray(record.results).flatMap(parseRegion);
 }
 
@@ -98,17 +141,20 @@ export async function getProviderCatalogue(
   kind: MediaKind,
   region: string,
 ): Promise<CatalogueProvider[]> {
-  const body = await tmdbGet(`/watch/providers/${kind}`, {
-    watch_region: region,
-  });
-  const record = expectRecord(body);
+  const { payload } = await tmdbGet(
+    `/watch/providers/${kind}`,
+    { watch_region: region },
+    CATALOGUE_REVALIDATE_SECONDS,
+  );
+  const record = expectRecord(payload);
   return asArray(record.results).flatMap(parseProvider);
 }
 
 async function tmdbGet(
   path: string,
-  query: Record<string, string> = {},
-): Promise<unknown> {
+  query: Record<string, string>,
+  revalidate: number,
+): Promise<CachedPayload> {
   const token = process.env.TMDB_READ_ACCESS_TOKEN;
   if (!token) throw new MissingTokenError();
 
@@ -116,18 +162,54 @@ async function tmdbGet(
   for (const [key, value] of Object.entries(query)) {
     url.searchParams.set(key, value);
   }
+  const key = url.toString();
+  const hit = freshPayloads.get(key);
+  if (hit && hit.freshUntil > Date.now()) return hit;
 
+  const pending = pendingPayloads.get(key);
+  if (pending) return pending;
+
+  const promise = requestWithRetry(url, token, revalidate).then((payload) => {
+    const entry = {
+      payload,
+      fetchedAt: new Date().toISOString(),
+      freshUntil: Date.now() + revalidate * 1_000,
+    };
+    freshPayloads.set(key, entry);
+    return entry;
+  });
+  pendingPayloads.set(key, promise);
+  void promise.then(
+    () => {
+      pendingPayloads.delete(key);
+    },
+    () => {
+      pendingPayloads.delete(key);
+    },
+  );
+  return promise;
+}
+
+async function requestWithRetry(
+  url: URL,
+  token: string,
+  revalidate: number,
+): Promise<unknown> {
   await acquire();
   try {
-    return await requestWithRetry(url, token);
+    return await readWithRetry(url, token, revalidate);
   } finally {
     release();
   }
 }
 
-async function requestWithRetry(url: URL, token: string): Promise<unknown> {
+async function readWithRetry(
+  url: URL,
+  token: string,
+  revalidate: number,
+): Promise<unknown> {
   for (let attempt = 0; attempt <= MAX_RETRIES; attempt += 1) {
-    const response = await fetchOnce(url, token);
+    const response = await fetchOnce(url, token, revalidate);
     if (response.status !== 429) return readSuccess(response);
     if (attempt === MAX_RETRIES) throw new RateLimitedError();
     await delay(retryDelay(response, attempt));
@@ -135,13 +217,19 @@ async function requestWithRetry(url: URL, token: string): Promise<unknown> {
   throw new RateLimitedError();
 }
 
-async function fetchOnce(url: URL, token: string): Promise<Response> {
+async function fetchOnce(
+  url: URL,
+  token: string,
+  revalidate: number,
+): Promise<Response> {
   try {
     return await fetch(url, {
       headers: {
         Authorization: `Bearer ${token}`,
         accept: "application/json",
       },
+      cache: "force-cache",
+      next: { revalidate },
       signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
     });
   } catch (error) {
@@ -283,7 +371,7 @@ function parseTitle(body: unknown, kind: MediaKind): TitleDetails {
   };
 }
 
-function parseWatchProviders(body: unknown): WatchProviders {
+function parseWatchProviders(body: unknown): Omit<WatchProviders, "fetchedAt"> {
   const record = expectRecord(body);
   const id = asNumber(record.id);
   if (id === null) throw new UpstreamError(200);

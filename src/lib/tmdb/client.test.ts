@@ -5,6 +5,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { findClientBundleLeaks } from "../../../scripts/check-client-bundle.mjs";
 import {
+  clearTmdbCache,
   getMovie,
   getProviderCatalogue,
   getRegions,
@@ -31,6 +32,7 @@ import watchFixture from "@/lib/tmdb/__fixtures__/watch-providers.json";
 const fetchMock = vi.fn<typeof fetch>();
 
 beforeEach(() => {
+  clearTmdbCache();
   vi.stubGlobal("fetch", fetchMock);
   process.env.TMDB_READ_ACCESS_TOKEN = "test-token";
 });
@@ -155,7 +157,8 @@ describe("TMDB client", () => {
       name: "UpstreamError",
       status: 404,
     });
-    expect(fetchMock).toHaveBeenCalledTimes(1);
+    await expect(getMovie(404)).rejects.toMatchObject({ status: 404 });
+    expect(fetchMock).toHaveBeenCalledTimes(2);
     expect(toApiError(new UpstreamError(404))).toEqual({
       status: 404,
       body: { error: { code: "not_found", message: "not_found" } },
@@ -243,12 +246,76 @@ describe("TMDB client", () => {
         }),
     );
 
-    const pending = Array.from({ length: 9 }, () => searchMulti("q", 1));
+    const pending = Array.from({ length: 9 }, (_, index) =>
+      searchMulti(`title-${index}`, 1),
+    );
     await vi.waitFor(() => expect(started).toBe(8));
     releases[0]?.();
     await vi.waitFor(() => expect(started).toBe(9));
     for (const release of releases) release();
     await Promise.all(pending);
+  });
+
+  it("shares one upstream call and keeps fetchedAt for a cached title", async () => {
+    let release: (response: Response) => void = () => {};
+    fetchMock.mockImplementation(
+      () =>
+        new Promise((resolve) => {
+          release = resolve;
+        }),
+    );
+
+    const pending = Promise.all([
+      getWatchProviders("movie", 550),
+      getWatchProviders("movie", 550),
+    ]);
+    await vi.waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(1));
+    release(jsonResponse(watchFixture));
+    const [first, second] = await pending;
+
+    expect(second.fetchedAt).toBe(first.fetchedAt);
+    expect(fetchMock.mock.calls[0]?.[1]).toMatchObject({
+      cache: "force-cache",
+      next: { revalidate: 21_600 },
+    });
+
+    fetchMock.mockImplementation(() =>
+      Promise.resolve(jsonResponse(watchFixture)),
+    );
+    const servedAgain = await getWatchProviders("movie", 550);
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    expect(servedAgain.fetchedAt).toBe(first.fetchedAt);
+  });
+
+  it("fetches a title again after its cache window", async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-11-16T12:00:00.000Z"));
+    fetchMock.mockImplementation(() =>
+      Promise.resolve(jsonResponse(watchFixture)),
+    );
+
+    const first = await getWatchProviders("movie", 550);
+    await vi.advanceTimersByTimeAsync(21_600 * 1_000);
+    const second = await getWatchProviders("movie", 550);
+
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(second.fetchedAt).not.toBe(first.fetchedAt);
+  });
+
+  it("sends the search and catalogue cache windows", async () => {
+    fetchMock.mockImplementation(() =>
+      Promise.resolve(jsonResponse({ results: [] })),
+    );
+
+    await searchMulti("fight", 1);
+    await getRegions();
+
+    expect(fetchMock.mock.calls[0]?.[1]).toMatchObject({
+      next: { revalidate: 3_600 },
+    });
+    expect(fetchMock.mock.calls[1]?.[1]).toMatchObject({
+      next: { revalidate: 86_400 },
+    });
   });
 });
 

@@ -15,7 +15,7 @@ function provider(providerId: number, providerName: string): WatchProvider {
 }
 
 function raw(results: WatchProviders["results"]): WatchProviders {
-  return { id: 550, results };
+  return { id: 550, results, fetchedAt: FETCHED_AT };
 }
 
 describe("normalizeProviders", () => {

@@ -36,7 +36,11 @@ const movieDetails: TitleDetails = {
   trailerKey: "trailer-key",
 };
 
-const emptyProviders: WatchProviders = { id: 550, results: {} };
+const emptyProviders: WatchProviders = {
+  id: 550,
+  results: {},
+  fetchedAt: "2026-11-16T12:00:00.000Z",
+};
 
 beforeEach(() => {
   movie.mockReset();
@@ -76,7 +80,7 @@ describe("GET /api/title/[kind]/[id]", () => {
       trailerKey: "trailer-key",
     });
     expect(body.availability.countries).toEqual({});
-    expect(body.availability.fetchedAt).toEqual(expect.any(String));
+    expect(body.availability.fetchedAt).toBe("2026-11-16T12:00:00.000Z");
   });
 
   it("returns seasons for a series", async () => {
