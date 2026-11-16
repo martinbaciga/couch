@@ -43,7 +43,7 @@ export function Button({
   return (
     <button
       type={type}
-      className={`inline-flex min-w-20 shrink-0 items-center justify-center rounded-button disabled:cursor-not-allowed disabled:opacity-40 ${motionColor} ${focusRing} ${variants[variant]} ${sizes[variant][size]} ${className ?? ""}`}
+      className={`inline-flex min-w-20 shrink-0 cursor-pointer items-center justify-center rounded-button disabled:cursor-not-allowed disabled:opacity-40 ${motionColor} ${focusRing} ${variants[variant]} ${sizes[variant][size]} ${className ?? ""}`}
       {...props}
     >
       {icon ? (

@@ -95,6 +95,8 @@
 
   --tooltip-arrow-width: 12px;
   --tooltip-arrow-height: 6px;
+  /* Box offset. The arrow rises 5px above the box, so 7px leaves the tip 2px clear of the control. */
+  --tooltip-gap: 7px;
   --toast-offset: 32px;
   --toast-clearance: 0px;
 }

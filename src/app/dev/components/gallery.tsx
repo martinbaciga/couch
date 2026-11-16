@@ -143,10 +143,7 @@ export function Gallery() {
 
       <section className="flex flex-col gap-3">
         <h2 className="text-ui">{t("dev.poster")}</h2>
-        <div className="flex flex-wrap items-start gap-4">
-          <Poster alt={t("dev.posterTitle")} />
-          <Poster alt={t("dev.posterTitle")} src="/brand/icon-512.png" />
-        </div>
+        <Poster alt={t("dev.posterTitle")} />
       </section>
 
       <section className="flex flex-col gap-3">

@@ -58,7 +58,7 @@ export function Tooltip({ label, align = "center", children }: TooltipProps) {
         <span
           role="tooltip"
           data-align={align}
-          className="tooltip mt-1 px-3 py-1.5 text-caption"
+          className="tooltip px-3 py-1.5 text-caption"
         >
           {label}
         </span>

@@ -55,7 +55,7 @@ export function SegmentedToggle({
             role="radio"
             aria-checked={selected}
             tabIndex={selected ? 0 : -1}
-            className={`flex flex-1 items-center justify-center text-ui font-medium ${motionColor} ${focusRing} ${
+            className={`flex flex-1 cursor-pointer items-center justify-center text-ui font-medium ${motionColor} ${focusRing} ${
               selected
                 ? "bg-surface-inverse text-text-on-inverse"
                 : "bg-transparent text-text-default hover:bg-primary-200 active:bg-primary-300"

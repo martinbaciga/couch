@@ -160,7 +160,7 @@ h3 {
 
 .tooltip {
   position: absolute;
-  top: 100%;
+  top: calc(100% + var(--tooltip-gap));
   z-index: 30;
   border: var(--border-width) solid var(--border-strong);
   border-radius: var(--radius-button);

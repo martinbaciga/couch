@@ -12,8 +12,8 @@ type NavItemProps = {
   onClick?: () => void;
 };
 
-const textClass = `inline-flex min-h-11 shrink-0 items-center gap-2 whitespace-nowrap rounded-button px-2.5 text-body font-medium text-text-default hover:bg-primary-200 active:bg-primary-300 ${motionColor} ${focusRing}`;
-const iconClass = `inline-flex size-11 items-center justify-center rounded-button text-text-default hover:bg-primary-200 active:bg-primary-300 ${motionColor} ${focusRing}`;
+const textClass = `inline-flex min-h-11 shrink-0 cursor-pointer items-center gap-2 whitespace-nowrap rounded-button px-2.5 text-body font-medium text-text-default hover:bg-primary-200 active:bg-primary-300 ${motionColor} ${focusRing}`;
+const iconClass = `inline-flex size-11 cursor-pointer items-center justify-center rounded-button text-text-default hover:bg-primary-200 active:bg-primary-300 ${motionColor} ${focusRing}`;
 
 /**
  * Plain navigation: text and an icon, or an icon alone.

@@ -26,7 +26,7 @@ export function Chip({
       aria-pressed={pressed}
       disabled={disabled}
       onClick={() => onPressedChange(!pressed)}
-      className={`inline-flex min-h-11 items-center gap-1.5 rounded-pill border px-4 py-chip-y text-body disabled:cursor-not-allowed disabled:opacity-40 ${motionColor} ${focusRing} ${
+      className={`inline-flex min-h-11 cursor-pointer items-center gap-1.5 rounded-pill border px-4 py-chip-y text-body disabled:cursor-not-allowed disabled:opacity-40 ${motionColor} ${focusRing} ${
         pressed
           ? "border-surface-inverse bg-surface-inverse text-text-on-inverse hover:bg-primary-800 active:bg-primary-1000"
           : "border-border-default bg-transparent text-text-default hover:bg-primary-200 active:bg-primary-300"

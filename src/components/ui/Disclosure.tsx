@@ -26,7 +26,7 @@ export function Disclosure({
         aria-expanded={expanded}
         aria-controls={panelId}
         onClick={() => setExpanded((open) => !open)}
-        className={`flex min-h-11 w-full items-center justify-between gap-2 rounded-button px-2.5 text-start text-body font-medium text-text-default hover:bg-primary-200 active:bg-primary-300 ${motionColor} ${focusRing}`}
+        className={`flex min-h-11 w-full cursor-pointer items-center justify-between gap-2 rounded-button px-2.5 text-start text-body font-medium text-text-default hover:bg-primary-200 active:bg-primary-300 ${motionColor} ${focusRing}`}
       >
         {label}
         <span
