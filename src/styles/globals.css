@@ -1,7 +1,257 @@
 @import "tailwindcss";
+@import "./tokens.css";
 
-body {
-  margin: 0;
-  background: #fff;
-  color: #111;
+@theme inline {
+  --color-primary-100: var(--primary-100);
+  --color-primary-200: var(--primary-200);
+  --color-primary-300: var(--primary-300);
+  --color-primary-400: var(--primary-400);
+  --color-primary-500: var(--primary-500);
+  --color-primary-600: var(--primary-600);
+  --color-primary-700: var(--primary-700);
+  --color-primary-800: var(--primary-800);
+  --color-primary-900: var(--primary-900);
+  --color-primary-1000: var(--primary-1000);
+  --color-grey: var(--grey);
+  --color-text-default: var(--text-default);
+  --color-text-muted: var(--text-muted);
+  --color-text-on-inverse: var(--text-on-inverse);
+  --color-surface-page: var(--surface-page);
+  --color-surface-card: var(--surface-card);
+  --color-surface-field: var(--surface-field);
+  --color-surface-inverse: var(--surface-inverse);
+  --color-border-default: var(--border-default);
+  --color-border-strong: var(--border-strong);
+  --color-border-subtle: var(--border-subtle);
+
+  --font-sans: var(--font-figtree), sans-serif;
+  --font-display: var(--font-bricolage), sans-serif;
+
+  --text-small: var(--type-small);
+  --text-small--line-height: var(--type-small-leading);
+  --text-footer: var(--type-footer);
+  --text-footer--line-height: var(--type-footer-leading);
+  --text-caption: var(--type-caption);
+  --text-caption--line-height: var(--type-caption-leading);
+  --text-body: var(--type-body);
+  --text-body--line-height: var(--type-body-leading);
+  --text-ui: var(--type-ui);
+  --text-ui--line-height: var(--type-ui-leading);
+  --text-search: var(--type-search);
+  --text-search--line-height: var(--type-search-leading);
+  --text-input: var(--type-input);
+  --text-input--line-height: var(--type-input-leading);
+  --text-heading: var(--type-heading);
+  --text-heading--line-height: var(--type-heading-leading);
+  --text-toast: var(--type-toast);
+  --text-toast--line-height: var(--type-toast-leading);
+
+  --spacing-button-y: var(--space-button-y);
+  --spacing-button-y-sm: var(--space-button-y-sm);
+  --spacing-button-x-sm: var(--space-button-x-sm);
+  --spacing-secondary-x: var(--space-secondary-x);
+  --spacing-chip-y: var(--space-chip-y);
+  --spacing-field: var(--space-field);
+  --spacing-footer: var(--space-footer);
+  --spacing-gutter: var(--page-pad);
+  --spacing-nav: var(--nav-height);
+  --spacing-rise: var(--rise);
+
+  --duration-fast: var(--motion-fast);
+  --duration-base: var(--motion-base);
+  --duration-slow: var(--motion-slow);
+  --duration-stagger: var(--stagger);
+}
+
+@utility rounded-button {
+  border-radius: var(--radius-button);
+}
+
+@utility rounded-sm {
+  border-radius: var(--radius-sm);
+}
+
+@utility rounded-md {
+  border-radius: var(--radius-md);
+}
+
+@utility rounded-control {
+  border-radius: var(--radius-control);
+}
+
+@utility rounded-pill {
+  border-radius: var(--radius-pill);
+}
+
+@utility ease-out {
+  transition-timing-function: var(--ease-out);
+}
+
+@utility ease-in {
+  transition-timing-function: var(--ease-in);
+}
+
+@utility ease-spring {
+  transition-timing-function: var(--ease-spring);
+}
+
+@utility max-w-page {
+  max-width: var(--page-width);
+}
+
+@utility h-toggle {
+  height: var(--size-toggle-height);
+}
+
+@utility max-w-toggle {
+  max-width: var(--size-toggle-width);
+}
+
+@utility max-w-search {
+  max-width: var(--size-search);
+}
+
+@utility border-control {
+  border-style: solid;
+  border-width: var(--border-width-control);
+}
+
+@utility aspect-poster {
+  aspect-ratio: 2 / 3;
+}
+
+@utility shadow-toast {
+  box-shadow: var(--shadow-toast);
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-bricolage), sans-serif;
+}
+
+.logo-letter {
+  font-family: var(--font-bricolage), sans-serif;
+  font-size: 18px;
+  line-height: 26px;
+  font-weight: 700;
+  font-variation-settings:
+    "opsz" 14,
+    "wdth" 100,
+    "wght" 700;
+}
+
+.skeleton {
+  background: var(--primary-200);
+  border-radius: var(--radius-skeleton);
+  animation: skeleton-pulse var(--motion-skeleton) ease-in-out infinite;
+}
+
+@keyframes skeleton-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.55;
+  }
+}
+
+.tooltip {
+  position: absolute;
+  top: 100%;
+  z-index: 30;
+  border: var(--border-width) solid var(--border-strong);
+  border-radius: var(--radius-button);
+  background: var(--surface-field);
+  color: var(--text-default);
+  white-space: nowrap;
+}
+
+.tooltip[data-align="center"] {
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.tooltip[data-align="end"] {
+  inset-inline-end: 0;
+}
+
+.tooltip::before,
+.tooltip::after {
+  content: "";
+  position: absolute;
+  border-inline: calc(var(--tooltip-arrow-width) / 2) solid transparent;
+  border-bottom-width: var(--tooltip-arrow-height);
+  border-bottom-style: solid;
+}
+
+.tooltip::before {
+  top: calc(var(--tooltip-arrow-height) * -1);
+  border-bottom-color: var(--border-strong);
+}
+
+.tooltip::after {
+  top: calc(var(--tooltip-arrow-height) * -1 + var(--border-width));
+  border-bottom-color: var(--surface-field);
+}
+
+.tooltip[data-align="center"]::before,
+.tooltip[data-align="center"]::after {
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.tooltip[data-align="end"]::before,
+.tooltip[data-align="end"]::after {
+  inset-inline-end: var(--tooltip-arrow-width);
+}
+
+.toast-anchor {
+  pointer-events: none;
+  position: fixed;
+  z-index: 50;
+  inset-inline: 0;
+  bottom: calc(var(--toast-clearance, 0px) + var(--toast-offset));
+  display: flex;
+  justify-content: center;
+  padding-inline: var(--page-pad);
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  gap: var(--space-toast-gap);
+  padding-block: var(--space-toast-y);
+  padding-inline: var(--space-toast-start) var(--space-toast-end);
+  border-radius: var(--radius-md);
+  background: var(--surface-inverse);
+  color: var(--text-on-inverse);
+  box-shadow: var(--shadow-toast);
+  font-size: var(--type-toast);
+  line-height: var(--type-toast-leading);
+  opacity: 0;
+  transition: opacity var(--motion-base) var(--ease-out);
+}
+
+.toast[data-shown="true"] {
+  opacity: 1;
+}
+
+@media (min-width: 48rem) {
+  :root {
+    --toast-offset: 40px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

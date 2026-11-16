@@ -1,0 +1,60 @@
+{
+  "meta": {
+    "title": "Couch"
+  },
+  "home": {
+    "title": "Couch"
+  },
+  "header": {
+    "home": "Couch",
+    "importWatchlist": "Import watchlist",
+    "setup": "Set country & services",
+    "setupSummary": "{country} · {count, plural, one {# service} other {# services}}",
+    "search": "Search",
+    "settings": "Settings"
+  },
+  "footer": {
+    "credit": "Availability data from JustWatch via TMDB.",
+    "about": "About this data"
+  },
+  "search": {
+    "label": "Search",
+    "placeholder": "Search a film or a series",
+    "submit": "Search",
+    "close": "Close"
+  },
+  "toast": {
+    "saved": "Saved",
+    "linkCopied": "Link copied"
+  },
+  "toggle": {
+    "group": "By service or by country",
+    "service": "By service",
+    "country": "By country"
+  },
+  "dev": {
+    "title": "Components",
+    "button": "Buttons",
+    "buttonLabel": "Import watchlist",
+    "navItem": "Navigation items",
+    "tooltip": "Tooltips",
+    "chip": "Chips",
+    "chipLabel": "On your services",
+    "toggle": "Segmented toggle",
+    "card": "Card",
+    "cardBody": "A card for grouping related content.",
+    "skeleton": "Skeleton",
+    "serviceLogo": "Service logos",
+    "mine": "On your service",
+    "plan": "Specific plan only",
+    "plain": "Other service",
+    "disclosure": "Disclosure",
+    "disclosureLabel": "Details",
+    "disclosureBody": "Extra detail sits inside the disclosure.",
+    "poster": "Poster",
+    "posterTitle": "Sample title",
+    "toast": "Toast",
+    "showSaved": "Show Saved",
+    "showCopied": "Show Link copied"
+  }
+}

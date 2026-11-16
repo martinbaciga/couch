@@ -1,0 +1,100 @@
+/*
+  Palette from the development guide, section 9, matched to Figma variables.
+  primary-300 is the guide's "primary" yellow. It is a fill, not small text.
+
+  Derived from Figma variables (Components page) and noted on MAR-37:
+  text, surface, and border tokens below. surface-page uses primary-100,
+  the warm off-white. It currently matches surface-card.
+  grey is the guide's grey-light. Placeholder text uses text-muted instead,
+  because grey-light fails as small text on white.
+*/
+
+:root {
+  --primary-100: #fcfaed;
+  --primary-200: #faf5c6;
+  --primary-300: #fbf08a;
+  --primary-400: #fee24c;
+  --primary-500: #d4b13d;
+  --primary-600: #a3882e;
+  --primary-700: #736021;
+  --primary-800: #4a3e16;
+  --primary-900: #2c250e;
+  --primary-1000: #1a1608;
+  --grey: #818181;
+
+  --text-default: #191a16;
+  --text-muted: #52513a;
+  --text-on-inverse: #fcfaed;
+
+  --surface-page: var(--primary-100);
+  --surface-card: #fcfaed;
+  --surface-field: #ffffff;
+  --surface-inverse: #191a16;
+
+  --border-default: #736021;
+  --border-strong: #191a16;
+  --border-subtle: #d4b13d;
+  --border-width: 1px;
+  --border-width-control: 1.5px;
+
+  --radius-button: 5px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-control: 10px;
+  --radius-pill: 999px;
+  --radius-skeleton: 7px;
+
+  --type-small: 12px;
+  --type-small-leading: 20px;
+  --type-footer: 12px;
+  --type-footer-leading: 17px;
+  --type-caption: 13px;
+  --type-caption-leading: 18px;
+  --type-body: 14px;
+  --type-body-leading: 20px;
+  --type-ui: 15px;
+  --type-ui-leading: 20px;
+  --type-search: 16px;
+  --type-search-leading: 22px;
+  --type-input: 14px;
+  --type-input-leading: 24px;
+  --type-heading: 32px;
+  --type-heading-leading: 40px;
+  --type-toast: 15px;
+  --type-toast-leading: 20px;
+
+  --space-button-y: 13px;
+  --space-button-y-sm: 9px;
+  --space-button-x-sm: 11px;
+  --space-secondary-x: 15px;
+  --space-chip-y: 9px;
+  --space-field: 5px;
+  --space-footer: 30px;
+  --space-toast-gap: 10px;
+  --space-toast-y: 12px;
+  --space-toast-start: 16px;
+  --space-toast-end: 20px;
+  --page-pad: 16px;
+  --page-width: 1080px;
+  --nav-height: 66px;
+  --size-toggle-height: 42px;
+  --size-toggle-width: 230px;
+  --size-search: 650px;
+
+  --shadow-toast: 0 16px 48px rgb(0 0 0 / 0.28);
+
+  --motion-fast: 120ms;
+  --motion-base: 200ms;
+  --motion-slow: 320ms;
+  --motion-skeleton: 1.4s;
+  --ease-out: cubic-bezier(0.2, 0, 0, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --rise: 8px;
+  --stagger: 40ms;
+
+  --tooltip-arrow-width: 12px;
+  --tooltip-arrow-height: 6px;
+  --toast-offset: 32px;
+  --toast-clearance: 0px;
+}

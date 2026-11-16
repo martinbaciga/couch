@@ -1,0 +1,4 @@
+export const focusRing =
+  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-solid focus-visible:outline-border-strong";
+
+export const motionColor = "transition-colors duration-fast ease-out";

@@ -1,15 +1,61 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
+import { Bricolage_Grotesque, Figtree } from "next/font/google";
+import { NextIntlClientProvider } from "next-intl";
+import { getLocale, getMessages, getTranslations } from "next-intl/server";
+import { Footer } from "@/components/shell/Footer";
+import { Header } from "@/components/shell/Header";
+import { ToastProvider } from "@/components/ui/Toast";
 import "@/styles/globals.css";
 
-export const metadata: Metadata = {
-  title: "Couch",
-};
+const bricolage = Bricolage_Grotesque({
+  subsets: ["latin"],
+  display: "swap",
+  axes: ["opsz", "wdth"],
+  variable: "--font-bricolage",
+});
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+const figtree = Figtree({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-figtree",
+});
+
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations();
+  return {
+    title: t("meta.title"),
+    icons: {
+      icon: [
+        { url: "/brand/favicon-32.png", sizes: "32x32", type: "image/png" },
+        { url: "/brand/favicon-16.png", sizes: "16x16", type: "image/png" },
+      ],
+      apple: "/brand/apple-touch-icon.png",
+    },
+  };
+}
+
+export default async function RootLayout({
+  children,
+}: {
+  children: ReactNode;
+}) {
+  const locale = await getLocale();
+  const messages = await getMessages();
+
   return (
-    <html lang="en">
-      <body>{children}</body>
+    <html lang={locale} className={`${bricolage.variable} ${figtree.variable}`}>
+      <body className="flex min-h-dvh flex-col bg-surface-page font-sans text-text-default">
+        <NextIntlClientProvider messages={messages}>
+          <ToastProvider>
+            <Header />
+            <main className="mx-auto w-full max-w-page flex-1 px-gutter py-6">
+              {children}
+            </main>
+            <Footer />
+          </ToastProvider>
+        </NextIntlClientProvider>
+      </body>
     </html>
   );
 }
