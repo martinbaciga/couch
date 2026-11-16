@@ -1,5 +1,13 @@
-import { describe, expect, it } from "vitest";
-import { parseSettings, readSettings, SETTINGS_KEY } from "./settings";
+import { beforeEach, describe, expect, it } from "vitest";
+import {
+  clearCouchData,
+  parseSettings,
+  readSettings,
+  resetSettingsStore,
+  SETTINGS_KEY,
+  settingsFromMemory,
+  writeSettings,
+} from "./settings";
 
 const saved = {
   country: "IE",
@@ -8,6 +16,9 @@ const saved = {
 };
 
 describe("parseSettings", () => {
+  beforeEach(() => {
+    resetSettingsStore();
+  });
   it("reads a settings object", () => {
     expect(parseSettings(JSON.stringify(saved))).toEqual(saved);
   });
@@ -28,6 +39,68 @@ describe("parseSettings", () => {
     expect(
       parseSettings(JSON.stringify({ ...saved, serviceIds: ["8"] })),
     ).toBeNull();
+  });
+
+  it("rejects a non-integer service id", () => {
+    expect(
+      parseSettings(JSON.stringify({ ...saved, serviceIds: [8, 1.5] })),
+    ).toBeNull();
+  });
+
+  it("rejects a stored object from another version", () => {
+    expect(parseSettings(JSON.stringify({ ...saved, version: 2 }))).toBeNull();
+  });
+});
+
+function memory() {
+  const data = new Map<string, string>();
+  return {
+    getItem: (key: string) => data.get(key) ?? null,
+    setItem: (key: string, value: string) => {
+      data.set(key, value);
+    },
+    removeItem: (key: string) => {
+      data.delete(key);
+    },
+    key: (index: number) => [...data.keys()][index] ?? null,
+    get length() {
+      return data.size;
+    },
+  };
+}
+
+describe("writeSettings", () => {
+  beforeEach(() => {
+    resetSettingsStore();
+  });
+
+  it("round-trips through storage", () => {
+    const storage = memory();
+    writeSettings(storage, saved);
+    expect(readSettings(storage)).toEqual(saved);
+    expect(settingsFromMemory()).toBe(false);
+  });
+
+  it("keeps the value in memory when storage throws", () => {
+    const storage = memory();
+    storage.setItem = () => {
+      throw new Error("blocked");
+    };
+    writeSettings(storage, saved);
+    expect(readSettings(storage)).toEqual(saved);
+    expect(settingsFromMemory()).toBe(true);
+  });
+
+  it("clears every couch key and leaves the rest", () => {
+    const storage = memory();
+    storage.setItem(SETTINGS_KEY, JSON.stringify(saved));
+    storage.setItem("couch:watchlist:v1", "{}");
+    storage.setItem("other", "keep");
+    clearCouchData(storage);
+    expect(storage.getItem(SETTINGS_KEY)).toBeNull();
+    expect(storage.getItem("couch:watchlist:v1")).toBeNull();
+    expect(storage.getItem("other")).toBe("keep");
+    expect(readSettings(storage)).toBeNull();
   });
 });
 

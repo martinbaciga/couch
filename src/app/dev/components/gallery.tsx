@@ -5,12 +5,15 @@ import { useFormatter, useTranslations } from "next-intl";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Chip } from "@/components/ui/Chip";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
+import { CountrySelect } from "@/components/ui/CountrySelect";
 import { Disclosure } from "@/components/ui/Disclosure";
 import { ImportIcon, SearchIcon, SettingsIcon } from "@/components/ui/icons";
 import { NavItem } from "@/components/ui/NavItem";
 import { Poster } from "@/components/ui/Poster";
 import { SegmentedToggle } from "@/components/ui/SegmentedToggle";
 import { ServiceLogo } from "@/components/ui/ServiceLogo";
+import { ServiceOption } from "@/components/ui/ServiceOption";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { StateMessage } from "@/components/ui/StateMessage";
 import { useToast } from "@/components/ui/Toast";
@@ -23,6 +26,9 @@ export function Gallery() {
   const { showToast } = useToast();
   const [pressed, setPressed] = useState(false);
   const [segment, setSegment] = useState<"service" | "country">("service");
+  const [serviceOn, setServiceOn] = useState(true);
+  const [country, setCountry] = useState<string | null>("IE");
+  const [confirmOpen, setConfirmOpen] = useState(false);
 
   return (
     <div className="flex flex-col gap-8 pb-16">
@@ -178,6 +184,45 @@ export function Gallery() {
       <section className="flex flex-col gap-3">
         <h2 className="text-ui">{t("dev.poster")}</h2>
         <Poster alt={t("dev.posterTitle")} />
+      </section>
+
+      <section className="flex max-w-settings flex-col gap-3">
+        <h2 className="text-ui">{t("dev.settings")}</h2>
+        <CountrySelect
+          label={t("settings.country")}
+          options={[
+            { code: "IE", name: "Ireland" },
+            { code: "GB", name: "United Kingdom" },
+            { code: "US", name: "United States" },
+          ]}
+          value={country}
+          onChange={setCountry}
+        />
+        <p className="text-body font-medium">{t("dev.serviceOption")}</p>
+        <div className="grid grid-cols-2 gap-x-3 gap-y-2">
+          <ServiceOption
+            name="Netflix"
+            selected={serviceOn}
+            onToggle={() => setServiceOn((current) => !current)}
+          />
+          <ServiceOption
+            name="Prime Video"
+            selected={false}
+            onToggle={() => setServiceOn(false)}
+          />
+        </div>
+        <Button variant="secondary" onClick={() => setConfirmOpen(true)}>
+          {t("dev.confirm")}
+        </Button>
+        <ConfirmDialog
+          open={confirmOpen}
+          title={t("settings.removeTitle")}
+          body={t("settings.removeBody", { count: 2 })}
+          confirmLabel={t("settings.removeWatchlist")}
+          cancelLabel={t("settings.keep")}
+          onConfirm={() => setConfirmOpen(false)}
+          onCancel={() => setConfirmOpen(false)}
+        />
       </section>
 
       <section className="flex flex-col gap-3">

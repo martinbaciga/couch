@@ -3,6 +3,8 @@ type ServiceLogoProps = {
   src?: string | null;
   size?: "default" | "small";
   marker?: "none" | "mine" | "plan";
+  /** The name is already next to the mark, so the image is not announced. */
+  decorative?: boolean;
 };
 
 const frames = {
@@ -26,6 +28,7 @@ export function ServiceLogo({
   src,
   size = "default",
   marker = "none",
+  decorative = false,
 }: ServiceLogoProps) {
   const letter = Array.from(name)[0]?.toLocaleUpperCase() ?? "";
 
@@ -36,7 +39,11 @@ export function ServiceLogo({
       {src ? (
         // The supplied logo file is a bitmap or SVG URL from the catalogue.
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={src} alt={name} className="size-full object-contain" />
+        <img
+          src={src}
+          alt={decorative ? "" : name}
+          className="size-full object-contain"
+        />
       ) : (
         <span
           className={
@@ -47,7 +54,7 @@ export function ServiceLogo({
           {letter}
         </span>
       )}
-      {src ? null : <span className="sr-only">{name}</span>}
+      {src || decorative ? null : <span className="sr-only">{name}</span>}
     </span>
   );
 }

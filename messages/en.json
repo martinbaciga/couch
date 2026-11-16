@@ -23,6 +23,36 @@
     "submit": "Search",
     "close": "Close"
   },
+  "settings": {
+    "title": "Settings",
+    "subtitle": "Changes are saved on this device as you make them.",
+    "country": "Your country",
+    "countryPlaceholder": "Choose a country",
+    "countrySearch": "Search for a country",
+    "countryEmpty": "No country matches “{query}”.",
+    "services": "Your streaming services",
+    "selected": "{count, plural, one {# selected} other {# selected}}",
+    "removed": "Removed {services}: {count, plural, one {it isn’t} other {they aren’t}} available in {country}.",
+    "find": "Find another service",
+    "findPlaceholder": "Search for a service",
+    "clearSearch": "Clear",
+    "noService": "No service matches “{query}”. Check the spelling or try another name.",
+    "planNote": "Some services have plans with ads or extra tiers. Pick the service; we’ll point out when a title is only on a specific plan.",
+    "savedTitle": "Saved on this device",
+    "watchlist": "Watchlist",
+    "watchlistImported": "{count, plural, one {# film} other {# films}}, imported {imported}.",
+    "watchlistChecked": "{count, plural, one {# film} other {# films}}, imported {imported}. Checked {checked}.",
+    "removeWatchlist": "Remove watchlist",
+    "removeTitle": "Remove your watchlist?",
+    "removeBody": "This deletes the {count, plural, one {# film} other {# films}} saved on this device. You can import your watchlist again from Letterboxd.",
+    "keep": "Keep it",
+    "everything": "Everything else",
+    "everythingBody": "Your country, services and recently viewed titles. This clears all data Couch saved on this device.",
+    "clearAll": "Clear all my data",
+    "clearTitle": "Clear all your data?",
+    "clearBody": "This removes your watchlist, your country and services, and your recently viewed titles from this device. It can’t be undone.",
+    "cancel": "Cancel"
+  },
   "toast": {
     "saved": "Saved",
     "linkCopied": "Link copied"
@@ -107,6 +137,9 @@
     "posterTitle": "Sample title",
     "toast": "Toast",
     "showSaved": "Show Saved",
-    "showCopied": "Show Link copied"
+    "showCopied": "Show Link copied",
+    "settings": "Settings",
+    "serviceOption": "Service option",
+    "confirm": "Confirm"
   }
 }

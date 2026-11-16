@@ -41,8 +41,12 @@
   --text-search--line-height: var(--type-search-leading);
   --text-input: var(--type-input);
   --text-input--line-height: var(--type-input-leading);
+  --text-title: var(--type-title);
+  --text-title--line-height: var(--type-title-leading);
   --text-heading: var(--type-heading);
   --text-heading--line-height: var(--type-heading-leading);
+  --text-section: var(--type-section);
+  --text-section--line-height: var(--type-section-leading);
   --text-message: var(--type-message);
   --text-message--line-height: var(--type-message-leading);
   --text-toast: var(--type-toast);
@@ -123,6 +127,14 @@
 
 @utility max-w-message {
   max-width: var(--size-message);
+}
+
+@utility max-w-settings {
+  max-width: var(--size-settings);
+}
+
+@utility max-w-dialog {
+  max-width: var(--size-dialog);
 }
 
 @utility w-poster {

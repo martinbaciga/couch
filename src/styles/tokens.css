@@ -60,8 +60,12 @@
   --type-search-leading: 22px;
   --type-input: 14px;
   --type-input-leading: 24px;
+  --type-title: 28px;
+  --type-title-leading: 31px;
   --type-heading: 32px;
   --type-heading-leading: 40px;
+  --type-section: 18px;
+  --type-section-leading: 26px;
   --type-message: 24px;
   --type-message-leading: 24px;
   --type-eyebrow-leading: 18px;
@@ -87,6 +91,8 @@
   --size-toggle-width: 230px;
   --size-search: 650px;
   --size-message: 420px;
+  --size-settings: 720px;
+  --size-dialog: 480px;
   --size-poster: 120px;
   --size-poster-lg: 300px;
 
