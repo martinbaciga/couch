@@ -1,0 +1,28 @@
+{
+  "page": 1,
+  "total_pages": 3,
+  "total_results": 42,
+  "results": [
+    {
+      "id": 550,
+      "media_type": "movie",
+      "title": "Fight Club",
+      "original_title": "Fight Club",
+      "release_date": "1999-10-15",
+      "poster_path": "/fight.jpg"
+    },
+    {
+      "id": 1396,
+      "media_type": "tv",
+      "name": "Breaking Bad",
+      "original_name": "Breaking Bad",
+      "first_air_date": "2008-01-20",
+      "poster_path": "/bb.jpg"
+    },
+    {
+      "id": 99,
+      "media_type": "person",
+      "name": "David Fincher"
+    }
+  ]
+}

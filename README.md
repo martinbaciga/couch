@@ -19,4 +19,16 @@ Node 22 (see `.nvmrc`). Package manager is pnpm.
 
 Copy `.env.example` to `.env.local` and set `TMDB_READ_ACCESS_TOKEN`. That token is server-only. Never prefix it with `NEXT_PUBLIC_` and never commit it.
 
+## Caching
+
+TMDB does not publish a caching duration, so each response stays fresh for a short time. There is no database. Availability stays on the server. The browser stores settings, the imported watchlist, and recently viewed only.
+
+| Route                           | Fresh   | Then stale while revalidating |
+| ------------------------------- | ------- | ----------------------------- |
+| `/api/title/[kind]/[id]`        | 6 hours | 1 day                         |
+| `/api/search`                   | 1 hour  | 1 day                         |
+| `/api/services`, `/api/regions` | 1 day   | 7 days                        |
+
+The TMDB client sends the same fresh period as `next: { revalidate }`, so the Next.js data cache and the CDN use one window. Requests that carry the token also set `cache: "force-cache"`, which is what lets Next store a request with an `Authorization` header. Two requests for the same title at the same time share one upstream call. `fetchedAt` is the time that call received the data, and a later response served from cache keeps that time.
+
 Spike scripts and sample TMDB responses can live in `docs/spikes/` as reference. Do not import them into the app. The personal Letterboxd export is gitignored.
