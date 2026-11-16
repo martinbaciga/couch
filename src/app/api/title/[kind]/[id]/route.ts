@@ -1,8 +1,9 @@
 import { TITLE_CACHE_CONTROL } from "@/config/cache";
 import { normalizeProviders } from "@/lib/availability/normalize";
-import type { Kind, TitlePage } from "@/lib/availability/types";
+import type { TitlePage } from "@/lib/availability/types";
 import { getMovie, getTv, getWatchProviders } from "@/lib/tmdb/client";
 import { toApiError } from "@/lib/tmdb/errors";
+import { parseTitleRef } from "@/lib/title-ref";
 import type { TitleDetails } from "@/lib/tmdb/types";
 
 type RouteContext = {
@@ -11,14 +12,13 @@ type RouteContext = {
 
 export async function GET(_request: Request, context: RouteContext) {
   const { kind, id } = await context.params;
-  const mediaKind = parseKind(kind);
-  const titleId = parseId(id);
-  if (!mediaKind || titleId === null) return badRequest();
+  const ref = parseTitleRef(kind, id);
+  if (!ref) return badRequest();
 
   try {
     const [details, providers] = await Promise.all([
-      mediaKind === "movie" ? getMovie(titleId) : getTv(titleId),
-      getWatchProviders(mediaKind, titleId),
+      ref.kind === "movie" ? getMovie(ref.id) : getTv(ref.id),
+      getWatchProviders(ref.kind, ref.id),
     ]);
     return Response.json(
       {
@@ -50,16 +50,6 @@ function toTitle(details: TitleDetails): TitlePage {
     imdbId: details.imdbId,
     trailerKey: details.trailerKey,
   };
-}
-
-function parseKind(value: string): Kind | null {
-  return value === "movie" || value === "tv" ? value : null;
-}
-
-function parseId(value: string): number | null {
-  if (!/^[1-9]\d*$/.test(value)) return null;
-  const id = Number(value);
-  return Number.isSafeInteger(id) ? id : null;
 }
 
 function badRequest() {

@@ -1,10 +1,12 @@
 import type { ButtonHTMLAttributes, ReactNode } from "react";
+import Link from "next/link";
 import { focusRing, motionColor } from "./styles";
 
 type ButtonProps = {
   variant?: "primary" | "secondary";
   size?: "default" | "small";
   icon?: ReactNode;
+  href?: string;
 } & ButtonHTMLAttributes<HTMLButtonElement>;
 
 const variants = {
@@ -33,25 +35,36 @@ export function Button({
   variant = "primary",
   size = "default",
   icon,
+  href,
   className,
   type = "button",
   children,
   ...props
 }: ButtonProps) {
   const iconBox = size === "small" ? "size-3" : "size-4";
-
-  return (
-    <button
-      type={type}
-      className={`inline-flex min-w-20 shrink-0 cursor-pointer items-center justify-center rounded-button disabled:cursor-not-allowed disabled:opacity-40 ${motionColor} ${focusRing} ${variants[variant]} ${sizes[variant][size]} ${className ?? ""}`}
-      {...props}
-    >
+  const classes = `inline-flex min-w-20 shrink-0 cursor-pointer items-center justify-center rounded-button disabled:cursor-not-allowed disabled:opacity-40 ${motionColor} ${focusRing} ${variants[variant]} ${sizes[variant][size]} ${className ?? ""}`;
+  const content = (
+    <>
       {icon ? (
         <span className={`${iconBox} shrink-0`} aria-hidden="true">
           {icon}
         </span>
       ) : null}
       {children}
+    </>
+  );
+
+  if (href) {
+    return (
+      <Link href={href} className={classes}>
+        {content}
+      </Link>
+    );
+  }
+
+  return (
+    <button type={type} className={classes} {...props}>
+      {content}
     </button>
   );
 }

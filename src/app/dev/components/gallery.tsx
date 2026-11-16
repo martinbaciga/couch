@@ -12,7 +12,9 @@ import { Poster } from "@/components/ui/Poster";
 import { SegmentedToggle } from "@/components/ui/SegmentedToggle";
 import { ServiceLogo } from "@/components/ui/ServiceLogo";
 import { Skeleton } from "@/components/ui/Skeleton";
+import { StateMessage } from "@/components/ui/StateMessage";
 import { useToast } from "@/components/ui/Toast";
+import { TitleLoading } from "@/components/title/TitleLoading";
 
 /** Living style page. Not linked, and not rendered in production. */
 export function Gallery() {
@@ -142,6 +144,38 @@ export function Gallery() {
       </section>
 
       <section className="flex flex-col gap-3">
+        <h2 className="text-ui">{t("dev.messages")}</h2>
+        <div className="grid grid-cols-1 items-start gap-6 md:grid-cols-2 xl:grid-cols-3">
+          <MessageSample caption={t("dev.stateLoading")}>
+            <StateMessage state="loading" />
+          </MessageSample>
+          <MessageSample caption={t("dev.stateNoResults")}>
+            <StateMessage state="no-results" query="Fightclub" />
+          </MessageSample>
+          <MessageSample caption={t("dev.stateUnavailable")}>
+            <StateMessage state="unavailable" />
+          </MessageSample>
+          <MessageSample caption={t("dev.stateBusy")}>
+            <StateMessage state="busy" />
+          </MessageSample>
+          <MessageSample caption={t("dev.stateWrongFile")}>
+            <StateMessage state="wrong-file" />
+          </MessageSample>
+          <MessageSample caption={t("dev.stateEmptyFile")}>
+            <StateMessage state="empty-file" />
+          </MessageSample>
+          <MessageSample caption={t("dev.stateNotFound")}>
+            <StateMessage state="not-found" />
+          </MessageSample>
+        </div>
+      </section>
+
+      <section className="flex flex-col gap-3">
+        <h2 className="text-ui">{t("dev.titleLoading")}</h2>
+        <TitleLoading status={t("states.loading.title")} />
+      </section>
+
+      <section className="flex flex-col gap-3">
         <h2 className="text-ui">{t("dev.poster")}</h2>
         <Poster alt={t("dev.posterTitle")} />
       </section>
@@ -160,6 +194,21 @@ export function Gallery() {
           </Button>
         </div>
       </section>
+    </div>
+  );
+}
+
+function MessageSample({
+  caption,
+  children,
+}: {
+  caption: string;
+  children: ReactNode;
+}) {
+  return (
+    <div className="flex flex-col gap-2.5">
+      <p className="text-body font-medium text-text-muted">{caption}</p>
+      {children}
     </div>
   );
 }

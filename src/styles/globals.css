@@ -43,6 +43,8 @@
   --text-input--line-height: var(--type-input-leading);
   --text-heading: var(--type-heading);
   --text-heading--line-height: var(--type-heading-leading);
+  --text-message: var(--type-message);
+  --text-message--line-height: var(--type-message-leading);
   --text-toast: var(--type-toast);
   --text-toast--line-height: var(--type-toast-leading);
 
@@ -79,6 +81,14 @@
   border-radius: var(--radius-control);
 }
 
+@utility rounded-xl {
+  border-radius: var(--radius-xl);
+}
+
+@utility rounded-panel {
+  border-radius: var(--radius-panel);
+}
+
 @utility rounded-pill {
   border-radius: var(--radius-pill);
 }
@@ -111,6 +121,22 @@
   max-width: var(--size-search);
 }
 
+@utility max-w-message {
+  max-width: var(--size-message);
+}
+
+@utility w-poster {
+  width: var(--size-poster);
+}
+
+@utility w-poster-lg {
+  width: var(--size-poster-lg);
+}
+
+@utility shadow-poster {
+  box-shadow: var(--shadow-poster);
+}
+
 @utility border-control {
   border-style: solid;
   border-width: var(--border-width-control);
@@ -128,6 +154,26 @@ h1,
 h2,
 h3 {
   font-family: var(--font-bricolage), sans-serif;
+}
+
+.eyebrow {
+  font-size: var(--type-body);
+  line-height: var(--type-eyebrow-leading);
+  font-weight: 500;
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.message-title {
+  font-family: var(--font-bricolage), sans-serif;
+  font-size: var(--type-message);
+  line-height: var(--type-message-leading);
+  font-weight: 700;
+  font-variation-settings:
+    "opsz" 14,
+    "wdth" 100,
+    "wght" 700;
 }
 
 .logo-letter {

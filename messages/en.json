@@ -32,6 +32,49 @@
     "service": "By service",
     "country": "By country"
   },
+  "states": {
+    "loading": {
+      "eyebrow": "Loading",
+      "title": "Looking up this title",
+      "body": "Checking where it is streaming. This can take a few seconds."
+    },
+    "noResults": {
+      "eyebrow": "No results",
+      "title": "No titles found for “{query}”",
+      "body": "Check the spelling, or try the original title or fewer words.",
+      "action": "Clear search"
+    },
+    "unavailable": {
+      "eyebrow": "Something went wrong",
+      "title": "We couldn’t load this",
+      "body": "The data service isn’t answering right now. Try again in a moment.",
+      "action": "Try again"
+    },
+    "busy": {
+      "eyebrow": "Busy",
+      "title": "Lots of people are looking right now",
+      "body": "We’ve reached a limit with our data source. Try again in a minute.",
+      "action": "Try again"
+    },
+    "wrongFile": {
+      "eyebrow": "Wrong file",
+      "title": "That doesn’t look like a Letterboxd watchlist",
+      "body": "Export your watchlist from the Letterboxd website and choose that file.",
+      "action": "Choose another file"
+    },
+    "emptyFile": {
+      "eyebrow": "Empty file",
+      "title": "This file has no films",
+      "body": "Check that you exported your Watchlist and not another list.",
+      "action": "Choose another file"
+    },
+    "notFound": {
+      "eyebrow": "Not found",
+      "title": "We couldn’t find that title",
+      "body": "The link may be wrong, or the title may have been removed.",
+      "action": "Search for a title"
+    }
+  },
   "dev": {
     "title": "Components",
     "button": "Buttons",
@@ -51,6 +94,15 @@
     "disclosure": "Disclosure",
     "disclosureLabel": "Details",
     "disclosureBody": "Extra detail sits inside the disclosure.",
+    "messages": "Messages",
+    "stateLoading": "Title loading",
+    "stateNoResults": "Search with no results",
+    "stateUnavailable": "Couldn’t load",
+    "stateBusy": "Busy",
+    "stateWrongFile": "Not the right file",
+    "stateEmptyFile": "Empty watchlist",
+    "stateNotFound": "Title not found",
+    "titleLoading": "Title loading",
     "poster": "Poster",
     "posterTitle": "Sample title",
     "toast": "Toast",
