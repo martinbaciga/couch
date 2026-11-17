@@ -18,7 +18,7 @@ The PRD is product background from 30 Oct 2026. Ignore it where it conflicts wit
 
 One branch per milestone, not per issue. Branch from current `main` when the milestone starts: `m2-data-layer`, `m3-core-lookup`, `m4-watchlist`, `m5-polish`. Push straight to that branch. A push does not need a pull request.
 
-Still one issue at a time, and do not start an issue whose blockers are open. Set it to In Progress when you start and Done when its acceptance criteria are met and `pnpm lint`, `pnpm typecheck`, `pnpm test`, and `pnpm build` pass on the milestone branch.
+Still one issue at a time, and do not start an issue whose blockers are open. Set it to In Progress when you start. When its acceptance criteria are met and `pnpm lint`, `pnpm typecheck`, `pnpm test`, and `pnpm build` pass on the milestone branch, mark it Done only if it has no interface to check. An issue that changes what a person sees or uses on screen stays In Progress until Martin has confirmed it (17 Nov).
 
 Open one pull request from the milestone branch into `main` only after every issue in the milestone is Done and Martin has confirmed the milestone. Do not merge before that confirmation.
 
@@ -128,7 +128,7 @@ Motion tokens are defined in MAR-37. The motion spec is MAR-52, after the screen
 - Errors from `/api/*`: `{ error: { code, message } }` with `not_found`, `rate_limited`, `upstream_unavailable`, or `bad_request` (MAR-41).
 - No analytics, trackers, or third-party scripts without the owner's approval. Do not log user data. Validate route inputs. Never commit secrets.
 - Build mobile first (390px), then desktop (1280px). Also check 360px and 1440px.
-- For UI issues, check the preview at 390px and 1280px, including keyboard focus, before calling the issue done.
+- For UI issues, check the preview at 390px and 1280px, including keyboard focus. Leave the issue In Progress until Martin confirms the screen.
 
 ## Definition of done
 
@@ -142,6 +142,8 @@ Motion tokens are defined in MAR-37. The motion spec is MAR-52, after the screen
 8. Accessibility basics checked by keyboard.
 9. No TMDB token or TMDB client code in the client bundle.
 10. Decisions are noted on the issue. The milestone pull request summarises the issues it contains when it is opened.
+
+An issue that changes what a person sees or uses on screen stays In Progress after the checks pass. Move it to Done only after Martin confirms the screen. An issue with no interface can be Done when the checks pass.
 
 ## Build order
 
