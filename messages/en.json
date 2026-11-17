@@ -27,7 +27,10 @@
     "title": "Settings",
     "subtitle": "Changes are saved on this device as you make them.",
     "country": "Your country",
-    "countryPlaceholder": "Choose a country",
+    "countryPlaceholder": "Choose your country",
+    "countryHint": "You haven’t set your country yet. Choose it to see where films are streaming for you.",
+    "servicesEmpty": "Choose your country first to see the services available there.",
+    "servicesPrompt": "Tick the services you subscribe to.",
     "countrySearch": "Search for a country",
     "countryEmpty": "No country matches “{query}”.",
     "services": "Your streaming services",
@@ -139,7 +142,6 @@
     "showSaved": "Show Saved",
     "showCopied": "Show Link copied",
     "settings": "Settings",
-    "serviceOption": "Service option",
     "confirm": "Confirm"
   }
 }

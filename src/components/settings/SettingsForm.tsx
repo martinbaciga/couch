@@ -1,17 +1,10 @@
 "use client";
 
-import {
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-  useSyncExternalStore,
-} from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useFormatter, useTranslations } from "next-intl";
-import {
-  CountrySelect,
-  type CountryOption,
-} from "@/components/ui/CountrySelect";
+import { CountryServices } from "@/components/setup/CountryServices";
+import { countryServicesView } from "@/components/setup/country-services";
+import type { CountryOption } from "@/components/ui/CountrySelect";
 import { Button } from "@/components/ui/Button";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { ServiceOption } from "@/components/ui/ServiceOption";
@@ -19,7 +12,6 @@ import { ServiceSearch } from "@/components/ui/ServiceSearch";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { StateMessage } from "@/components/ui/StateMessage";
 import { useToast } from "@/components/ui/Toast";
-import { countryFromLanguage } from "@/lib/storage/language";
 import { readSettings } from "@/lib/storage/settings";
 import {
   clearDeviceData,
@@ -130,11 +122,6 @@ export function SettingsForm() {
   const { showToast } = useToast();
   const stored = useSettings();
   const watchlist = useWatchlist();
-  const language = useSyncExternalStore(
-    () => () => {},
-    () => window.navigator.language,
-    () => "",
-  );
   const [regions, setRegions] = useState<Region[] | null>(null);
   const [regionStatus, setRegionStatus] = useState<Status>("loading");
   const [regionAttempt, setRegionAttempt] = useState(0);
@@ -150,15 +137,9 @@ export function SettingsForm() {
   const pinnedRef = useRef<number[] | null>(null);
 
   const selectedIds = stored?.serviceIds ?? [];
-  const preselect =
-    stored?.country || !regions
-      ? null
-      : countryFromLanguage(
-          language,
-          regions.map((region) => region.code),
-        );
-  const active = stored?.country ?? preselect;
+  const active = stored?.country ?? null;
   const visiblePins = pinned ?? selectedIds;
+  const servicesView = countryServicesView(active, selectedIds.length);
 
   const retryRegions = useCallback(() => {
     setRegionStatus("loading");
@@ -282,20 +263,11 @@ export function SettingsForm() {
     if (confirm === "watchlist") {
       removeStored(WATCHLIST_KEY);
     } else if (confirm === "all") {
-      const suggested = regions
-        ? countryFromLanguage(
-            language,
-            regions.map((region) => region.code),
-          )
-        : null;
       clearDeviceData();
       pinnedRef.current = [];
       setPinned([]);
       setRemoved([]);
-      if (stored?.country !== suggested) {
-        seenCountry.current = null;
-        setServiceStatus("loading");
-      }
+      seenCountry.current = null;
     }
     setConfirm(null);
     showToast(t("toast.saved"));
@@ -333,89 +305,70 @@ export function SettingsForm() {
         />
       ) : null}
       {regionStatus === "ready" ? (
-        <>
-          <CountrySelect
-            label={t("settings.country")}
-            options={regions ?? []}
-            value={active}
-            onChange={chooseCountry}
-          />
-
-          {active ? (
-            <section className="flex flex-col gap-2">
-              <div className="flex items-baseline justify-between gap-4">
-                <p className="text-body font-medium">
-                  {t("settings.services")}
-                </p>
-                <p
-                  aria-live="polite"
-                  className={
-                    selectedIds.length > 0
-                      ? "text-body text-text-muted"
-                      : "sr-only"
-                  }
-                >
-                  {t("settings.selected", { count: selectedIds.length })}
-                </p>
-              </div>
-              {serviceStatus === "loading" ? (
-                <div className="flex flex-col gap-3" aria-busy="true">
-                  <p className="sr-only">{t("states.loading.title")}</p>
-                  <Skeleton className="h-14 w-full" />
-                  <Skeleton className="h-14 w-full" />
-                </div>
-              ) : null}
-              {serviceStatus === "unavailable" || serviceStatus === "busy" ? (
-                <StateMessage
-                  state={serviceStatus}
-                  autoRetry={serviceStatus === "busy"}
-                  attempt={serviceAttempt}
-                  onRetry={retryServices}
-                />
-              ) : null}
-              {serviceStatus === "ready" ? (
-                <ul className="grid grid-cols-2 gap-x-3 gap-y-2">
-                  {shown.map((service, index) => (
-                    <li
-                      key={service.id}
-                      className={
-                        shown.length % 2 === 1 && index === shown.length - 1
-                          ? "col-span-2"
-                          : undefined
-                      }
-                    >
-                      <ServiceOption
-                        name={service.name}
-                        src={posterUrl(service.logoPath, "w92")}
-                        selected={selectedIds.includes(service.id)}
-                        onToggle={() => toggleService(service.id)}
-                      />
-                    </li>
-                  ))}
-                </ul>
-              ) : null}
-              {serviceStatus === "ready" && removed.length > 0 ? (
-                <p className="text-body font-medium text-text-muted">
-                  {t("settings.removed", {
-                    count: removed.length,
-                    services: format.list(removed, { type: "conjunction" }),
-                    country:
-                      regions?.find((region) => region.code === active)?.name ??
-                      active,
-                  })}
-                </p>
-              ) : null}
-            </section>
+        <CountryServices
+          options={regions ?? []}
+          country={active}
+          onCountry={chooseCountry}
+          selectedCount={selectedIds.length}
+        >
+          {serviceStatus === "loading" ? (
+            <div className="flex flex-col gap-3" aria-busy="true">
+              <p className="sr-only">{t("states.loading.title")}</p>
+              <Skeleton className="h-14 w-full" />
+              <Skeleton className="h-14 w-full" />
+            </div>
           ) : null}
-
-          {active && serviceStatus === "ready" ? (
-            <ServiceSearch
-              services={searchable}
-              selectedIds={selectedIds}
-              onToggle={toggleService}
+          {serviceStatus === "unavailable" || serviceStatus === "busy" ? (
+            <StateMessage
+              state={serviceStatus}
+              autoRetry={serviceStatus === "busy"}
+              attempt={serviceAttempt}
+              onRetry={retryServices}
             />
           ) : null}
-        </>
+          {serviceStatus === "ready" ? (
+            <ul className="grid grid-cols-2 gap-x-3 gap-y-2">
+              {shown.map((service, index) => (
+                <li
+                  key={service.id}
+                  className={
+                    shown.length % 2 === 1 && index === shown.length - 1
+                      ? "col-span-2"
+                      : undefined
+                  }
+                >
+                  <ServiceOption
+                    name={service.name}
+                    src={posterUrl(service.logoPath, "w92")}
+                    selected={selectedIds.includes(service.id)}
+                    onToggle={() => toggleService(service.id)}
+                  />
+                </li>
+              ))}
+            </ul>
+          ) : null}
+          {serviceStatus === "ready" && active && removed.length > 0 ? (
+            <p className="text-body font-medium text-text-muted">
+              {t("settings.removed", {
+                count: removed.length,
+                services: format.list(removed, { type: "conjunction" }),
+                country:
+                  regions?.find((region) => region.code === active)?.name ??
+                  active,
+              })}
+            </p>
+          ) : null}
+        </CountryServices>
+      ) : null}
+
+      {regionStatus === "ready" &&
+      servicesView.search &&
+      serviceStatus === "ready" ? (
+        <ServiceSearch
+          services={searchable}
+          selectedIds={selectedIds}
+          onToggle={toggleService}
+        />
       ) : null}
 
       <section className="flex flex-col gap-5 rounded-panel border border-border-default bg-surface-card px-5 py-6 sm:p-6">

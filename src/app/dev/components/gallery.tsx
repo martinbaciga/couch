@@ -5,8 +5,8 @@ import { useFormatter, useTranslations } from "next-intl";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Chip } from "@/components/ui/Chip";
+import { CountryServices } from "@/components/setup/CountryServices";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
-import { CountrySelect } from "@/components/ui/CountrySelect";
 import { Disclosure } from "@/components/ui/Disclosure";
 import { ImportIcon, SearchIcon, SettingsIcon } from "@/components/ui/icons";
 import { NavItem } from "@/components/ui/NavItem";
@@ -27,7 +27,7 @@ export function Gallery() {
   const [pressed, setPressed] = useState(false);
   const [segment, setSegment] = useState<"service" | "country">("service");
   const [serviceOn, setServiceOn] = useState(true);
-  const [country, setCountry] = useState<string | null>("IE");
+  const [country, setCountry] = useState<string | null>(null);
   const [confirmOpen, setConfirmOpen] = useState(false);
 
   return (
@@ -188,29 +188,29 @@ export function Gallery() {
 
       <section className="flex max-w-settings flex-col gap-3">
         <h2 className="text-ui">{t("dev.settings")}</h2>
-        <CountrySelect
-          label={t("settings.country")}
+        <CountryServices
           options={[
             { code: "IE", name: "Ireland" },
             { code: "GB", name: "United Kingdom" },
             { code: "US", name: "United States" },
           ]}
-          value={country}
-          onChange={setCountry}
-        />
-        <p className="text-body font-medium">{t("dev.serviceOption")}</p>
-        <div className="grid grid-cols-2 gap-x-3 gap-y-2">
-          <ServiceOption
-            name="Netflix"
-            selected={serviceOn}
-            onToggle={() => setServiceOn((current) => !current)}
-          />
-          <ServiceOption
-            name="Prime Video"
-            selected={false}
-            onToggle={() => setServiceOn(false)}
-          />
-        </div>
+          country={country}
+          onCountry={setCountry}
+          selectedCount={serviceOn ? 1 : 0}
+        >
+          <div className="grid grid-cols-2 gap-x-3 gap-y-2">
+            <ServiceOption
+              name="Netflix"
+              selected={serviceOn}
+              onToggle={() => setServiceOn((current) => !current)}
+            />
+            <ServiceOption
+              name="Prime Video"
+              selected={false}
+              onToggle={() => setServiceOn(false)}
+            />
+          </div>
+        </CountryServices>
         <Button variant="secondary" onClick={() => setConfirmOpen(true)}>
           {t("dev.confirm")}
         </Button>

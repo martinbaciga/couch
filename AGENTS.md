@@ -51,7 +51,7 @@ Ask the owner only when something only they can do is missing. Otherwise choose 
 
 ## Decisions already made
 
-- The user picks a home country and services, stored locally. The country is pre-selected from the browser language and editable. No per-plan selection. The default list shows the 6 base services for that country. "Find another service" searches the full catalogue. Selected extra services are listed after the base ones; a deselected extra disappears on the next visit. A country change keeps services that exist in the new country and shows one muted "Removed …" line for the rest (MAR-40).
+- The user picks a home country and services, stored locally. Nothing is preselected (17 Nov): the country starts empty in Settings and in the setup dialog, because a browser language does not say where someone lives. The services list stays hidden until a country is chosen, then shows every service unticked with "Tick the services you subscribe to." No per-plan selection. The default list shows the 6 base services for that country. "Find another service" searches the full catalogue. Selected extra services are listed after the base ones; a deselected extra disappears on the next visit. A country change keeps services that exist in the new country and shows one muted "Removed …" line for the rest (MAR-40).
 - Tier variants (for example "with Ads") are grouped under the parent service, with a dashed marker and a note. Reseller channels (Amazon, Apple, Roku) are separate services and labelled.
 - Offer types: Stream, Free / ads, Rent, Buy. Rent and buy are never "available on your service".
 - A country missing from the data means "no availability data found", never "unavailable".
