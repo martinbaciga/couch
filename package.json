@@ -7,7 +7,9 @@
     "pnpm": ">=10"
   },
   "scripts": {
+    "predev": "node scripts/copy-flags.mjs",
     "dev": "next dev",
+    "prebuild": "node scripts/copy-flags.mjs",
     "build": "next build && node scripts/check-client-bundle.mjs",
     "start": "next start",
     "lint": "eslint",
@@ -16,6 +18,7 @@
     "format": "prettier --write ."
   },
   "dependencies": {
+    "circle-flags": "^2.8.3",
     "next": "16.4.6",
     "next-intl": "^4.15.1",
     "react": "19.3.0",

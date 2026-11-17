@@ -1,18 +1,28 @@
-/** Regional-indicator glyph in a circle. Decorative: the country name is the label. */
+"use client";
+
+import { useState } from "react";
+import { flagPath } from "./flag-path";
+
+/** Circular country flag. Decorative: the country name is the label. */
 export function Flag({ code }: { code: string }) {
-  const upper = code.toUpperCase();
-  const emoji = /^[A-Z]{2}$/.test(upper)
-    ? String.fromCodePoint(
-        ...upper.split("").map((char) => 127397 + char.charCodeAt(0)),
-      )
-    : "";
+  const [failedCode, setFailedCode] = useState<string | null>(null);
+  const src = failedCode === code ? null : flagPath(code);
 
   return (
     <span
       aria-hidden="true"
-      className="inline-flex size-4 shrink-0 items-center justify-center overflow-hidden rounded-pill bg-primary-200 text-small leading-none"
+      className="inline-block size-4 shrink-0 overflow-hidden rounded-pill bg-primary-200"
     >
-      {emoji}
+      {src ? (
+        // The flag file is an SVG served from this app.
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={src}
+          alt=""
+          className="size-full"
+          onError={() => setFailedCode(code)}
+        />
+      ) : null}
     </span>
   );
 }

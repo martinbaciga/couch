@@ -41,6 +41,9 @@ docs/spikes/Outputs/match-out/
 # vercel
 .vercel
 
+# Generated from the circle-flags package.
+/public/flags
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
