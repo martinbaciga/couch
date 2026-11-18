@@ -17,7 +17,10 @@ import { ServiceOption } from "@/components/ui/ServiceOption";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { StateMessage } from "@/components/ui/StateMessage";
 import { useToast } from "@/components/ui/Toast";
+import { OtherCountries } from "@/components/title/OtherCountries";
 import { TitleLoading } from "@/components/title/TitleLoading";
+import type { Offer, TitleAvailability } from "@/lib/availability/types";
+import type { ServiceMark } from "@/lib/services/marks";
 
 /** Living style page. Not linked, and not rendered in production. */
 export function Gallery() {
@@ -29,6 +32,7 @@ export function Gallery() {
   const [serviceOn, setServiceOn] = useState(true);
   const [country, setCountry] = useState<string | null>(null);
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const [otherView, setOtherView] = useState<"service" | "country">("service");
 
   return (
     <div className="flex flex-col gap-8 pb-16">
@@ -176,6 +180,17 @@ export function Gallery() {
         </div>
       </section>
 
+      <section className="flex max-w-settings flex-col gap-3">
+        <h2 className="text-ui">{t("otherCountries.label")}</h2>
+        <OtherCountries
+          availability={sampleAvailability()}
+          settings={{ country: "IE", serviceIds: [8, 119, 1899, 337, 531] }}
+          services={sampleServices}
+          view={otherView}
+          onViewChange={setOtherView}
+        />
+      </section>
+
       <section className="flex flex-col gap-3">
         <h2 className="text-ui">{t("dev.titleLoading")}</h2>
         <TitleLoading status={t("states.loading.title")} />
@@ -256,6 +271,52 @@ function MessageSample({
       {children}
     </div>
   );
+}
+
+const sampleServices: ServiceMark[] = [
+  { id: 8, name: "Netflix", logoPath: null },
+  { id: 119, name: "Amazon Prime Video", logoPath: null },
+  { id: 1899, name: "HBO Max", logoPath: null },
+  { id: 337, name: "Disney Plus", logoPath: null },
+  { id: 531, name: "Paramount Plus", logoPath: null },
+  { id: 15, name: "Hulu", logoPath: null },
+  { id: 350, name: "Apple TV", logoPath: null },
+];
+
+function stream(serviceId: number): Offer {
+  return { type: "stream", serviceId, providerId: serviceId };
+}
+
+function sampleAvailability(): TitleAvailability {
+  const netflix = ["DE", "JP", "BR", "FR", "IT", "US", "CA", "AU", "SE", "NL"];
+  const countries: Record<string, Offer[]> = {
+    IE: [{ type: "rent", serviceId: 10, providerId: 10 }],
+    GB: [stream(337)],
+    AT: [stream(531)],
+    HU: [stream(15)],
+    FI: [stream(15)],
+    DK: [stream(350)],
+    IS: [{ type: "buy", serviceId: 2, providerId: 2 }],
+  };
+  for (const code of netflix) {
+    countries[code] = [stream(8)];
+  }
+  countries.ES = [
+    {
+      type: "stream",
+      serviceId: 119,
+      providerId: 1796,
+      variant: "ads",
+      variantLabel: "with ads",
+    },
+  ];
+  for (const code of ["MX", "PL", "NO", "CL"]) {
+    countries[code] = [...(countries[code] ?? []), stream(119)];
+  }
+  for (const code of ["AU", "IN"]) {
+    countries[code] = [...(countries[code] ?? []), stream(1899)];
+  }
+  return { countries, fetchedAt: "2026-11-18T00:00:00.000Z" };
 }
 
 function Figure({

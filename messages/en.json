@@ -65,6 +65,21 @@
     "service": "By service",
     "country": "By country"
   },
+  "otherCountries": {
+    "label": "In other countries",
+    "yourServices": "Your services",
+    "otherServices": "Other services",
+    "streaming": "Streaming on {services, plural, one {# of your services} other {# of your services}} in other {countries, plural, one {# country} other {# countries}}",
+    "none": "None of your services have it in other countries",
+    "alsoCountries": "Also streaming in {count, plural, one {# other country} other {# other countries}}",
+    "alsoService": "Also streaming on {service} in {count, plural, one {# country} other {# countries}}",
+    "countries": "{count, plural, one {# country} other {# countries}}",
+    "moreCountries": "+{count} more",
+    "moreServices": "Show {count, plural, one {# more of your services} other {# more of your services}}",
+    "dashed": "Dashed = only on a specific plan or tier.",
+    "planChip": "{country} · {plan}",
+    "allCountries": "All countries"
+  },
   "states": {
     "loading": {
       "eyebrow": "Loading",

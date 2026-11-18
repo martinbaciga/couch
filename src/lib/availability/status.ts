@@ -34,6 +34,8 @@ export type HomeDetails = {
 export type CountryTier = {
   country: string;
   tierOnly: boolean;
+  /** Set when every streaming offer in that country is a plan variant. */
+  variantLabel?: string;
 };
 
 export type MyServiceCountries = {
@@ -60,6 +62,13 @@ export type OtherCountries = {
   totalCountries: number;
   myServicesCountryCount: number;
 };
+
+/** Headline for the other-countries block. Counts come from `getOtherCountries`. */
+export type OtherCountriesHeadline =
+  | { kind: "also-countries"; countries: number }
+  | { kind: "also-service"; serviceId: number; countries: number }
+  | { kind: "your-services"; services: number; countries: number }
+  | { kind: "none" };
 
 export type WatchlistCategory =
   | { category: "on-my-services-here"; planOnly: boolean }
@@ -193,6 +202,53 @@ export function getOtherCountries(
 }
 
 /**
+ * Which headline the block shows.
+ * A specific plan names the service when only one of yours has it elsewhere.
+ * Otherwise the count is how many of your services carry it, and how many
+ * countries those services cover. With none of yours, the other-services
+ * list still follows.
+ */
+export function otherCountriesHeadline(
+  situation: Situation,
+  other: OtherCountries,
+): OtherCountriesHeadline {
+  const onlyMine =
+    other.myServices.length === 1 ? other.myServices[0] : undefined;
+
+  if (situation.status === "on-my-service" && other.totalCountries > 0) {
+    return {
+      kind: "also-countries",
+      countries: other.totalCountries,
+    };
+  }
+
+  if (situation.status === "specific-plan-only" && onlyMine) {
+    return {
+      kind: "also-service",
+      serviceId: onlyMine.serviceId,
+      countries: onlyMine.countries.length,
+    };
+  }
+
+  if (situation.status === "specific-plan-only" && other.totalCountries > 0) {
+    return {
+      kind: "also-countries",
+      countries: other.totalCountries,
+    };
+  }
+
+  if (other.myServices.length > 0) {
+    return {
+      kind: "your-services",
+      services: other.myServices.length,
+      countries: other.myServicesCountryCount,
+    };
+  }
+
+  return { kind: "none" };
+}
+
+/**
  * First match wins, so each title has one watchlist category. On your
  * services covers a normal offer and a plan-only offer. With no services
  * selected, a stream offer at home is streaming-here instead.
@@ -310,10 +366,14 @@ function streamingByService(
 
 function countryTiers(byCountry: Map<string, Offer[]>): CountryTier[] {
   return [...byCountry.entries()]
-    .map(([country, offers]) => ({
-      country,
-      tierOnly: offers.every(isPlanVariant),
-    }))
+    .map(([country, offers]) => {
+      const tierOnly = offers.every(isPlanVariant);
+      const tier: CountryTier = { country, tierOnly };
+      if (!tierOnly) return tier;
+      const label = offers.find((offer) => offer.variantLabel)?.variantLabel;
+      if (label) tier.variantLabel = label;
+      return tier;
+    })
     .sort((a, b) => compareCountries(a.country, b.country));
 }
 

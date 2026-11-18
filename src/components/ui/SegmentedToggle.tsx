@@ -41,7 +41,7 @@ export function SegmentedToggle({
     <div
       role="radiogroup"
       aria-label={label}
-      className="flex h-toggle w-full max-w-toggle overflow-hidden rounded-control border-control border-border-strong"
+      className="flex h-toggle w-full overflow-hidden rounded-control border-control border-border-strong md:max-w-toggle"
     >
       {options.map((option, index) => {
         const selected = option.value === value;

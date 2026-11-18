@@ -200,6 +200,24 @@ h3 {
   color: var(--text-muted);
 }
 
+.kicker {
+  font-weight: 500;
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--primary-700);
+}
+
+.service-name {
+  font-family: var(--font-bricolage), sans-serif;
+  font-size: var(--type-service);
+  line-height: var(--type-service-leading);
+  font-weight: 700;
+  font-variation-settings:
+    "opsz" 14,
+    "wdth" 100,
+    "wght" 700;
+}
+
 .message-title {
   font-family: var(--font-bricolage), sans-serif;
   font-size: var(--type-message);

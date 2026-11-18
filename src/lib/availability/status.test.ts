@@ -5,6 +5,7 @@ import {
   getOtherCountries,
   getSituation,
   getWatchlistCategory,
+  otherCountriesHeadline,
   type Settings,
   type Situation,
   type WatchlistCategory,
@@ -225,7 +226,7 @@ describe("getOtherCountries", () => {
         serviceId: 337,
         countries: [
           { country: "FR", tierOnly: false },
-          { country: "US", tierOnly: true },
+          { country: "US", tierOnly: true, variantLabel: "Premium" },
         ],
       },
     ]);
@@ -349,5 +350,75 @@ describe("getWatchlistCategory", () => {
     expect(getWatchlistCategory(availability(countries), settings)).toEqual(
       category,
     );
+  });
+});
+
+describe("otherCountriesHeadline", () => {
+  it("counts your services and the countries they cover", () => {
+    const data = availability({
+      IE: [rent],
+      DE: [netflix],
+      FR: [netflix, disney],
+    });
+    const settings = chosen("IE", [8, 337]);
+    expect(
+      otherCountriesHeadline(
+        getSituation(data, settings),
+        getOtherCountries(data, settings),
+      ),
+    ).toEqual({ kind: "your-services", services: 2, countries: 2 });
+  });
+
+  it("uses the also-streaming headline when it already streams at home", () => {
+    const data = availability({ IE: [netflix], DE: [netflix], FR: [disney] });
+    const settings = chosen("IE", [8]);
+    expect(
+      otherCountriesHeadline(
+        getSituation(data, settings),
+        getOtherCountries(data, settings),
+      ),
+    ).toEqual({ kind: "also-countries", countries: 2 });
+  });
+
+  it("names the service when a specific plan is the only one of yours elsewhere", () => {
+    const data = availability({
+      IE: [netflixAds],
+      DE: [disney],
+      FR: [disney],
+      US: [paramountPremium],
+    });
+    const settings = chosen("IE", [8, 337]);
+    expect(
+      otherCountriesHeadline(
+        getSituation(data, settings),
+        getOtherCountries(data, settings),
+      ),
+    ).toEqual({ kind: "also-service", serviceId: 337, countries: 2 });
+  });
+
+  it("counts every other country when a specific plan has several of your services elsewhere", () => {
+    const data = availability({
+      IE: [netflixAds],
+      DE: [disney],
+      FR: [paramountPremium],
+    });
+    const settings = chosen("IE", [8, 337, 531]);
+    expect(
+      otherCountriesHeadline(
+        getSituation(data, settings),
+        getOtherCountries(data, settings),
+      ),
+    ).toEqual({ kind: "also-countries", countries: 2 });
+  });
+
+  it("says none of your services when only other services have it", () => {
+    const data = availability({ IE: [rent], US: [disney] });
+    const settings = chosen("IE", [8]);
+    expect(
+      otherCountriesHeadline(
+        getSituation(data, settings),
+        getOtherCountries(data, settings),
+      ),
+    ).toEqual({ kind: "none" });
   });
 });
