@@ -23,10 +23,8 @@ export function ServiceOption({
       type="button"
       aria-pressed={selected}
       onClick={onToggle}
-      className={`flex min-h-14 w-full cursor-pointer items-center gap-2 rounded-md bg-surface-card ps-2.5 pe-2 text-start sm:gap-3 sm:px-3.5 ${focusRing} ${
-        selected
-          ? "border-2 border-border-strong"
-          : "border border-border-subtle"
+      className={`flex min-h-14 w-full cursor-pointer items-center gap-2 rounded-md border bg-surface-card ps-2.5 pe-2 text-start sm:gap-3 sm:px-3.5 ${focusRing} ${
+        selected ? "stroke-selected" : "border-border-subtle"
       }`}
     >
       <span
@@ -40,9 +38,7 @@ export function ServiceOption({
         {selected ? <CheckIcon className="size-3" /> : null}
       </span>
       <ServiceLogo name={name} src={src} size="small" decorative />
-      <span
-        className={`min-w-0 ${selected ? "text-body font-medium sm:text-ui" : "text-body"}`}
-      >
+      <span className={`min-w-0 text-body ${selected ? "font-semibold" : ""}`}>
         {name}
       </span>
     </button>

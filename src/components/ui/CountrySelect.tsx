@@ -27,8 +27,8 @@ type CountrySelectProps = {
   onChange: (code: string) => void;
 };
 
-const field =
-  "flex h-13 w-full items-center gap-2 rounded-control border-control border-border-strong bg-surface-field px-4 text-start text-search text-text-default";
+const shell =
+  "field-focus relative flex h-13 w-full items-center rounded-control border-control border-border-strong bg-surface-field text-search text-text-default";
 
 /** Searchable country field. A list under the field on a wide screen, a sheet on a narrow one. */
 export function CountrySelect({
@@ -41,6 +41,7 @@ export function CountrySelect({
   const labelId = useId();
   const listId = useId();
   const rootRef = useRef<HTMLDivElement>(null);
+  const fieldRef = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [active, setActive] = useState(0);
@@ -61,14 +62,34 @@ export function CountrySelect({
     return () => media.removeEventListener("change", apply);
   }, []);
 
+  const dismiss = useCallback(() => {
+    const activeElement = document.activeElement;
+    if (
+      activeElement instanceof HTMLElement &&
+      rootRef.current?.contains(activeElement)
+    ) {
+      activeElement.blur();
+    }
+    setOpen(false);
+  }, []);
+
   useEffect(() => {
     if (!open || mobile) return;
     function onPointer(event: PointerEvent) {
-      if (!rootRef.current?.contains(event.target as Node)) setOpen(false);
+      const field = fieldRef.current;
+      const target = event.target;
+      if (!field || !(target instanceof Node) || field.contains(target)) return;
+      const control =
+        target instanceof Element &&
+        Boolean(
+          target.closest("input, textarea, select, button, a, [role='button']"),
+        );
+      if (!control) event.preventDefault();
+      dismiss();
     }
     document.addEventListener("pointerdown", onPointer);
     return () => document.removeEventListener("pointerdown", onPointer);
-  }, [open, mobile]);
+  }, [dismiss, open, mobile]);
 
   function openList() {
     setQuery("");
@@ -83,7 +104,7 @@ export function CountrySelect({
 
   function choose(code: string) {
     onChange(code);
-    setOpen(false);
+    dismiss();
     setQuery("");
   }
 
@@ -100,7 +121,7 @@ export function CountrySelect({
       if (option) choose(option.code);
     } else if (event.key === "Escape") {
       event.preventDefault();
-      setOpen(false);
+      dismiss();
     }
   }
 
@@ -144,53 +165,76 @@ export function CountrySelect({
       <span id={labelId} className="text-body font-medium">
         {label}
       </span>
-      {open && !mobile ? (
-        <input
-          role="combobox"
-          aria-expanded="true"
-          aria-controls={listId}
-          aria-activedescendant={
-            filtered[active] ? `${listId}-${filtered[active].code}` : undefined
-          }
-          aria-labelledby={labelId}
-          autoFocus
-          value={query}
-          placeholder={selected?.name ?? t("settings.countryPlaceholder")}
-          onChange={(event) => {
-            setQuery(event.target.value);
-            setActive(0);
-          }}
-          onKeyDown={onInputKey}
-          className={`${field} placeholder:text-text-muted ${focusRing}`}
-        />
-      ) : (
-        <button
-          type="button"
-          aria-haspopup="listbox"
-          aria-expanded={open}
-          aria-controls={listId}
-          aria-labelledby={labelId}
-          onClick={() => (open ? setOpen(false) : openList())}
-          className={`${field} cursor-pointer ${focusRing}`}
-        >
-          {selected ? (
-            <>
-              <Flag code={selected.code} />
-              <span className="min-w-0 flex-1 truncate">{selected.name}</span>
-            </>
+      <div ref={fieldRef} className="relative">
+        <div className={shell}>
+          {open && !mobile ? (
+            <input
+              role="combobox"
+              aria-expanded="true"
+              aria-controls={listId}
+              aria-activedescendant={
+                filtered[active]
+                  ? `${listId}-${filtered[active].code}`
+                  : undefined
+              }
+              aria-labelledby={labelId}
+              autoFocus
+              value={query}
+              placeholder={selected?.name ?? t("settings.countryPlaceholder")}
+              onChange={(event) => {
+                setQuery(event.target.value);
+                setActive(0);
+              }}
+              onKeyDown={onInputKey}
+              className="h-full min-w-0 flex-1 bg-transparent ps-4 pe-12 text-search text-text-default outline-none placeholder:text-text-muted"
+            />
           ) : (
-            <span className="min-w-0 flex-1 text-text-muted">
-              {t("settings.countryPlaceholder")}
-            </span>
+            <button
+              type="button"
+              aria-haspopup="listbox"
+              aria-expanded={open}
+              aria-controls={listId}
+              aria-labelledby={labelId}
+              onClick={() => (open ? dismiss() : openList())}
+              className="flex h-full min-w-0 flex-1 cursor-pointer items-center gap-2 bg-transparent ps-4 pe-12 text-start outline-none"
+            >
+              {selected ? (
+                <>
+                  <Flag code={selected.code} />
+                  <span className="min-w-0 flex-1 truncate">
+                    {selected.name}
+                  </span>
+                </>
+              ) : (
+                <span className="min-w-0 flex-1 text-text-muted">
+                  {t("settings.countryPlaceholder")}
+                </span>
+              )}
+            </button>
           )}
-          <ChevronIcon className="size-4.5 shrink-0" />
-        </button>
-      )}
-      {open && !mobile ? (
-        <div className="absolute inset-x-0 top-full z-30 mt-1 max-h-64 overflow-y-auto rounded-control border border-border-strong bg-surface-field">
-          {list}
+          <button
+            type="button"
+            tabIndex={-1}
+            aria-hidden="true"
+            onMouseDown={(event) => event.preventDefault()}
+            onClick={() => (open ? dismiss() : openList())}
+            className="absolute end-1 top-1/2 flex size-11 -translate-y-1/2 cursor-pointer items-center justify-center"
+          >
+            <ChevronIcon
+              className={
+                open
+                  ? "size-4.5 chevron-turn rotate-180"
+                  : "size-4.5 chevron-turn"
+              }
+            />
+          </button>
         </div>
-      ) : null}
+        {open && !mobile ? (
+          <div className="absolute inset-x-0 top-full z-30 mt-1 max-h-64 overflow-y-auto rounded-control border border-border-strong bg-surface-field">
+            {list}
+          </div>
+        ) : null}
+      </div>
       {open && mobile ? (
         <div className="fixed inset-0 z-40 flex items-end">
           <div
@@ -217,7 +261,7 @@ export function CountrySelect({
               }}
               aria-label={t("settings.countrySearch")}
               onKeyDown={onInputKey}
-              className={`h-12 w-full rounded-control border border-border-strong bg-surface-field px-4 text-search placeholder:text-text-muted ${focusRing}`}
+              className="field-focus h-12 w-full rounded-control border-control border-border-strong bg-surface-field px-4 text-search outline-none placeholder:text-text-muted"
             />
             <div className="min-h-0 flex-1 overflow-y-auto">{list}</div>
           </div>

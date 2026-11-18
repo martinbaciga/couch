@@ -13,7 +13,7 @@ const variants = {
   primary:
     "border border-transparent bg-primary-900 font-medium text-text-on-inverse hover:bg-primary-800 active:bg-primary-1000",
   secondary:
-    "border border-primary-900 bg-transparent font-semibold text-primary-900 hover:border-border-strong hover:bg-surface-card active:bg-primary-200",
+    "border border-primary-900 bg-transparent font-semibold text-primary-900 hover:bg-primary-200 active:bg-primary-300",
 } as const;
 
 const sizes = {

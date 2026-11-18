@@ -154,6 +154,29 @@
   border-width: var(--border-width-control);
 }
 
+/* Extra pixel of the selected stroke, flush outside the 1px border. */
+@utility stroke-selected {
+  border-color: var(--border-strong);
+  box-shadow: 0 0 0 1px var(--border-strong);
+}
+
+/* Extra pixel of the field stroke, flush outside its border, following the radius. */
+@utility field-focus {
+  outline: none;
+  &:focus,
+  &:focus-within {
+    border-color: var(--border-strong);
+    box-shadow: 0 0 0 1px var(--border-strong);
+  }
+}
+
+/* `rotate` is its own property. A transform transition would not turn the chevron. */
+.chevron-turn {
+  transition-property: rotate;
+  transition-duration: var(--motion-fast);
+  transition-timing-function: var(--ease-out);
+}
+
 @utility aspect-poster {
   aspect-ratio: 2 / 3;
 }

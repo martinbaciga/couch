@@ -20,6 +20,8 @@ One branch per milestone, not per issue. Branch from current `main` when the mil
 
 Still one issue at a time, and do not start an issue whose blockers are open. Set it to In Progress when you start. When its acceptance criteria are met and `pnpm lint`, `pnpm typecheck`, `pnpm test`, and `pnpm build` pass on the milestone branch, mark it Done only if it has no interface to check. An issue that changes what a person sees or uses on screen stays In Progress until Martin has confirmed it (17 Nov).
 
+A short list of visual fixes Martin has already described does not need a Figma check, and it does not need the full lint, typecheck, test, and build suite first (18 Nov). Edit the named files in one pass, then run Prettier and lint only on those files. Run the full suite, and update Linear, only after he confirms the screen. Do not mark that ticket Done until he confirms it.
+
 Open one pull request from the milestone branch into `main` only after every issue in the milestone is Done and Martin has confirmed the milestone. Do not merge before that confirmation.
 
 MAR-9 is already on `main`. The `m2-data-layer` branch is for the remaining M2 issues.
@@ -143,7 +145,7 @@ Motion tokens are defined in MAR-37. The motion spec is MAR-52, after the screen
 9. No TMDB token or TMDB client code in the client bundle.
 10. Decisions are noted on the issue. The milestone pull request summarises the issues it contains when it is opened.
 
-An issue that changes what a person sees or uses on screen stays In Progress after the checks pass. Move it to Done only after Martin confirms the screen. An issue with no interface can be Done when the checks pass.
+An issue that changes what a person sees or uses on screen stays In Progress after the checks pass. Move it to Done only after Martin confirms the screen. An issue with no interface can be Done when the checks pass. For a short list of visual fixes he has already described, Prettier and lint on the edited files are enough until he confirms the screen. The full suite and the Linear update wait until that confirmation.
 
 ## Build order
 

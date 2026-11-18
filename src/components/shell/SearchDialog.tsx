@@ -5,7 +5,6 @@ import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/Button";
 import { CloseIcon } from "@/components/ui/icons";
 import { NavItem } from "@/components/ui/NavItem";
-import { focusRing } from "@/components/ui/styles";
 
 type SearchDialogProps = {
   open: boolean;
@@ -80,7 +79,7 @@ export function SearchDialog({ open, onClose }: SearchDialogProps) {
         <form
           action="/search"
           method="get"
-          className="order-2 flex items-center gap-5 rounded-control border-control border-primary-900 bg-surface-field p-field"
+          className="field-focus order-2 flex items-center gap-5 rounded-control border-control border-primary-900 bg-surface-field p-field"
         >
           <label id={titleId} htmlFor={`${titleId}-q`} className="sr-only">
             {t("search.label")}
@@ -92,7 +91,7 @@ export function SearchDialog({ open, onClose }: SearchDialogProps) {
             required
             maxLength={100}
             placeholder={t("search.placeholder")}
-            className={`min-w-0 flex-1 bg-transparent px-2.5 text-input text-text-default placeholder:text-text-muted ${focusRing}`}
+            className="min-w-0 flex-1 bg-transparent px-2.5 text-input text-text-default outline-none placeholder:text-text-muted"
           />
           <Button type="submit">{t("search.submit")}</Button>
         </form>
