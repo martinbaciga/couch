@@ -86,8 +86,10 @@
     "country": "Country",
     "stream": "Stream",
     "freeAds": "Free / ads",
+    "freeOrAds": "Free or ads",
     "rent": "Rent",
     "buy": "Buy",
+    "rentBuy": "Rent / buy",
     "noneFound": "none found"
   },
   "homeCard": {
@@ -128,7 +130,9 @@
     "allCountries": "All countries",
     "streamingIn": "Streaming in {count, plural, one {# country} other {# countries}}",
     "showCountries": "Show {count, plural, one {# more country} other {# more countries}}",
-    "ungroupedHint": "Set your services to see these grouped by what you have."
+    "ungroupedHint": "Set your services to see these grouped by what you have.",
+    "groupedHint": "Countries with your services come first. Dashed = only on a specific plan or tier.",
+    "offerType": "Offer type"
   },
   "states": {
     "loading": {

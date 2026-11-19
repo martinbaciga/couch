@@ -43,8 +43,8 @@ type OtherCountriesProps = {
 };
 
 /**
- * "In other countries", by service. The by-country list is MAR-45.
- * Counts and order come from `getOtherCountries`.
+ * "In other countries". By service is the default. By country uses
+ * `getOtherCountries().byCountry` without sorting it again.
  */
 export function OtherCountries({
   availability,
@@ -96,9 +96,16 @@ export function OtherCountries({
           marks={marks}
           settings={settings}
         />
-      ) : view === "service" ? (
+      ) : view === "country" ? (
+        <CountryTable
+          rows={other.byCountry}
+          marks={marks}
+          settings={settings}
+          filtered
+        />
+      ) : (
         <ServiceView other={other} marks={marks} onViewChange={onViewChange} />
-      ) : null}
+      )}
     </section>
   );
 }

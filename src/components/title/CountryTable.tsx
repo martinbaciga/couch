@@ -3,77 +3,164 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/Button";
+import { Chip } from "@/components/ui/Chip";
 import { Flag } from "@/components/ui/Flag";
 import { ServiceLogo } from "@/components/ui/ServiceLogo";
 import type { CountryRow, Settings } from "@/lib/availability/status";
 import type { Offer } from "@/lib/availability/types";
 import type { ServiceMark } from "@/lib/services/marks";
 import { posterUrl } from "@/lib/tmdb/poster";
+import {
+  hiddenCount,
+  previewRows,
+  rowsForFilter,
+  storeNames,
+  streamLogoMarks,
+  type CountryOfferFilter,
+} from "./country-view";
 
-const PREVIEW = 6;
-const STORE_PREVIEW = 2;
 const regionNames = new Intl.DisplayNames("en", { type: "region" });
 
 type CountryTableProps = {
   rows: CountryRow[];
   marks: Map<number, ServiceMark>;
   settings: Settings;
+  /**
+   * Offer-type chips and the services-first note.
+   * Off when no country or no services are set.
+   */
+  filtered?: boolean;
 };
 
 /**
- * Every other country, ungrouped. Used when no country or no services are set.
- * The filtered by-country toggle is MAR-45.
+ * Every other country, in `getOtherCountries().byCountry` order.
+ * `filtered` is the By country toggle. Otherwise the list is the only view.
  */
-export function CountryTable({ rows, marks, settings }: CountryTableProps) {
+export function CountryTable({
+  rows,
+  marks,
+  settings,
+  filtered = false,
+}: CountryTableProps) {
   const t = useTranslations();
+  const [filter, setFilter] = useState<CountryOfferFilter>("stream");
   const [open, setOpen] = useState(false);
-  const shown = open ? rows : rows.slice(0, PREVIEW);
-  const extra = rows.length - PREVIEW;
+  const visible = filtered ? rowsForFilter(rows, filter) : rows;
+  const shown = previewRows(visible, open);
+  const extra = hiddenCount(visible.length, open);
+
+  function selectFilter(next: CountryOfferFilter) {
+    setFilter(next);
+    setOpen(false);
+  }
 
   return (
     <div className="flex flex-col gap-4 px-5 pb-5 md:px-6 md:pb-6">
-      <ul className="flex flex-col md:hidden">
-        {shown.map((row) => (
-          <CountryCard
-            key={row.country}
-            row={row}
-            marks={marks}
-            settings={settings}
-          />
-        ))}
-      </ul>
-      <table className="hidden w-full border-collapse text-start md:table">
-        <thead>
-          <tr className="text-small text-text-muted">
-            <th scope="col" className="pb-2 pe-3 text-start font-medium">
-              {t("offers.country")}
-            </th>
-            <th scope="col" className="pb-2 pe-3 text-start font-medium">
-              {t("offers.stream")}
-            </th>
-            <th scope="col" className="pb-2 pe-3 text-start font-medium">
-              {t("offers.freeAds")}
-            </th>
-            <th scope="col" className="pb-2 pe-3 text-start font-medium">
-              {t("offers.rent")}
-            </th>
-            <th scope="col" className="pb-2 text-start font-medium">
-              {t("offers.buy")}
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {shown.map((row) => (
-            <CountryRowView
-              key={row.country}
-              row={row}
-              marks={marks}
-              settings={settings}
-            />
-          ))}
-        </tbody>
-      </table>
-      {extra > 0 && !open ? (
+      {filtered ? (
+        <div
+          role="group"
+          aria-label={t("otherCountries.offerType")}
+          className="flex flex-wrap gap-2"
+        >
+          <Chip
+            pressed={filter === "stream"}
+            onPressedChange={(pressed) => {
+              if (pressed) selectFilter("stream");
+            }}
+          >
+            {t("offers.stream")}
+          </Chip>
+          <Chip
+            pressed={filter === "free"}
+            onPressedChange={(pressed) => {
+              if (pressed) selectFilter("free");
+            }}
+          >
+            {t("offers.freeAds")}
+          </Chip>
+          <Chip
+            pressed={filter === "rent-buy"}
+            onPressedChange={(pressed) => {
+              if (pressed) selectFilter("rent-buy");
+            }}
+          >
+            {t("offers.rentBuy")}
+          </Chip>
+        </div>
+      ) : null}
+      {shown.length > 0 ? (
+        <>
+          <ul className="flex flex-col md:hidden">
+            {shown.map((row) => (
+              <CountryCard
+                key={row.country}
+                row={row}
+                marks={marks}
+                settings={settings}
+              />
+            ))}
+          </ul>
+          <table className="hidden w-full table-fixed border-collapse text-start md:table">
+            <colgroup>
+              <col className="w-1/4" />
+              <col className="w-1/4" />
+              <col />
+              <col />
+              <col />
+            </colgroup>
+            <thead>
+              <tr className="border-b border-border-subtle">
+                <th
+                  scope="col"
+                  className="kicker py-2.5 pe-3 text-start text-body font-medium text-text-muted"
+                >
+                  {t("offers.country")}
+                </th>
+                <th
+                  scope="col"
+                  className="kicker py-2.5 pe-3 text-start text-body font-medium text-text-muted"
+                >
+                  {t("offers.stream")}
+                </th>
+                <th
+                  scope="col"
+                  className="kicker py-2.5 pe-3 text-start text-body font-medium text-text-muted"
+                >
+                  {t("offers.freeAds")}
+                </th>
+                <th
+                  scope="col"
+                  className="kicker py-2.5 pe-3 text-start text-body font-medium text-text-muted"
+                >
+                  {t("offers.rent")}
+                </th>
+                <th
+                  scope="col"
+                  className="kicker py-2.5 text-start text-body font-medium text-text-muted"
+                >
+                  {t("offers.buy")}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {shown.map((row) => (
+                <CountryRowView
+                  key={row.country}
+                  row={row}
+                  marks={marks}
+                  settings={settings}
+                />
+              ))}
+            </tbody>
+          </table>
+        </>
+      ) : null}
+      {filtered ? (
+        <p className="text-caption text-text-muted">
+          {t("otherCountries.groupedHint")}
+        </p>
+      ) : null}
+      {extra > 0 ? (
         <Button
           variant="secondary"
           size="small"
@@ -83,9 +170,11 @@ export function CountryTable({ rows, marks, settings }: CountryTableProps) {
           {t("otherCountries.showCountries", { count: extra })}
         </Button>
       ) : null}
-      <p className="text-body text-text-muted">
-        {t("otherCountries.ungroupedHint")}
-      </p>
+      {filtered ? null : (
+        <p className="text-body text-text-muted">
+          {t("otherCountries.ungroupedHint")}
+        </p>
+      )}
     </div>
   );
 }
@@ -104,38 +193,34 @@ function CountryCard({
   const crowded = logos.length >= 4;
 
   return (
-    <li className="flex flex-col gap-3 border-b border-primary-200 py-4">
-      <div
-        className={crowded ? "flex flex-col gap-2" : "flex items-start gap-3"}
-      >
-        <div className="flex min-w-0 flex-1 items-center gap-1.5">
+    <li className="flex flex-col gap-2.5 border-b border-border-subtle py-3">
+      <div className="flex items-center gap-3">
+        <div className="flex min-w-0 flex-1 items-center gap-2">
           <Flag code={row.country} />
-          <p className="min-w-0 text-ui font-medium text-text-default">
+          <p className="min-w-0 text-ui font-medium break-words text-text-default">
             {countryName(row.country)}
           </p>
         </div>
-        <LogoList logos={logos} />
+        {crowded ? null : <LogoList logos={logos} wrap={false} />}
       </div>
-      <dl className="grid grid-cols-[auto_minmax(0,1fr)] gap-x-3 gap-y-1 text-body">
-        <StoreLine
-          label={t("offers.freeAds")}
+      {crowded ? <LogoList logos={logos} /> : null}
+      <div className="grid grid-cols-3 gap-3">
+        <StoreColumn
+          label={t("offers.freeOrAds")}
           names={namesFor(
             [...row.offersByType.free, ...row.offersByType.ads],
             marks,
           )}
-          compact
         />
-        <StoreLine
+        <StoreColumn
           label={t("offers.rent")}
           names={namesFor(row.offersByType.rent, marks)}
-          compact
         />
-        <StoreLine
+        <StoreColumn
           label={t("offers.buy")}
           names={namesFor(row.offersByType.buy, marks)}
-          compact
         />
-      </dl>
+      </div>
     </li>
   );
 }
@@ -150,19 +235,22 @@ function CountryRowView({
   settings: Settings;
 }) {
   return (
-    <tr className="border-t border-primary-200">
-      <th scope="row" className="py-3 pe-3 text-start align-middle font-medium">
-        <span className="flex items-center gap-1.5">
+    <tr className="border-b border-border-subtle">
+      <th
+        scope="row"
+        className="py-3.5 pe-3 text-start align-middle font-medium"
+      >
+        <span className="flex items-center gap-2">
           <Flag code={row.country} />
-          <span className="text-ui text-text-default">
+          <span className="min-w-0 text-ui break-words text-text-default">
             {countryName(row.country)}
           </span>
         </span>
       </th>
-      <td className="py-3 pe-3 align-middle">
+      <td className="py-3.5 pe-3 align-middle">
         <LogoList logos={streamLogos(row, marks, settings)} />
       </td>
-      <td className="py-3 pe-3 align-middle text-body">
+      <td className="py-3.5 pe-3 align-middle text-body">
         <NameList
           names={namesFor(
             [...row.offersByType.free, ...row.offersByType.ads],
@@ -170,32 +258,22 @@ function CountryRowView({
           )}
         />
       </td>
-      <td className="py-3 pe-3 align-middle text-body">
+      <td className="py-3.5 pe-3 align-middle text-body">
         <NameList names={namesFor(row.offersByType.rent, marks)} />
       </td>
-      <td className="py-3 align-middle text-body">
+      <td className="py-3.5 align-middle text-body">
         <NameList names={namesFor(row.offersByType.buy, marks)} />
       </td>
     </tr>
   );
 }
 
-function StoreLine({
-  label,
-  names,
-  compact,
-}: {
-  label: string;
-  names: string[];
-  compact?: boolean;
-}) {
+function StoreColumn({ label, names }: { label: string; names: string[] }) {
   return (
-    <>
-      <dt className="text-text-muted">{label}</dt>
-      <dd>
-        <NameList names={names} compact={compact} />
-      </dd>
-    </>
+    <div className="flex min-w-0 flex-col gap-0.5">
+      <p className="text-small text-text-muted">{label}</p>
+      <NameList names={names} compact />
+    </div>
   );
 }
 
@@ -208,18 +286,24 @@ function NameList({
 }) {
   const t = useTranslations();
   if (names.length === 0) {
-    return <span className="text-text-muted">{t("offers.noneFound")}</span>;
-  }
-  if (!compact || names.length <= STORE_PREVIEW) {
-    return <span className="text-text-default">{names.join(" · ")}</span>;
-  }
-  const extra = names.length - STORE_PREVIEW;
-  return (
-    <span className="text-text-default">
-      {names.slice(0, STORE_PREVIEW).join(" · ")}{" "}
-      <span className="text-text-muted">
-        {t("otherCountries.moreCountries", { count: extra })}
+    return (
+      <span className="text-body text-text-default">
+        {t("offers.noneFound")}
       </span>
+    );
+  }
+  const visible = storeNames(names, compact);
+  return (
+    <span className="text-body break-words text-text-default">
+      {visible.shown.join(" · ")}
+      {visible.extra > 0 ? (
+        <>
+          {" · "}
+          <span className="text-text-muted">
+            {t("otherCountries.moreCountries", { count: visible.extra })}
+          </span>
+        </>
+      ) : null}
     </span>
   );
 }
@@ -231,15 +315,17 @@ type Logo = {
   marker: "none" | "mine" | "plan";
 };
 
-function LogoList({ logos }: { logos: Logo[] }) {
+function LogoList({ logos, wrap = true }: { logos: Logo[]; wrap?: boolean }) {
   const t = useTranslations();
   if (logos.length === 0) {
     return (
-      <span className="text-body text-text-muted">{t("offers.noneFound")}</span>
+      <span className="text-body text-text-default">
+        {t("offers.noneFound")}
+      </span>
     );
   }
   return (
-    <ul className="flex flex-wrap gap-1">
+    <ul className={`flex gap-2 ${wrap ? "flex-wrap" : "shrink-0 flex-nowrap"}`}>
       {logos.map((logo) => (
         <li key={logo.id}>
           <ServiceLogo
@@ -259,26 +345,16 @@ function streamLogos(
   marks: Map<number, ServiceMark>,
   settings: Settings,
 ): Logo[] {
-  const grouped = new Map<number, Offer[]>();
-  for (const offer of row.offersByType.stream) {
-    const list = grouped.get(offer.serviceId) ?? [];
-    list.push(offer);
-    grouped.set(offer.serviceId, list);
-  }
-  const mine = new Set(settings.serviceIds);
-  return [...grouped.entries()].map(([id, offers]) => {
-    const mark = marks.get(id);
-    const plan = offers.every(
-      (offer) => offer.variant === "ads" || offer.variant === "tier",
-    );
-    let marker: Logo["marker"] = "none";
-    if (plan) marker = "plan";
-    else if (mine.has(id)) marker = "mine";
+  return streamLogoMarks(
+    row.offersByType.stream,
+    new Set(settings.serviceIds),
+  ).map((logo) => {
+    const mark = marks.get(logo.id);
     return {
-      id,
+      id: logo.id,
       name: mark?.name ?? "",
       src: posterUrl(mark?.logoPath ?? null, "w92"),
-      marker,
+      marker: logo.marker,
     };
   });
 }
