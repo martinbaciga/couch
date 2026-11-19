@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useReducer, useRef } from "react";
+import { useCallback, useEffect, useReducer, useRef, useState } from "react";
 import {
   canLoadMore,
   initialSearchState,
@@ -12,6 +12,7 @@ import {
   SEARCH_DEBOUNCE_MS,
   searchReducer,
   type LoadedSearch,
+  type SearchAction,
   type SearchPayload,
   type SearchState,
 } from "@/lib/search/query";
@@ -36,10 +37,17 @@ export function useTitleSearch(
 ) {
   const live = options.live ?? false;
   const normalised = normaliseQuery(query);
+  const initial = live ? null : (options.initial ?? null);
   const [state, dispatch] = useReducer(searchReducer, undefined, () =>
-    initialSearchState(normalised, live ? null : (options.initial ?? null)),
+    initialSearchState(normalised, initial),
   );
   const request = useRef(0);
+  const signature = pageSignature(normalised, initial);
+  const [tracked, setTracked] = useState(signature);
+  if (!live && tracked !== signature) {
+    setTracked(signature);
+    dispatch(pageAction(normalised, initial));
+  }
 
   useEffect(() => {
     if (!live) return;
@@ -114,6 +122,20 @@ export function useTitleSearch(
     retry,
     canLoadMore: canLoadMore(state) && state.page < MAX_SEARCH_PAGE,
   };
+}
+
+function pageSignature(query: string, initial: LoadedSearch | null): string {
+  if (!isSearchableQuery(query) || !initial) return `pending:${query}`;
+  if (!initial.ok) return `error:${query}:${initial.error}`;
+  const first = initial.payload.results[0];
+  return `ready:${query}:${initial.payload.totalResults}:${initial.payload.results.length}:${first?.kind ?? ""}:${first?.id ?? ""}`;
+}
+
+function pageAction(query: string, initial: LoadedSearch | null): SearchAction {
+  if (!isSearchableQuery(query)) return { type: "clear" };
+  if (!initial) return { type: "loading", query };
+  if (!initial.ok) return { type: "failed", error: initial.error };
+  return { type: "loaded", query, payload: initial.payload };
 }
 
 export async function fetchSearch(

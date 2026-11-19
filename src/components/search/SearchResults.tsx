@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/Button";
+import { Skeleton } from "@/components/ui/Skeleton";
 import { StateMessage } from "@/components/ui/StateMessage";
 import type { LoadedSearch } from "@/lib/search/query";
 import { titleUrl } from "@/lib/search/query";
@@ -33,11 +34,11 @@ export function SearchResults({ query, initial }: SearchResultsProps) {
     );
   }
 
-  if (state.status === "loading") {
-    return <StateMessage heading="h1" state="loading" />;
+  if (state.status === "loading" || state.status === "idle") {
+    return <SearchResultsSkeleton />;
   }
 
-  if (state.status === "empty" || state.status === "idle") {
+  if (state.status === "empty") {
     return (
       <StateMessage
         heading="h1"
@@ -82,6 +83,39 @@ export function SearchResults({ query, initial }: SearchResultsProps) {
     </div>
   );
 }
+
+/** Placeholder rows while the first page is still on its way. */
+export function SearchResultsSkeleton() {
+  const t = useTranslations();
+
+  return (
+    <div
+      className="mx-auto flex w-full max-w-results flex-col gap-6"
+      aria-busy="true"
+    >
+      <p className="sr-only" role="status">
+        {t("states.loading.eyebrow")}
+      </p>
+      <Skeleton className="h-8 w-64 max-w-full md:h-10" />
+      <ul className="flex list-none flex-col gap-3 p-0">
+        {rowKeys.map((key) => (
+          <li
+            key={key}
+            className="flex items-center gap-4 rounded-control border border-border-subtle bg-surface-card px-4 py-3"
+          >
+            <Skeleton className="aspect-poster w-12 shrink-0" />
+            <span className="flex min-w-0 flex-1 flex-col gap-2">
+              <Skeleton className="h-5 w-40 max-w-full" />
+              <Skeleton className="h-3.5 w-24" />
+            </span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+const rowKeys = ["a", "b", "c", "d", "e"] as const;
 
 function Hit({
   kind,

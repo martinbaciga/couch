@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { getTranslations } from "next-intl/server";
-import { SearchResults } from "@/components/search/SearchResults";
-import { StateMessage } from "@/components/ui/StateMessage";
+import {
+  SearchResults,
+  SearchResultsSkeleton,
+} from "@/components/search/SearchResults";
 import { loadSearch } from "@/lib/search/load";
 import { isSearchableQuery, normaliseQuery } from "@/lib/search/query";
 
@@ -39,16 +41,24 @@ export async function generateMetadata({
 
 export default function SearchPage({ searchParams }: SearchPageProps) {
   return (
-    <Suspense fallback={<StateMessage heading="h1" state="loading" />}>
-      <SearchPageResults searchParams={searchParams} />
+    <Suspense fallback={<SearchResultsSkeleton />}>
+      <SearchFrame searchParams={searchParams} />
     </Suspense>
   );
 }
 
-async function SearchPageResults({ searchParams }: SearchPageProps) {
+async function SearchFrame({ searchParams }: SearchPageProps) {
   const query = await readQuery(searchParams);
+  return (
+    <Suspense key={query} fallback={<SearchResultsSkeleton />}>
+      <SearchPageResults query={query} />
+    </Suspense>
+  );
+}
+
+async function SearchPageResults({ query }: { query: string }) {
   const initial = isSearchableQuery(query) ? await loadSearch(query, 1) : null;
-  return <SearchResults query={query} initial={initial} />;
+  return <SearchResults key={query} query={query} initial={initial} />;
 }
 
 async function readQuery(
