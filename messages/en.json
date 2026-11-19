@@ -71,6 +71,8 @@
     "yearKind": "{year} · {kind}",
     "copy": "Copy link",
     "copied": "Copied",
+    "readMore": "Read more",
+    "showLess": "Show less",
     "seasons": "{count, plural, one {# season} other {# seasons}}",
     "metaPair": "{first} · {second}",
     "links": {

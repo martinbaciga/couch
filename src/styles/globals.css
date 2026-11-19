@@ -184,6 +184,40 @@
   transition-timing-function: var(--ease-out);
 }
 
+/*
+  Synopsis expand. The guide's expanding-block timing is 240ms, ease-out,
+  through grid-template-rows. 0fr stays at the four-line floor (the body's
+  min-height) and 1fr opens to the full paragraph. The preview does not fade:
+  those lines are already on screen.
+*/
+.synopsis-reveal {
+  display: grid;
+  grid-template-rows: 1fr;
+}
+
+.synopsis-reveal[data-overflow="true"] {
+  grid-template-rows: 0fr;
+}
+
+.synopsis-reveal[data-expanded="true"] {
+  grid-template-rows: 1fr;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .synopsis-reveal[data-overflow="true"] {
+    transition: grid-template-rows 240ms var(--ease-out);
+  }
+}
+
+.synopsis-reveal-body {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.synopsis-reveal[data-overflow="true"] > .synopsis-reveal-body {
+  min-height: calc(var(--type-small-leading) * 4);
+}
+
 @utility aspect-poster {
   aspect-ratio: 2 / 3;
 }

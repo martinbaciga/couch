@@ -3,7 +3,7 @@ import Link from "next/link";
 import { focusRing, motionColor } from "./styles";
 
 type ButtonProps = {
-  variant?: "primary" | "secondary";
+  variant?: "primary" | "secondary" | "link";
   /** Light fill for a primary action sitting on the dark home card. */
   tone?: "default" | "inverse";
   size?: "default" | "small";
@@ -34,6 +34,8 @@ const sizes = {
 
 /**
  * Square action. Primary is a filled ink button; secondary is a stroke.
+ * Link is an underlined text control with a 44px target. Pass `-my-3` when
+ * that target should keep the line on the surrounding text rhythm.
  * Icon-only actions use NavItem with a tooltip, not Button.
  */
 export function Button({
@@ -47,6 +49,22 @@ export function Button({
   children,
   ...props
 }: ButtonProps) {
+  if (variant === "link") {
+    const linkClass = `inline-flex min-h-11 cursor-pointer items-center bg-transparent py-3 text-small font-semibold whitespace-nowrap text-primary-900 underline disabled:cursor-not-allowed disabled:opacity-40 ${focusRing} ${className ?? ""}`;
+    if (href) {
+      return (
+        <Link href={href} className={linkClass}>
+          {children}
+        </Link>
+      );
+    }
+    return (
+      <button type={type} className={linkClass} {...props}>
+        {children}
+      </button>
+    );
+  }
+
   const iconBox = size === "small" ? "size-3" : "size-4";
   const variantClass =
     variant === "primary" && tone === "inverse"

@@ -12,6 +12,7 @@ import {
 import type { TitleDetails } from "@/lib/tmdb/types";
 import { posterUrl } from "@/lib/tmdb/poster";
 import { CopyLink } from "./CopyLink";
+import { Synopsis } from "./Synopsis";
 
 /**
  * Poster, title, meta line, synopsis and outbound links.
@@ -91,11 +92,7 @@ export function TitleHeader({
       </div>
       {synopsis || links.length > 0 ? (
         <div className="flex flex-col gap-6 md:order-1 md:gap-4.5">
-          {synopsis ? (
-            <p className="line-clamp-4 text-small text-text-default">
-              {synopsis}
-            </p>
-          ) : null}
+          {synopsis ? <Synopsis text={synopsis} /> : null}
           {links.length > 0 ? (
             <ul className="flex list-none flex-wrap gap-2 p-0">
               {links.map((link) => (

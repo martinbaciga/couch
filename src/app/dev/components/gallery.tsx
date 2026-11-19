@@ -54,6 +54,7 @@ export function Gallery() {
           <span className="rounded-panel bg-primary-1000 p-4">
             <Button tone="inverse">{t("dev.buttonLabel")}</Button>
           </span>
+          <Button variant="link">{t("title.readMore")}</Button>
         </div>
       </section>
 
