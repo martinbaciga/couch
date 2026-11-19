@@ -15,6 +15,7 @@ export function useDialog(
 ) {
   const dialogRef = useRef<HTMLDivElement>(null);
   const onCloseRef = useRef(onClose);
+  const quietRestore = useRef(false);
 
   useEffect(() => {
     onCloseRef.current = onClose;
@@ -33,6 +34,7 @@ export function useDialog(
     function onKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") {
         event.preventDefault();
+        quietRestore.current = true;
         onCloseRef.current();
         return;
       }
@@ -56,9 +58,23 @@ export function useDialog(
     return () => {
       document.removeEventListener("keydown", onKeyDown);
       document.body.classList.remove("overflow-hidden");
-      if (previouslyFocused instanceof HTMLElement) previouslyFocused.focus();
+      if (previouslyFocused instanceof HTMLElement) {
+        if (quietRestore.current) focusQuietly(previouslyFocused);
+        else previouslyFocused.focus();
+      }
+      quietRestore.current = false;
     };
   }, [open, initialFocus]);
 
   return dialogRef;
+}
+
+/** Return focus without the keyboard ring. Escape already closed the dialog. */
+function focusQuietly(element: HTMLElement) {
+  const options: FocusOptions & { focusVisible?: boolean } = {
+    preventScroll: true,
+    focusVisible: false,
+  };
+  element.focus(options);
+  if (element.matches(":focus-visible")) element.blur();
 }
