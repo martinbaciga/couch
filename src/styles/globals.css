@@ -171,6 +171,12 @@
   box-shadow: 0 0 0 1px var(--border-strong);
 }
 
+/* Keyboard highlight on a search row: 2px primary-800, flush so the row does not grow. */
+@utility stroke-key {
+  border-color: var(--primary-800);
+  box-shadow: 0 0 0 1px var(--primary-800);
+}
+
 /* Extra pixel of the field stroke, flush outside its border, following the radius. */
 @utility field-focus {
   outline: none;
@@ -178,6 +184,38 @@
   &:focus-within {
     border-color: var(--border-strong);
     box-shadow: 0 0 0 1px var(--border-strong);
+  }
+}
+
+/*
+  The remove control sits beside the option, in the row. On a fine pointer it
+  collapses until hover, focus, or a keyboard highlight, so it does not cover
+  the title. A coarse pointer keeps it in view. The link drops its end padding
+  while the control is in the row so the two do not stack.
+*/
+.recent-remove {
+  margin-inline-end: 0.5rem;
+}
+
+@media (pointer: fine) {
+  .recent-row:not(:hover):not(:focus-within):not([data-key]) .recent-remove {
+    width: 0;
+    margin-inline-end: 0;
+    overflow: hidden;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .recent-row:hover > a,
+  .recent-row:focus-within > a,
+  .recent-row[data-key] > a {
+    padding-inline-end: 0;
+  }
+}
+
+@media (pointer: coarse) {
+  .recent-row > a {
+    padding-inline-end: 0;
   }
 }
 

@@ -63,7 +63,7 @@ export function SearchDialog({ open, onClose }: SearchDialogProps) {
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-40 md:px-gutter md:pt-24">
+    <div className="fixed inset-0 z-40 grid md:px-gutter md:pt-24 md:pb-6">
       <button
         type="button"
         aria-label={t("search.close")}
@@ -75,7 +75,7 @@ export function SearchDialog({ open, onClose }: SearchDialogProps) {
         role="dialog"
         aria-modal="true"
         aria-label={t("search.label")}
-        className="relative flex h-full flex-col bg-primary-100 md:mx-auto md:h-auto md:max-h-dvh md:max-w-search md:overflow-hidden md:rounded-xl md:border md:border-border-default md:shadow-toast"
+        className="relative flex h-full min-h-0 w-full flex-col overflow-hidden bg-primary-100 md:h-auto md:max-h-full md:max-w-search md:justify-self-center md:self-start md:rounded-xl md:border md:border-border-default md:shadow-toast"
       >
         <SearchCombobox
           variant="modal"

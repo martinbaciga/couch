@@ -58,9 +58,29 @@ export function rememberRecent(
       (item) => item.kind !== title.kind || item.id !== title.id,
     ),
   ].slice(0, MAX_RECENT);
-  const body = JSON.stringify({ titles: next });
+  return writeRecent(storage, next);
+}
+
+/** Drops one title. Other stored keys are left as they are. */
+export function removeRecent(
+  storage: StorageLike,
+  kind: Kind,
+  id: number,
+): RecentTitle[] {
+  const next = readRecent(storage).filter(
+    (item) => item.kind !== kind || item.id !== id,
+  );
+  return writeRecent(storage, next);
+}
+
+/** Drops the whole list. Other stored keys are left as they are. */
+export function clearRecent(storage: StorageLike): RecentTitle[] {
+  return writeRecent(storage, []);
+}
+
+function writeRecent(storage: StorageLike, next: RecentTitle[]): RecentTitle[] {
   try {
-    storage.setItem(RECENT_KEY, body);
+    storage.setItem(RECENT_KEY, JSON.stringify({ titles: next }));
     usingMemory = false;
     memory = null;
   } catch {

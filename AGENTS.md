@@ -65,6 +65,7 @@ Ask the owner only when something only they can do is missing. Otherwise choose 
 - Neutral wording. Never mention or promote VPNs. Never use "unlock", "bypass", "restricted", "geo-block", or "circumvent". Prefer "Also available in" and "Available in other countries". MAR-23 adds a test that scans `messages/en.json`.
 - v1 import is Letterboxd-only. Other CSV lists are MAR-53. Do not build them.
 - Watchlist filters are seven chips, including All and "On other services here" (12 Nov, MAR-21).
+- Browser suggestions on the search field (MAR-56, 19 Nov): Chrome files previous entries under the text field's `name` and ignores `autocomplete="off"`, so a stable name such as `q` puts Chrome's list on top of the results and takes the arrow keys. The visible field in `SearchCombobox` is named `couch-title-` plus a new random suffix on every mount. `autocomplete="off"` stays on the form and the field, which is what Firefox and Safari honour. A hidden input keeps `name="q"` for a no-JS GET. Submit stays in script: `onSubmit` prevents the browser submit and `searchUrl` builds `/search?q=` from the typed text. The results page and `/api/search` read only `q`. Do not submit this form natively, do not read the query from the visible field's name, and do not name another control `couch-title`. The hero and the modal each own a form, so two instances do not share a name.
 
 ## TMDB
 

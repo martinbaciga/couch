@@ -4,6 +4,8 @@ import {
   canLoadMore,
   initialSearchState,
   isSearchableQuery,
+  highlightAfterRemoval,
+  indexAfterRemoval,
   nextActive,
   normaliseQuery,
   parseSearchError,
@@ -88,6 +90,27 @@ describe("nextActive", () => {
     expect(nextActive(1, 3, "home")).toBe(0);
     expect(nextActive(1, 3, "end")).toBe(2);
     expect(nextActive(0, 0, "down")).toBe(-1);
+  });
+});
+
+describe("indexAfterRemoval", () => {
+  it("moves to the next slot, or back when the last row goes", () => {
+    expect(indexAfterRemoval(0, 3)).toBe(0);
+    expect(indexAfterRemoval(1, 3)).toBe(1);
+    expect(indexAfterRemoval(2, 3)).toBe(1);
+    expect(indexAfterRemoval(0, 1)).toBe(-1);
+  });
+});
+
+describe("highlightAfterRemoval", () => {
+  it("keeps the highlight only when the active title was removed", () => {
+    const before = "recent:movie-1,tv-2,movie-3";
+    expect(highlightAfterRemoval(before, "recent:tv-2,movie-3", 0)).toBe(0);
+    expect(highlightAfterRemoval(before, "recent:movie-1,tv-2", 2)).toBe(1);
+    expect(highlightAfterRemoval(before, "recent:movie-1,movie-3", 0)).toBe(-1);
+    expect(highlightAfterRemoval(before, "results:movie-9", 0)).toBe(-1);
+    expect(highlightAfterRemoval(before, "recent:", 0)).toBe(-1);
+    expect(highlightAfterRemoval(before, "recent:tv-2,movie-3", -1)).toBe(-1);
   });
 });
 

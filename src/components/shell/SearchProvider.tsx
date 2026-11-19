@@ -9,6 +9,19 @@ export function SearchProvider({ children }: { children: ReactNode }) {
   const openSearch = useCallback(() => setOpen(true), []);
   const closeSearch = useCallback(() => setOpen(false), []);
 
+  // `?search=1` opens the dialog from a link. The param is removed so Back
+  // closes the dialog's own history entry rather than the link.
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("search") !== "1") return;
+    params.delete("search");
+    const query = params.toString();
+    const next = `${window.location.pathname}${query ? `?${query}` : ""}${window.location.hash}`;
+    window.history.replaceState(window.history.state, "", next);
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- ?search=1 is only known after hydration
+    setOpen(true);
+  }, []);
+
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
       const target = event.target;

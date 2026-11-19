@@ -2,11 +2,13 @@
 
 import { useSyncExternalStore } from "react";
 import {
+  clearRecent,
   isRecentMemory,
   parseRecent,
   readRecent,
   RECENT_KEY,
   rememberRecent,
+  removeRecent,
   type RecentTitle,
 } from "./recent";
 
@@ -69,5 +71,15 @@ export function useRecentlyViewed(): RecentTitle[] {
 
 export function rememberViewed(title: RecentTitle): void {
   rememberRecent(window.localStorage, title);
+  emit();
+}
+
+export function removeViewed(kind: RecentTitle["kind"], id: number): void {
+  removeRecent(window.localStorage, kind, id);
+  emit();
+}
+
+export function clearViewed(): void {
+  clearRecent(window.localStorage);
   emit();
 }

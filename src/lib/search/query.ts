@@ -110,6 +110,45 @@ export function nextActive(
   return Math.max(-1, current - 1);
 }
 
+/** Stay on the item that slides into this slot, or step back from the last one. */
+export function indexAfterRemoval(index: number, count: number): number {
+  if (count <= 1) return -1;
+  const nextCount = count - 1;
+  return index >= nextCount ? nextCount - 1 : index;
+}
+
+/**
+ * Keep the highlight only when the active id was the one removed.
+ * Any other list change, including a new search, clears it.
+ * Signatures are `mode:kind-id,kind-id`.
+ */
+export function highlightAfterRemoval(
+  previous: string,
+  next: string,
+  active: number,
+): number {
+  if (active < 0) return -1;
+  const before = splitSignature(previous);
+  const after = splitSignature(next);
+  if (!before || !after || before.mode !== after.mode) return -1;
+  if (after.ids.length !== before.ids.length - 1) return -1;
+  const kept = before.ids.filter((_, index) => index !== active);
+  if (kept.join(",") !== after.ids.join(",")) return -1;
+  return indexAfterRemoval(active, before.ids.length);
+}
+
+function splitSignature(
+  signature: string,
+): { mode: string; ids: string[] } | null {
+  const splitAt = signature.indexOf(":");
+  if (splitAt < 0) return null;
+  const body = signature.slice(splitAt + 1);
+  return {
+    mode: signature.slice(0, splitAt),
+    ids: body.length === 0 ? [] : body.split(","),
+  };
+}
+
 export function initialSearchState(
   query: string,
   loaded: LoadedSearch | null,

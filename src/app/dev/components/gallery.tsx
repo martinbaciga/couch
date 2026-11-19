@@ -37,6 +37,7 @@ export function Gallery() {
   const [country, setCountry] = useState<string | null>(null);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [otherView, setOtherView] = useState<"service" | "country">("service");
+  const [recentSample, setRecentSample] = useState(sampleResults);
 
   return (
     <div className="flex flex-col gap-8 pb-16">
@@ -288,6 +289,27 @@ export function Gallery() {
         <h2 className="text-ui">{t("dev.searchPanel")}</h2>
         <div className="rounded-xl border border-border-default bg-primary-100">
           <SearchResultsPanel
+            mode={recentSample.length > 0 ? "recent" : "hint"}
+            query=""
+            rows={recentSample}
+            listId="gallery-recent"
+            labelId="gallery-recent-label"
+            optionId={(index) => `gallery-recent-${index}`}
+            activeIndex={-1}
+            onRemove={(row) =>
+              setRecentSample((current) =>
+                current.filter(
+                  (item) => item.kind !== row.kind || item.id !== row.id,
+                ),
+              )
+            }
+            onClear={() => setRecentSample([])}
+            onSelect={() => undefined}
+            onClose={() => undefined}
+          />
+        </div>
+        <div className="rounded-xl border border-border-default bg-primary-100">
+          <SearchResultsPanel
             mode="results"
             query="Fight"
             rows={sampleResults}
@@ -296,8 +318,7 @@ export function Gallery() {
             optionId={(index) => `gallery-result-${index}`}
             activeIndex={0}
             seeAllHref="/search?q=Fight"
-            showEnter
-            onHover={() => undefined}
+            keyboard
             onSelect={() => undefined}
             onClose={() => undefined}
           />

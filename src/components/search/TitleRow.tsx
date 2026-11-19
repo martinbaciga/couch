@@ -3,7 +3,7 @@
 import type { ReactNode, RefObject } from "react";
 import Link from "next/link";
 import { useFormatter, useTranslations } from "next-intl";
-import { ChevronIcon } from "@/components/ui/icons";
+import { ChevronIcon, CloseIcon } from "@/components/ui/icons";
 import { Poster } from "@/components/ui/Poster";
 import { ServiceLogo } from "@/components/ui/ServiceLogo";
 import { Skeleton } from "@/components/ui/Skeleton";
@@ -12,6 +12,7 @@ import { titleMatch } from "@/lib/search/query";
 import type { StatusLine } from "@/lib/search/status-line";
 import type { ServiceMark } from "@/lib/services/marks";
 import { posterUrl } from "@/lib/tmdb/poster";
+import { KeyHint } from "./KeyHint";
 import type { RowPhase } from "./useRowStatus";
 
 const regionNames = new Intl.DisplayNames("en", { type: "region" });
@@ -27,10 +28,12 @@ type TitleRowProps = {
   active?: boolean;
   optionId?: string;
   enterHint?: boolean;
+  /** Recently viewed. The control is a sibling of the option, not a child of it. */
+  onRemove?: () => void;
+  describedBy?: string;
   status?: ReactNode;
   logos?: ServiceMark[];
   onSelect?: () => void;
-  onHover?: () => void;
   rowRef?: RefObject<HTMLAnchorElement | null>;
 };
 
@@ -49,10 +52,11 @@ export function TitleRow({
   active = false,
   optionId,
   enterHint = false,
+  onRemove,
+  describedBy,
   status,
   logos = [],
   onSelect,
-  onHover,
   rowRef,
 }: TitleRowProps) {
   const t = useTranslations();
@@ -66,23 +70,11 @@ export function TitleRow({
           kind: kindLabel,
         });
   const compact = density === "compact";
-  const className = compact
-    ? `flex items-center gap-3.5 rounded-md border bg-primary-200 p-2 ${active ? "stroke-selected" : "border-border-subtle"} ${motionColor} ${focusRing}`
-    : `flex items-center gap-4 rounded-control border border-border-subtle bg-surface-card px-4 py-3 hover:bg-primary-200 active:bg-primary-300 ${motionColor} ${focusRing}`;
-
-  return (
-    <Link
-      ref={rowRef}
-      href={href}
-      id={optionId}
-      role={compact ? "option" : undefined}
-      aria-selected={compact ? active : undefined}
-      tabIndex={compact ? -1 : undefined}
-      onClick={onSelect}
-      onMouseMove={onHover}
-      onMouseDown={compact ? (event) => event.preventDefault() : undefined}
-      className={className}
-    >
+  const chrome = compact
+    ? `rounded-md border bg-primary-200 ${active ? "stroke-key" : "border-border-subtle"} ${motionColor}`
+    : `rounded-control border border-border-subtle bg-surface-card hover:bg-primary-200 active:bg-primary-300 ${motionColor}`;
+  const option = (
+    <>
       <Poster
         framed
         src={posterUrl(posterPath, "w185")}
@@ -122,17 +114,71 @@ export function TitleRow({
           ))}
         </span>
       ) : null}
-      {enterHint ? (
-        <span
-          aria-hidden="true"
-          className="hidden shrink-0 rounded-md border border-border-subtle px-2 py-0.5 text-small font-medium text-primary-800 md:inline"
-        >
-          {t("search.enter")}
-        </span>
-      ) : null}
+      {enterHint ? <KeyHint label={t("search.enter")} /> : null}
       {compact ? null : (
         <ChevronIcon className="size-4.5 shrink-0 -rotate-90 text-text-default rtl:rotate-90" />
       )}
+    </>
+  );
+
+  if (compact && onRemove) {
+    return (
+      <div
+        className={`recent-row group flex min-h-11 items-center ${chrome}`}
+        data-key={active ? "" : undefined}
+      >
+        <Link
+          ref={rowRef}
+          href={href}
+          id={optionId}
+          role="option"
+          aria-selected={active}
+          aria-describedby={describedBy}
+          tabIndex={-1}
+          onClick={onSelect}
+          onMouseDown={(event) => event.preventDefault()}
+          className={`flex min-h-11 min-w-0 flex-1 items-center gap-3.5 p-2 ${focusRing}`}
+        >
+          {option}
+        </Link>
+        <button
+          type="button"
+          tabIndex={-1}
+          aria-label={t("search.remove", { title })}
+          onMouseDown={(event) => {
+            event.preventDefault();
+            event.stopPropagation();
+          }}
+          onClick={(event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            onRemove();
+          }}
+          className={`recent-remove flex size-11 shrink-0 items-center justify-center rounded-md text-text-muted ${focusRing}`}
+        >
+          <CloseIcon className="size-4" />
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <Link
+      ref={rowRef}
+      href={href}
+      id={optionId}
+      role={compact ? "option" : undefined}
+      aria-selected={compact ? active : undefined}
+      tabIndex={compact ? -1 : undefined}
+      onClick={onSelect}
+      onMouseDown={compact ? (event) => event.preventDefault() : undefined}
+      className={
+        compact
+          ? `flex min-h-11 items-center gap-3.5 p-2 ${chrome} ${focusRing}`
+          : `flex items-center gap-4 px-4 py-3 ${chrome} ${focusRing}`
+      }
+    >
+      {option}
     </Link>
   );
 }

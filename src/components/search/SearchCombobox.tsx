@@ -1,6 +1,13 @@
 "use client";
 
-import { useEffect, useId, useRef, useState, type FormEvent } from "react";
+import {
+  useEffect,
+  useId,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type FormEvent,
+} from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { SearchIcon } from "@/components/ui/icons";
@@ -10,8 +17,15 @@ import {
   normaliseQuery,
   searchUrl,
   titleUrl,
+  type SearchResult,
 } from "@/lib/search/query";
-import { rememberViewed, useRecentlyViewed } from "@/lib/storage/use-recent";
+import {
+  clearViewed,
+  rememberViewed,
+  removeViewed,
+  useRecentlyViewed,
+} from "@/lib/storage/use-recent";
+import { KeyHint } from "./KeyHint";
 import { SearchResultsPanel, type PanelMode } from "./SearchResultsPanel";
 import { useComboboxNavigation } from "./useComboboxNavigation";
 import { useTitleSearch } from "./useTitleSearch";
@@ -39,11 +53,17 @@ export function SearchCombobox({
   const t = useTranslations();
   const router = useRouter();
   const rootRef = useRef<HTMLDivElement>(null);
+  const fieldRef = useRef<HTMLInputElement>(null);
+  const [notice, setNotice] = useState("");
   const baseId = useId();
   const listId = `${baseId}-list`;
   const labelId = `${baseId}-label`;
-  const fieldId = `${baseId}-q`;
+  const fieldId = `${baseId}-field`;
   const [value, setValue] = useState("");
+  // Chrome files saved entries under the field name and ignores autocomplete
+  // "off". A new name on each mount has no saved list. Submit must stay in
+  // script. See the development guide, "Search: one logic, two layouts".
+  const [fieldName, setFieldName] = useState("couch-title");
   const [dismissed, setDismissed] = useState(false);
   const [dismissedQuery, setDismissedQuery] = useState("");
   const query = normaliseQuery(value);
@@ -65,6 +85,10 @@ export function SearchCombobox({
     variant === "modal"
       ? mode !== "loading"
       : !dismissed && (mode === "results" || mode === "empty");
+
+  useIsoLayoutEffect(() => {
+    setFieldName(`couch-title-${Math.random().toString(36).slice(2, 10)}`);
+  }, []);
 
   useEffect(() => {
     if (variant !== "hero" || !panelOpen) return;
@@ -110,6 +134,18 @@ export function SearchCombobox({
     go(searchUrl(query));
   }
 
+  function removeRow(row: SearchResult) {
+    const last = mode === "recent" && rows.length === 1;
+    removeViewed(row.kind, row.id);
+    setNotice(t("search.removed", { title: row.title }));
+    if (last) fieldRef.current?.focus();
+  }
+
+  function clearRows() {
+    clearViewed();
+    fieldRef.current?.focus();
+  }
+
   function onEscape() {
     setDismissed(true);
     setDismissedQuery(query);
@@ -119,6 +155,10 @@ export function SearchCombobox({
     state.status === "results" || state.status === "empty"
       ? t("search.matches", { count: state.results.length })
       : "";
+  const keyed = navigation.keyboard && navigation.active >= 0;
+  const fieldHint = isSearchableQuery(query)
+    ? t("search.enter")
+    : t("search.esc");
 
   return (
     <div
@@ -127,7 +167,14 @@ export function SearchCombobox({
         variant === "hero" ? "relative" : "flex min-h-0 flex-1 flex-col"
       }
     >
-      <form action="/search" method="get" onSubmit={onSubmit}>
+      <form
+        action="/search"
+        method="get"
+        autoComplete="off"
+        onSubmit={onSubmit}
+        className={variant === "modal" ? "shrink-0" : undefined}
+      >
+        <input type="hidden" name="q" value={value} readOnly />
         <div
           className={
             variant === "modal" ? "flex items-center gap-3 px-4 pt-4 pb-3" : ""
@@ -139,8 +186,10 @@ export function SearchCombobox({
               {t("search.label")}
             </label>
             <input
+              ref={fieldRef}
               id={fieldId}
-              name="q"
+              name={fieldName}
+              autoComplete="off"
               data-autofocus={variant === "modal" ? "" : undefined}
               role="combobox"
               aria-expanded={panelOpen}
@@ -149,24 +198,32 @@ export function SearchCombobox({
               aria-activedescendant={
                 navigation.active >= 0 ? optionId(navigation.active) : undefined
               }
+              enterKeyHint="search"
               value={value}
               maxLength={100}
               placeholder={t("search.placeholder")}
               onChange={(event) => setValue(event.target.value)}
               onKeyDown={(event) => {
+                if (
+                  event.key === "Delete" &&
+                  mode === "recent" &&
+                  navigation.keyboard &&
+                  navigation.active >= 0
+                ) {
+                  const row = rows[navigation.active];
+                  if (!row) return;
+                  event.preventDefault();
+                  removeRow(row);
+                  return;
+                }
                 const key = navigation.onKeyDown(event);
                 if (key === "escape" && variant === "hero") onEscape();
                 else if (typeof key === "number") openIndex(key);
               }}
               className="min-w-0 flex-1 bg-transparent text-search text-text-default outline-none placeholder:text-text-muted"
             />
-            {variant === "modal" ? (
-              <span
-                aria-hidden="true"
-                className="hidden shrink-0 rounded-md border border-border-subtle px-2 py-0.5 text-small font-medium text-primary-800 md:inline"
-              >
-                {t("search.esc")}
-              </span>
+            {variant === "modal" && !keyed ? (
+              <KeyHint label={fieldHint} />
             ) : null}
           </div>
           {variant === "modal" ? (
@@ -197,8 +254,9 @@ export function SearchCombobox({
             optionId={optionId}
             activeIndex={navigation.active}
             seeAllHref={mode === "results" ? searchUrl(query) : undefined}
-            showEnter={variant === "modal"}
-            onHover={navigation.setActive}
+            keyboard={navigation.keyboard}
+            onRemove={mode === "recent" ? removeRow : undefined}
+            onClear={mode === "recent" ? clearRows : undefined}
             onSelect={(row) => {
               rememberViewed(row);
               onCommit?.();
@@ -212,9 +270,16 @@ export function SearchCombobox({
       <p className="sr-only" aria-live="polite">
         {announcement}
       </p>
+      <p className="sr-only" aria-live="polite">
+        {notice}
+      </p>
     </div>
   );
 }
+
+/** useLayoutEffect once effects can run. The server render has no window. */
+const useIsoLayoutEffect =
+  typeof window === "undefined" ? useEffect : useLayoutEffect;
 
 function panelMode(
   variant: "hero" | "modal",
