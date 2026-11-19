@@ -21,6 +21,7 @@ import type { TitleAvailability } from "@/lib/availability/types";
 import type { ServiceMark } from "@/lib/services/marks";
 import { posterUrl } from "@/lib/tmdb/poster";
 import { useSettings } from "@/lib/storage/use-settings";
+import { CountryTable } from "./CountryTable";
 
 const COUNTRY_PREVIEW = 6;
 const SERVICE_PREVIEW = 3;
@@ -37,6 +38,8 @@ type OtherCountriesProps = {
   services: ServiceMark[];
   view: View;
   onViewChange: (view: View) => void;
+  /** Country rows with the toggle hidden. Used when no country or services are set. */
+  presentation?: "services" | "countries";
 };
 
 /**
@@ -49,34 +52,51 @@ export function OtherCountries({
   services,
   view,
   onViewChange,
+  presentation = "services",
 }: OtherCountriesProps) {
   const t = useTranslations();
   const other = getOtherCountries(availability, settings);
+  if (presentation === "countries" && other.byCountry.length === 0) return null;
   const headline = otherCountriesHeadline(
     getSituation(availability, settings),
     other,
   );
   const marks = new Map(services.map((service) => [service.id, service]));
-  const text = headlineText(headline, marks, t);
+  const count =
+    other.totalCountries > 0 ? other.totalCountries : other.byCountry.length;
+  const text =
+    presentation === "countries"
+      ? t("otherCountries.streamingIn", { count })
+      : headlineText(headline, marks, t);
 
   return (
     <section className="rounded-panel border border-primary-600 bg-surface-card">
       <div className="flex flex-col gap-2.5 p-5 md:p-6">
-        <p className="kicker text-body">{t("otherCountries.label")}</p>
+        <p className="kicker text-body text-primary-700">
+          {t("otherCountries.label")}
+        </p>
         <div className="flex flex-col gap-4 pt-2.5 md:flex-row md:items-center md:gap-6">
           <h2 className="message-title min-w-0 flex-1 text-primary-1000">
             {text}
           </h2>
-          <SegmentedToggle
-            label={t("toggle.group")}
-            value={view}
-            onValueChange={onViewChange}
-            serviceLabel={t("toggle.service")}
-            countryLabel={t("toggle.country")}
-          />
+          {presentation === "services" ? (
+            <SegmentedToggle
+              label={t("toggle.group")}
+              value={view}
+              onValueChange={onViewChange}
+              serviceLabel={t("toggle.service")}
+              countryLabel={t("toggle.country")}
+            />
+          ) : null}
         </div>
       </div>
-      {view === "service" ? (
+      {presentation === "countries" ? (
+        <CountryTable
+          rows={other.byCountry}
+          marks={marks}
+          settings={settings}
+        />
+      ) : view === "service" ? (
         <ServiceView other={other} marks={marks} onViewChange={onViewChange} />
       ) : null}
     </section>
@@ -153,7 +173,7 @@ function ServiceView({
     <div className="flex flex-col gap-7 px-5 pb-5 md:px-6 md:pb-6">
       {other.myServices.length > 0 ? (
         <div className="flex flex-col gap-3.5">
-          <h3 className="kicker text-small">
+          <h3 className="kicker text-small text-primary-700">
             {t("otherCountries.yourServices")}
           </h3>
           {shown.map((service) => (
@@ -197,7 +217,7 @@ function ServiceView({
       ) : null}
       {showOthers ? (
         <div className="flex flex-col gap-3">
-          <h3 className="kicker text-small">
+          <h3 className="kicker text-small text-primary-700">
             {t("otherCountries.otherServices")}
           </h3>
           <div className="flex flex-col gap-3 md:flex-row md:flex-wrap">

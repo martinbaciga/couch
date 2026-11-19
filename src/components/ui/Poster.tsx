@@ -10,7 +10,7 @@ type PosterProps = {
  * Pass className for the width.
  */
 export function Poster({ src, alt, className }: PosterProps) {
-  const frame = `aspect-poster overflow-hidden rounded-md bg-primary-200 ${className ?? "w-24"}`;
+  const frame = `aspect-poster overflow-hidden rounded-xl bg-primary-200 ${className ?? "w-24"}`;
 
   if (!src) {
     return (

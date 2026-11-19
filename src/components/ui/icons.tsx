@@ -93,6 +93,32 @@ export function CloseIcon({ className }: IconProps) {
   );
 }
 
+/** Film mark beside the year on a title page. */
+export function FilmIcon({ className }: IconProps) {
+  return (
+    <Svg className={className} viewBox="0 0 16 16">
+      <path
+        d="M5 2V14M11 2V14M2 6H5M2 10H5M11 6H14M11 10H14M5 8H11M3.5 2H12.5C13.3284 2 14 2.6716 14 3.5V12.5C14 13.3284 13.3284 14 12.5 14H3.5C2.6716 14 2 13.3284 2 12.5V3.5C2 2.6716 2.6716 2 3.5 2Z"
+        strokeWidth="1.5"
+        {...stroke}
+      />
+    </Svg>
+  );
+}
+
+/** Stacked sheets for Copy link. */
+export function CopyIcon({ className }: IconProps) {
+  return (
+    <Svg className={className} viewBox="0 0 12 12">
+      <path
+        d="M8.25 4.125V2.625C8.25 2.0037 7.7463 1.5 7.125 1.5H2.625C2.0037 1.5 1.5 2.0037 1.5 2.625V7.125C1.5 7.7463 2.0037 8.25 2.625 8.25H4.125M5.25 4.125H9.375C9.9963 4.125 10.5 4.6287 10.5 5.25V9.375C10.5 9.9963 9.9963 10.5 9.375 10.5H5.25C4.6287 10.5 4.125 9.9963 4.125 9.375V5.25C4.125 4.6287 4.6287 4.125 5.25 4.125Z"
+        strokeWidth="1.5"
+        {...stroke}
+      />
+    </Svg>
+  );
+}
+
 /** Chevron for a disclosure. Points down, rotate when open. */
 export function ChevronIcon({ className }: IconProps) {
   return (

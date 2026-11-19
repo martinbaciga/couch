@@ -18,7 +18,7 @@ export function TitleLoading({ status }: { status: string }) {
         <div className="flex min-w-0 flex-1 flex-col gap-2.5 md:gap-4.5">
           <Skeleton className="h-7 w-50 max-w-full md:h-10 md:w-55" />
           <Skeleton className="h-3.5 w-28 md:h-4 md:w-30" />
-          <Skeleton className="h-9.5 w-24 md:hidden" />
+          <Skeleton className="h-9.5 w-24" />
         </div>
       </div>
       <div

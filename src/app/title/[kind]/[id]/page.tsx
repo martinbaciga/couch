@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
-import { OtherCountriesBlock } from "@/components/title/OtherCountries";
 import { RetryReset, RetryState } from "@/components/title/RetryState";
+import { TitleView } from "@/components/title/TitleView";
 import { normalizeProviders } from "@/lib/availability/normalize";
 import type { TitleAvailability } from "@/lib/availability/types";
 import { listServiceMarks, type ServiceMark } from "@/lib/services/marks";
@@ -34,8 +34,7 @@ export async function generateMetadata({
 }
 
 /**
- * Confirms the title and shows where else it streams.
- * MAR-15 draws the rest of the title screen.
+ * Title, the home-country card, and where else it streams.
  * Invalid links and unknown titles use the not-found state.
  */
 export default async function TitlePage({
@@ -60,14 +59,12 @@ export default async function TitlePage({
   return (
     <>
       <RetryReset />
-      <h1 className="text-heading">{loaded.details.title}</h1>
-      <div className="mt-6">
-        <OtherCountriesBlock
-          availability={loaded.availability}
-          services={loaded.services}
-          view={view}
-        />
-      </div>
+      <TitleView
+        details={loaded.details}
+        availability={loaded.availability}
+        services={loaded.services}
+        view={view}
+      />
     </>
   );
 }

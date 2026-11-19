@@ -50,6 +50,9 @@ export function Gallery() {
             {t("dev.buttonLabel")}
           </Button>
           <Button disabled>{t("dev.buttonLabel")}</Button>
+          <span className="rounded-panel bg-primary-1000 p-4">
+            <Button tone="inverse">{t("dev.buttonLabel")}</Button>
+          </span>
         </div>
       </section>
 

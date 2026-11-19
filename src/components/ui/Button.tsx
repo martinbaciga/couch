@@ -4,6 +4,8 @@ import { focusRing, motionColor } from "./styles";
 
 type ButtonProps = {
   variant?: "primary" | "secondary";
+  /** Light fill for a primary action sitting on the dark home card. */
+  tone?: "default" | "inverse";
   size?: "default" | "small";
   icon?: ReactNode;
   href?: string;
@@ -15,6 +17,9 @@ const variants = {
   secondary:
     "border border-primary-900 bg-transparent font-semibold text-primary-900 hover:bg-primary-200 active:bg-primary-300",
 } as const;
+
+const inversePrimary =
+  "border border-transparent bg-primary-100 font-medium text-primary-1000 hover:bg-primary-200 active:bg-primary-300";
 
 const sizes = {
   primary: {
@@ -33,6 +38,7 @@ const sizes = {
  */
 export function Button({
   variant = "primary",
+  tone = "default",
   size = "default",
   icon,
   href,
@@ -42,7 +48,11 @@ export function Button({
   ...props
 }: ButtonProps) {
   const iconBox = size === "small" ? "size-3" : "size-4";
-  const classes = `inline-flex min-w-20 shrink-0 cursor-pointer items-center justify-center rounded-button disabled:cursor-not-allowed disabled:opacity-40 ${motionColor} ${focusRing} ${variants[variant]} ${sizes[variant][size]} ${className ?? ""}`;
+  const variantClass =
+    variant === "primary" && tone === "inverse"
+      ? inversePrimary
+      : variants[variant];
+  const classes = `inline-flex min-w-20 shrink-0 cursor-pointer items-center justify-center rounded-button disabled:cursor-not-allowed disabled:opacity-40 ${motionColor} ${focusRing} ${variantClass} ${sizes[variant][size]} ${className ?? ""}`;
   const content = (
     <>
       {icon ? (

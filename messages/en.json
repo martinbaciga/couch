@@ -65,6 +65,43 @@
     "service": "By service",
     "country": "By country"
   },
+  "title": {
+    "film": "Film",
+    "series": "Series",
+    "yearKind": "{year} · {kind}",
+    "copy": "Copy link",
+    "copied": "Copied"
+  },
+  "offers": {
+    "country": "Country",
+    "stream": "Stream",
+    "freeAds": "Free / ads",
+    "rent": "Rent",
+    "buy": "Buy",
+    "noneFound": "none found"
+  },
+  "homeCard": {
+    "yourCountry": "Your country",
+    "inCountry": "In {country}",
+    "whichCountry": "Which country are you in?",
+    "pickCountry": "Pick your country and services to see what you can watch where you are.",
+    "setCountry": "Set country and services",
+    "onService": "Streaming on {service}",
+    "withSubscription": "Streaming now with a subscription.",
+    "planOnly": "Streaming on {service}, on a specific plan only",
+    "planAds": "the plan with ads",
+    "planTier": "the {plan} plan",
+    "planDetail": "Only on {plans}. Check that your plan includes it.",
+    "notOnYours": "Not streaming on your services",
+    "otherServices": "It’s streaming here on {count, plural, one {# other service} other {# other services}}, none of them on your list.",
+    "otherWays": "Other ways to watch",
+    "noStreamData": "No streaming data for {country}. It may still be available; our source has nothing for it.",
+    "noData": "No availability data found",
+    "noDataBody": "This doesn’t mean it isn’t available. We found no streaming, rent or buy information for this title in any country.",
+    "streamingCount": "Streaming on {count, plural, one {# service} other {# services}} in {country}",
+    "unsetServices": "You haven’t chosen your services yet, so none are marked as yours.",
+    "setServices": "Set your services"
+  },
   "otherCountries": {
     "label": "In other countries",
     "yourServices": "Your services",
@@ -78,7 +115,10 @@
     "moreServices": "Show {count, plural, one {# more of your services} other {# more of your services}}",
     "dashed": "Dashed = only on a specific plan or tier.",
     "planChip": "{country} · {plan}",
-    "allCountries": "All countries"
+    "allCountries": "All countries",
+    "streamingIn": "Streaming in {count, plural, one {# country} other {# countries}}",
+    "showCountries": "Show {count, plural, one {# more country} other {# more countries}}",
+    "ungroupedHint": "Set your services to see these grouped by what you have."
   },
   "states": {
     "loading": {
