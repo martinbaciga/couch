@@ -70,7 +70,15 @@
     "series": "Series",
     "yearKind": "{year} · {kind}",
     "copy": "Copy link",
-    "copied": "Copied"
+    "copied": "Copied",
+    "seasons": "{count, plural, one {# season} other {# seasons}}",
+    "metaPair": "{first} · {second}",
+    "links": {
+      "letterboxd": "Letterboxd",
+      "imdb": "IMDb",
+      "trailer": "Trailer",
+      "open": "{title} on {service}, opens in a new tab"
+    }
   },
   "offers": {
     "country": "Country",
@@ -171,6 +179,7 @@
     "tooltip": "Tooltips",
     "chip": "Chips",
     "chipLabel": "On your services",
+    "linkChip": "Link chips",
     "toggle": "Segmented toggle",
     "card": "Card",
     "cardBody": "A card for grouping related content.",

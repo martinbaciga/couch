@@ -5,6 +5,7 @@ import { useFormatter, useTranslations } from "next-intl";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Chip } from "@/components/ui/Chip";
+import { LinkChip } from "@/components/ui/LinkChip";
 import { CountryServices } from "@/components/setup/CountryServices";
 import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { Disclosure } from "@/components/ui/Disclosure";
@@ -104,6 +105,27 @@ export function Gallery() {
           <Chip pressed={false} onPressedChange={() => undefined} disabled>
             {t("dev.chipLabel")}
           </Chip>
+        </div>
+      </section>
+
+      <section className="flex flex-col gap-3">
+        <h2 className="text-ui">{t("dev.linkChip")}</h2>
+        <div className="flex flex-wrap items-center gap-2">
+          <LinkChip
+            service="letterboxd"
+            href="https://letterboxd.com/tmdb/550"
+            title={t("dev.posterTitle")}
+          />
+          <LinkChip
+            service="imdb"
+            href="https://www.imdb.com/title/tt0137523/"
+            title={t("dev.posterTitle")}
+          />
+          <LinkChip
+            service="trailer"
+            href="https://www.youtube.com/watch?v=SUXWAEX2jlg"
+            title={t("dev.posterTitle")}
+          />
         </div>
       </section>
 

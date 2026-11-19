@@ -74,7 +74,10 @@ export function TitleView({
 
   return (
     <div className="flex flex-col gap-6 md:flex-row md:items-start md:gap-10">
-      <TitleHeader details={details} />
+      <TitleHeader
+        details={details}
+        country={ready ? (saved?.country ?? null) : null}
+      />
       <div
         className="flex min-w-0 flex-1 flex-col gap-6"
         aria-busy={ready ? undefined : true}

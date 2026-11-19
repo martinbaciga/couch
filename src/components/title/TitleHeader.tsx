@@ -2,17 +2,30 @@
 
 import { useFormatter, useTranslations } from "next-intl";
 import { FilmIcon } from "@/components/ui/icons";
+import { LinkChip } from "@/components/ui/LinkChip";
 import { Poster } from "@/components/ui/Poster";
+import {
+  homeCertification,
+  titleLinks,
+  titleMetaParts,
+} from "@/lib/title-details";
 import type { TitleDetails } from "@/lib/tmdb/types";
 import { posterUrl } from "@/lib/tmdb/poster";
 import { CopyLink } from "./CopyLink";
 
 /**
- * Poster, title and year. MAR-49 fills the synopsis and links.
- * Copy link sits with the title on mobile and last in the column on desktop
- * (`md:order-2`), so a later details block can use `md:order-1`.
+ * Poster, title, meta line, synopsis and outbound links.
+ * Copy link stays with the title on mobile and last in the column on desktop
+ * (`md:order-2`). Synopsis and links use `md:order-1`, so they sit under the
+ * meta line there and under the poster row on mobile.
  */
-export function TitleHeader({ details }: { details: TitleDetails }) {
+export function TitleHeader({
+  details,
+  country,
+}: {
+  details: TitleDetails;
+  country: string | null;
+}) {
   const t = useTranslations();
   const format = useFormatter();
   const kind = details.kind === "movie" ? t("title.film") : t("title.series");
@@ -23,6 +36,38 @@ export function TitleHeader({ details }: { details: TitleDetails }) {
           year: format.number(details.year, { useGrouping: false }),
           kind,
         });
+  const meta = metaLine(
+    titleMetaParts(
+      {
+        kind: details.kind,
+        runtimeMinutes: details.runtimeMinutes,
+        numberOfSeasons: details.numberOfSeasons,
+        genres: details.genres.map((genre) => genre.name),
+        certification: homeCertification(details.ageRatings, country),
+      },
+      {
+        hours: (value) =>
+          format.number(value, {
+            style: "unit",
+            unit: "hour",
+            unitDisplay: "narrow",
+          }),
+        minutes: (value) =>
+          format.number(value, {
+            style: "unit",
+            unit: "minute",
+            unitDisplay: "narrow",
+          }),
+        units: (parts) => format.list(parts, { type: "unit", style: "narrow" }),
+        genres: (names) =>
+          format.list(names, { type: "conjunction", style: "narrow" }),
+        seasons: (count) => t("title.seasons", { count }),
+      },
+    ),
+    (first, second) => t("title.metaPair", { first, second }),
+  );
+  const synopsis = details.overview.trim();
+  const links = titleLinks(details);
 
   return (
     <div className="flex w-full flex-col gap-6 md:w-poster-lg md:gap-4.5">
@@ -40,9 +85,41 @@ export function TitleHeader({ details }: { details: TitleDetails }) {
             </span>
             {yearLine}
           </p>
+          {meta ? <p className="text-small text-text-muted">{meta}</p> : null}
           <CopyLink className="self-start md:order-2" />
         </div>
       </div>
+      {synopsis || links.length > 0 ? (
+        <div className="flex flex-col gap-6 md:order-1 md:gap-4.5">
+          {synopsis ? (
+            <p className="line-clamp-4 text-small text-text-default">
+              {synopsis}
+            </p>
+          ) : null}
+          {links.length > 0 ? (
+            <ul className="flex list-none flex-wrap gap-2 p-0">
+              {links.map((link) => (
+                <li key={link.service}>
+                  <LinkChip
+                    service={link.service}
+                    href={link.href}
+                    title={details.title}
+                  />
+                </li>
+              ))}
+            </ul>
+          ) : null}
+        </div>
+      ) : null}
     </div>
   );
+}
+
+function metaLine(
+  parts: readonly string[],
+  pair: (first: string, second: string) => string,
+): string | null {
+  const [first, ...rest] = parts;
+  if (!first) return null;
+  return rest.reduce((line, part) => pair(line, part), first);
 }

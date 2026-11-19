@@ -116,6 +116,8 @@ describe("TMDB client", () => {
     expect(film).toMatchObject({
       id: 550,
       kind: "movie",
+      overview: "An insomniac office worker starts a fight club.",
+      genres: [{ id: 18, name: "Drama" }],
       runtimeMinutes: 139,
       numberOfSeasons: null,
       ageRatings: { IE: "15A", US: "R" },
@@ -124,11 +126,94 @@ describe("TMDB client", () => {
     });
     expect(series).toMatchObject({
       kind: "tv",
+      overview: "A chemistry teacher starts cooking.",
+      genres: [{ id: 18, name: "Drama" }],
       numberOfSeasons: 5,
       runtimeMinutes: null,
       ageRatings: { US: "TV-MA" },
       trailerKey: null,
     });
+  });
+
+  it("maps missing detail fields to empty values", async () => {
+    fetchMock.mockResolvedValueOnce(
+      jsonResponse({
+        id: 1,
+        title: "Bare",
+        release_dates: {
+          results: [
+            {
+              iso_3166_1: "IE",
+              release_dates: [{ certification: "", type: 3 }],
+            },
+          ],
+        },
+        external_ids: {},
+        videos: {
+          results: [
+            { site: "Vimeo", type: "Trailer", key: "vimeo", official: true },
+            { site: "YouTube", type: "Teaser", key: "teaser", official: true },
+          ],
+        },
+        genres: [{ id: 18 }, { name: "" }],
+      }),
+    );
+    fetchMock.mockResolvedValueOnce(jsonResponse({ id: 2, name: "Bare show" }));
+
+    const film = await getMovie(1);
+    const series = await getTv(2);
+
+    expect(film).toMatchObject({
+      overview: "",
+      genres: [],
+      runtimeMinutes: null,
+      numberOfSeasons: null,
+      ageRatings: {},
+      imdbId: null,
+      trailerKey: null,
+      year: null,
+      posterPath: null,
+    });
+    expect(series).toMatchObject({
+      overview: "",
+      genres: [],
+      runtimeMinutes: null,
+      numberOfSeasons: null,
+      ageRatings: {},
+      imdbId: null,
+      trailerKey: null,
+    });
+  });
+
+  it("uses an unofficial YouTube trailer when no official one exists", async () => {
+    fetchMock.mockResolvedValueOnce(
+      jsonResponse({
+        id: 3,
+        title: "Bare",
+        videos: {
+          results: [
+            {
+              site: "YouTube",
+              type: "Trailer",
+              key: "unofficial1",
+              official: false,
+              iso_639_1: "de",
+            },
+            {
+              site: "YouTube",
+              type: "Trailer",
+              key: "unofficial2",
+              official: false,
+              iso_639_1: "en",
+            },
+          ],
+        },
+      }),
+    );
+
+    const film = await getMovie(3);
+
+    expect(film.trailerKey).toBe("unofficial2");
   });
 
   it("keeps unknown country codes on watch providers", async () => {

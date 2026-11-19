@@ -472,16 +472,25 @@ function imdbId(value: unknown): string | null {
 
 function trailerKey(value: unknown): string | null {
   if (!isRecord(value)) return null;
-  const official: Array<{ key: string; english: boolean }> = [];
+  const trailers: Array<{ key: string; english: boolean; official: boolean }> =
+    [];
   for (const video of asArray(value.results)) {
-    if (!isRecord(video) || video.official !== true) continue;
+    if (!isRecord(video)) continue;
     if (asString(video.site) !== "YouTube") continue;
     if (asString(video.type) !== "Trailer") continue;
     const key = asString(video.key);
     if (!key) continue;
-    official.push({ key, english: asString(video.iso_639_1) === "en" });
+    trailers.push({
+      key,
+      english: asString(video.iso_639_1) === "en",
+      official: video.official === true,
+    });
   }
-  return (official.find((video) => video.english) ?? official[0])?.key ?? null;
+  // Prefer an official trailer, then English. An unofficial one still counts
+  // when TMDB has no official YouTube trailer.
+  const official = trailers.filter((video) => video.official);
+  const pool = official.length > 0 ? official : trailers;
+  return (pool.find((video) => video.english) ?? pool[0])?.key ?? null;
 }
 
 function yearFromDate(value: string | null): number | null {
