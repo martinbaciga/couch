@@ -3,8 +3,8 @@
   primary-300 is the guide's "primary" yellow. It is a fill, not small text.
 
   Derived from Figma variables (Components page) and noted on MAR-37:
-  text, surface, and border tokens below. surface-page uses primary-100,
-  the warm off-white. It currently matches surface-card.
+  text, surface, and border tokens below. surface-page uses primary-300,
+  the Figma page fill. surface-card stays the warm off-white.
   grey is the guide's grey-light. Placeholder text uses text-muted instead,
   because grey-light fails as small text on white.
 */
@@ -26,7 +26,7 @@
   --text-muted: #52513a;
   --text-on-inverse: #fcfaed;
 
-  --surface-page: var(--primary-100);
+  --surface-page: var(--primary-300);
   --surface-card: #fcfaed;
   --surface-field: #ffffff;
   --surface-inverse: #191a16;
