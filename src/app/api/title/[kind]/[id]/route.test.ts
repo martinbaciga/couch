@@ -81,6 +81,7 @@ describe("GET /api/title/[kind]/[id]", () => {
     });
     expect(body.availability.countries).toEqual({});
     expect(body.availability.fetchedAt).toBe("2026-11-16T12:00:00.000Z");
+    expect(body.services).toEqual([]);
   });
 
   it("returns seasons for a series", async () => {

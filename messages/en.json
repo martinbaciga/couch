@@ -11,7 +11,9 @@
     "setup": "Set country & services",
     "setupSummary": "{country} · {count, plural, one {# service} other {# services}}",
     "search": "Search",
-    "settings": "Settings"
+    "settings": "Settings",
+    "setupShort": "Set up",
+    "setupCompact": "{code} · {count}"
   },
   "footer": {
     "credit": "Availability data from JustWatch via TMDB.",
@@ -20,8 +22,24 @@
   "search": {
     "label": "Search",
     "placeholder": "Search a film or a series",
-    "submit": "Search",
-    "close": "Close"
+    "close": "Close",
+    "cancel": "Cancel",
+    "esc": "Esc",
+    "enter": "Enter",
+    "heading": "{count, plural, one {# result for “{query}”} other {# results for “{query}”}}",
+    "showMore": "Show more results",
+    "films": "Films and series",
+    "recent": "Recently viewed",
+    "hint": "Start typing to see matches. Pick one to open its page.",
+    "try": "Try:",
+    "seeAll": "See all results for “{query}”",
+    "noMatches": "No titles found for “{query}”. Check the spelling, or try the original title or fewer words.",
+    "matches": "{count, plural, =0 {No matches} one {# match} other {# matches}}",
+    "onService": "Streaming on {service} in {country}",
+    "notOnYours": "Not streaming on your services in {country}",
+    "rentOrBuy": "Rent or buy in {country}",
+    "otherCountries": "Streaming in {count, plural, one {# other country} other {# other countries}}",
+    "noData": "No data found"
   },
   "settings": {
     "title": "Settings",
@@ -208,6 +226,8 @@
     "titleLoading": "Title loading",
     "poster": "Poster",
     "posterTitle": "Sample title",
+    "searchPanel": "Search panel",
+    "searchCombobox": "Search field",
     "toast": "Toast",
     "showSaved": "Show Saved",
     "showCopied": "Show Link copied",

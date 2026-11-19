@@ -1,7 +1,7 @@
 import { SEARCH_CACHE_CONTROL } from "@/config/cache";
+import { publicResult } from "@/lib/search/query";
 import { searchMulti } from "@/lib/tmdb/client";
 import { toApiError } from "@/lib/tmdb/errors";
-import type { SearchHit } from "@/lib/tmdb/types";
 
 const MAX_QUERY_LENGTH = 100;
 const MAX_PAGE = 20;
@@ -21,7 +21,7 @@ export async function GET(request: Request) {
         page: result.page,
         totalPages: result.totalPages,
         totalResults: result.totalResults,
-        results: result.results.map(toResult),
+        results: result.results.map(publicResult),
       },
       { headers: { "Cache-Control": SEARCH_CACHE_CONTROL } },
     );
@@ -30,16 +30,6 @@ export async function GET(request: Request) {
     if (!apiError) throw error;
     return Response.json(apiError.body, { status: apiError.status });
   }
-}
-
-function toResult(hit: SearchHit) {
-  return {
-    kind: hit.kind,
-    id: hit.id,
-    title: hit.title,
-    year: hit.year,
-    posterPath: hit.posterPath,
-  };
 }
 
 function parsePage(value: string | null): number | null {

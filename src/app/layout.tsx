@@ -5,6 +5,7 @@ import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages, getTranslations } from "next-intl/server";
 import { Footer } from "@/components/shell/Footer";
 import { Header } from "@/components/shell/Header";
+import { SearchProvider } from "@/components/shell/SearchProvider";
 import { ToastProvider } from "@/components/ui/Toast";
 import "@/styles/globals.css";
 
@@ -48,13 +49,15 @@ export default async function RootLayout({
       <body className="flex min-h-dvh flex-col bg-surface-page font-sans text-text-default">
         <NextIntlClientProvider messages={messages}>
           <ToastProvider>
-            <Suspense fallback={<div className="h-nav" />}>
-              <Header />
-            </Suspense>
-            <main className="mx-auto w-full max-w-page flex-1 px-gutter py-6">
-              {children}
-            </main>
-            <Footer />
+            <SearchProvider>
+              <Suspense fallback={<div className="h-nav" />}>
+                <Header />
+              </Suspense>
+              <main className="mx-auto w-full max-w-page flex-1 px-gutter py-6">
+                {children}
+              </main>
+              <Footer />
+            </SearchProvider>
           </ToastProvider>
         </NextIntlClientProvider>
       </body>

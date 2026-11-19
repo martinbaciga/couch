@@ -125,6 +125,10 @@
   max-width: var(--size-search);
 }
 
+@utility max-w-results {
+  max-width: var(--size-results);
+}
+
 @utility max-w-message {
   max-width: var(--size-message);
 }

@@ -6,6 +6,8 @@ import { focusRing, motionColor } from "./styles";
 type NavItemProps = {
   icon: ReactNode;
   label: string;
+  /** Visible label on a small screen when it is shorter than `label`. */
+  shortLabel?: string;
   iconOnly?: boolean;
   tooltipAlign?: "center" | "end";
   href?: string;
@@ -23,6 +25,7 @@ const iconClass = `inline-flex size-11 cursor-pointer items-center justify-cente
 export function NavItem({
   icon,
   label,
+  shortLabel,
   iconOnly = false,
   tooltipAlign = "center",
   href,
@@ -34,7 +37,14 @@ export function NavItem({
       <span className="size-5 shrink-0" aria-hidden="true">
         {icon}
       </span>
-      {iconOnly ? null : label}
+      {iconOnly ? null : shortLabel ? (
+        <>
+          <span className="md:hidden">{shortLabel}</span>
+          <span className="hidden md:inline">{label}</span>
+        </>
+      ) : (
+        label
+      )}
     </>
   );
 
@@ -42,7 +52,7 @@ export function NavItem({
     <Link
       href={href}
       className={className}
-      aria-label={iconOnly ? label : undefined}
+      aria-label={iconOnly || shortLabel ? label : undefined}
     >
       {content}
     </Link>
@@ -50,7 +60,7 @@ export function NavItem({
     <button
       type="button"
       className={className}
-      aria-label={iconOnly ? label : undefined}
+      aria-label={iconOnly || shortLabel ? label : undefined}
       onClick={onClick}
     >
       {content}

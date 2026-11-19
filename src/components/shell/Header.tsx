@@ -1,6 +1,5 @@
 "use client";
 
-import { useCallback, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -8,7 +7,7 @@ import { ImportIcon, SearchIcon, SettingsIcon } from "@/components/ui/icons";
 import { NavItem } from "@/components/ui/NavItem";
 import { focusRing } from "@/components/ui/styles";
 import { useSettings } from "@/lib/storage/use-settings";
-import { SearchDialog } from "./SearchDialog";
+import { useSearch } from "./search-context";
 
 function regionName(code: string): string {
   try {
@@ -26,9 +25,8 @@ export function Header() {
   const t = useTranslations();
   const pathname = usePathname();
   const settings = useSettings();
+  const { openSearch } = useSearch();
   const landing = pathname === "/";
-  const [searchOpen, setSearchOpen] = useState(false);
-  const closeSearch = useCallback(() => setSearchOpen(false), []);
 
   const setupLabel = settings?.country
     ? t("header.setupSummary", {
@@ -36,6 +34,12 @@ export function Header() {
         count: settings.serviceIds.length,
       })
     : t("header.setup");
+  const setupShort = settings?.country
+    ? t("header.setupCompact", {
+        code: settings.country.toUpperCase(),
+        count: settings.serviceIds.length,
+      })
+    : t("header.setupShort");
 
   return (
     <header className="relative z-20">
@@ -76,7 +80,7 @@ export function Header() {
                 icon={<SearchIcon />}
                 label={t("header.search")}
                 tooltipAlign="end"
-                onClick={() => setSearchOpen(true)}
+                onClick={openSearch}
               />
               <NavItem
                 iconOnly
@@ -86,17 +90,15 @@ export function Header() {
                 tooltipAlign="end"
               />
               <NavItem
-                iconOnly
                 href="/settings"
                 icon={<SettingsIcon />}
-                label={t("header.settings")}
-                tooltipAlign="end"
+                label={setupLabel}
+                shortLabel={setupShort}
               />
             </>
           )}
         </nav>
       </div>
-      <SearchDialog open={searchOpen} onClose={closeSearch} />
     </header>
   );
 }

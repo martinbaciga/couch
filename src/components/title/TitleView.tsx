@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useSyncExternalStore } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { getSituation, type Settings } from "@/lib/availability/status";
@@ -8,6 +8,7 @@ import type { TitleAvailability } from "@/lib/availability/types";
 import type { ServiceMark } from "@/lib/services/marks";
 import type { TitleDetails } from "@/lib/tmdb/types";
 import { useSettings } from "@/lib/storage/use-settings";
+import { rememberViewed } from "@/lib/storage/use-recent";
 import { HomeCard } from "./HomeCard";
 import { OtherCountries } from "./OtherCountries";
 import { TitleHeader } from "./TitleHeader";
@@ -58,6 +59,22 @@ export function TitleView({
   const situation = getSituation(availability, settings);
   const countries =
     situation.status === "no-settings" || situation.status === "no-services";
+
+  useEffect(() => {
+    rememberViewed({
+      kind: details.kind,
+      id: details.id,
+      title: details.title,
+      year: details.year,
+      posterPath: details.posterPath,
+    });
+  }, [
+    details.kind,
+    details.id,
+    details.title,
+    details.year,
+    details.posterPath,
+  ]);
 
   function onViewChange(next: View) {
     setView(next);

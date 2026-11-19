@@ -1,6 +1,8 @@
 type PosterProps = {
   src?: string | null;
   alt: string;
+  /** Small search-row frame: 4px radius and a hairline border. */
+  framed?: boolean;
   className?: string;
 };
 
@@ -9,8 +11,11 @@ type PosterProps = {
  * is shown in the frame so the gap is not colour alone.
  * Pass className for the width.
  */
-export function Poster({ src, alt, className }: PosterProps) {
-  const frame = `aspect-poster overflow-hidden rounded-xl bg-primary-200 ${className ?? "w-24"}`;
+export function Poster({ src, alt, framed = false, className }: PosterProps) {
+  const shape = framed
+    ? "rounded-sm border border-border-subtle"
+    : "rounded-xl";
+  const frame = `aspect-poster overflow-hidden bg-primary-200 ${shape} ${className ?? "w-24"}`;
 
   if (!src) {
     return (

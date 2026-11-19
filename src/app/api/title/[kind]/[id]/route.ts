@@ -1,6 +1,7 @@
 import { TITLE_CACHE_CONTROL } from "@/config/cache";
 import { normalizeProviders } from "@/lib/availability/normalize";
 import type { TitlePage } from "@/lib/availability/types";
+import { listServiceMarks } from "@/lib/services/marks";
 import { getMovie, getTv, getWatchProviders } from "@/lib/tmdb/client";
 import { toApiError } from "@/lib/tmdb/errors";
 import { parseTitleRef } from "@/lib/title-ref";
@@ -24,6 +25,7 @@ export async function GET(_request: Request, context: RouteContext) {
       {
         title: toTitle(details),
         availability: normalizeProviders(providers, providers.fetchedAt),
+        services: listServiceMarks(providers),
       },
       { headers: { "Cache-Control": TITLE_CACHE_CONTROL } },
     );

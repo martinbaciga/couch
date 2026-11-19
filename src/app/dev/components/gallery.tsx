@@ -18,8 +18,11 @@ import { ServiceOption } from "@/components/ui/ServiceOption";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { StateMessage } from "@/components/ui/StateMessage";
 import { useToast } from "@/components/ui/Toast";
-import { OtherCountries } from "@/components/title/OtherCountries";
+import { SearchCombobox } from "@/components/search/SearchCombobox";
+import { SearchResultsPanel } from "@/components/search/SearchResultsPanel";
+import type { SearchResult } from "@/lib/search/query";
 import { TitleLoading } from "@/components/title/TitleLoading";
+import { OtherCountries } from "@/components/title/OtherCountries";
 import type { Offer, TitleAvailability } from "@/lib/availability/types";
 import type { ServiceMark } from "@/lib/services/marks";
 
@@ -280,6 +283,31 @@ export function Gallery() {
           </Button>
         </div>
       </section>
+
+      <section className="flex max-w-search flex-col gap-6">
+        <h2 className="text-ui">{t("dev.searchPanel")}</h2>
+        <div className="rounded-xl border border-border-default bg-primary-100">
+          <SearchResultsPanel
+            mode="results"
+            query="Fight"
+            rows={sampleResults}
+            listId="gallery-results"
+            labelId="gallery-results-label"
+            optionId={(index) => `gallery-result-${index}`}
+            activeIndex={0}
+            seeAllHref="/search?q=Fight"
+            showEnter
+            onHover={() => undefined}
+            onSelect={() => undefined}
+            onClose={() => undefined}
+          />
+        </div>
+        <h2 className="text-ui">{t("dev.searchCombobox")}</h2>
+        <SearchCombobox variant="hero" />
+        <div className="overflow-hidden rounded-xl border border-border-default bg-primary-100">
+          <SearchCombobox variant="modal" />
+        </div>
+      </section>
     </div>
   );
 }
@@ -298,6 +326,23 @@ function MessageSample({
     </div>
   );
 }
+
+const sampleResults: SearchResult[] = [
+  {
+    kind: "movie",
+    id: 550,
+    title: "Fight Club",
+    year: 1999,
+    posterPath: null,
+  },
+  {
+    kind: "movie",
+    id: 13,
+    title: "Forrest Gump",
+    year: 1994,
+    posterPath: null,
+  },
+];
 
 const sampleServices: ServiceMark[] = [
   { id: 8, name: "Netflix", logoPath: null },
