@@ -1,7 +1,7 @@
 "use client";
 
 import { useFormatter, useTranslations } from "next-intl";
-import { FilmIcon } from "@/components/ui/icons";
+import { FilmIcon, SeriesIcon } from "@/components/ui/icons";
 import { LinkChip } from "@/components/ui/LinkChip";
 import { Poster } from "@/components/ui/Poster";
 import {
@@ -82,7 +82,7 @@ export function TitleHeader({
           <h1 className="title-name">{details.title}</h1>
           <p className="flex items-center gap-1.5 text-search text-primary-700">
             <span className="size-4 shrink-0" aria-hidden="true">
-              <FilmIcon />
+              {details.kind === "movie" ? <FilmIcon /> : <SeriesIcon />}
             </span>
             {yearLine}
           </p>

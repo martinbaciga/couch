@@ -106,6 +106,19 @@ export function FilmIcon({ className }: IconProps) {
   );
 }
 
+/** Television mark beside the year on a series title page. */
+export function SeriesIcon({ className }: IconProps) {
+  return (
+    <Svg className={className} viewBox="0 0 16 16">
+      <path
+        d="M5 1.5L8 4.5L11 1.5M3.5 4.5H12.5C13.3284 4.5 14 5.1716 14 6V12C14 12.8284 13.3284 13.5 12.5 13.5H3.5C2.6716 13.5 2 12.8284 2 12V6C2 5.1716 2.6716 4.5 3.5 4.5Z"
+        strokeWidth="1.5"
+        {...stroke}
+      />
+    </Svg>
+  );
+}
+
 /** Stacked sheets for Copy link. */
 export function CopyIcon({ className }: IconProps) {
   return (
