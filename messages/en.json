@@ -53,6 +53,79 @@
     "otherCountries": "Streaming in {count, plural, one {# other country} other {# other countries}}",
     "noData": "No data found"
   },
+  "watchlist": {
+    "title": "Your watchlist",
+    "subtitle": "{count, plural, one {# film} other {# films}} · Imported on {date} · Saved on this device only",
+    "subtitleNone": "{count, plural, one {# film} other {# films}} · Saved on this device only",
+    "reimport": "Re-import",
+    "stale": "Last checked {when}. Availability may have changed.",
+    "refreshing": "Refreshing availability",
+    "refreshCount": "{done} of {total} {total, plural, one {film} other {films}}",
+    "show": "Show",
+    "showBody": "Filter your watchlist by where you can watch it.",
+    "showValue": "Show: {filter} · {count}",
+    "close": "Close",
+    "setupPrompt": "Set your country and services for results that fit you.",
+    "showMore": "Show 25 more",
+    "showAll": "Show all films",
+    "availableIn": "{count, plural, one {Available in # country} other {Available in # countries}}",
+    "freeOn": "Free with ads on {service}",
+    "noDataNote": "This does not mean it is not available.",
+    "filters": {
+      "all": "All",
+      "onYourServices": "On your services",
+      "freeOrAds": "Free or with ads",
+      "otherServices": "On other services",
+      "rentOrBuy": "Rent or buy only",
+      "otherCountries": "Other countries only",
+      "noData": "No data"
+    },
+    "empty": {
+      "eyebrow": "No matches",
+      "all": {
+        "title": "No films to show",
+        "body": "None of the titles in this file were matched."
+      },
+      "onYourServices": {
+        "title": "Nothing on your services yet",
+        "body": "None of these films are streaming on your services. Try Rent or buy only, or add more services in Settings."
+      },
+      "freeOrAds": {
+        "title": "Nothing free or with ads yet",
+        "body": "None of these films are free or playing with ads where you are. Try On your services, or add more services in Settings."
+      },
+      "otherServices": {
+        "title": "Nothing on other services yet",
+        "body": "None of these films are streaming where you are on a service outside your list."
+      },
+      "rentOrBuy": {
+        "title": "Nothing to rent or buy only",
+        "body": "None of these films are only available to rent or buy where you are."
+      },
+      "otherCountries": {
+        "title": "Nothing only in other countries",
+        "body": "None of these films are streaming only outside your country."
+      },
+      "noData": {
+        "title": "No films without data",
+        "body": "Every film here has some availability information."
+      }
+    },
+    "sortLabel": "Sort: {option}",
+    "sortBy": "Sort by",
+    "sortBody": "Choose how your watchlist is ordered.",
+    "sort": {
+      "added": "Date added",
+      "title": "Title",
+      "year": "Year",
+      "addedHint": "Newest first",
+      "titleHint": "A to Z",
+      "yearHint": "Newest first"
+    },
+    "unmatched": "{count, plural, one {# film couldn’t be matched} other {# films couldn’t be matched}}",
+    "unmatchedBody": "We couldn’t find these in our data source, so they’re left out of your counts.",
+    "unmatchedYear": "{name} ({year})"
+  },
   "settings": {
     "title": "Settings",
     "backTitle": "Back to title",
@@ -233,6 +306,11 @@
     "card": "Card",
     "cardBody": "A card for grouping related content.",
     "skeleton": "Skeleton",
+    "progress": "Progress",
+    "progressLabel": "Refreshing availability",
+    "progressValue": "34 of 89 films",
+    "selectField": "Select field",
+    "menu": "Menu",
     "serviceLogo": "Service logos",
     "mine": "On your service",
     "plan": "Specific plan only",

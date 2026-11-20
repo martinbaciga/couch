@@ -11,7 +11,10 @@ import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { Disclosure } from "@/components/ui/Disclosure";
 import { ImportIcon, SearchIcon, SettingsIcon } from "@/components/ui/icons";
 import { NavItem } from "@/components/ui/NavItem";
+import { MenuButton } from "@/components/ui/MenuButton";
 import { Poster } from "@/components/ui/Poster";
+import { ProgressBar } from "@/components/ui/ProgressBar";
+import { SelectField } from "@/components/ui/SelectField";
 import { SegmentedToggle } from "@/components/ui/SegmentedToggle";
 import { ServiceLogo } from "@/components/ui/ServiceLogo";
 import { ServiceOption } from "@/components/ui/ServiceOption";
@@ -39,6 +42,7 @@ export function Gallery() {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [otherView, setOtherView] = useState<"service" | "country">("service");
   const [recentSample, setRecentSample] = useState(sampleResults);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   return (
     <div className="flex flex-col gap-8 pb-16">
@@ -163,6 +167,54 @@ export function Gallery() {
         <h2 className="text-ui">{t("dev.skeleton")}</h2>
         <Skeleton />
         <Skeleton className="h-10 w-24" />
+      </section>
+
+      <section className="flex max-w-results flex-col gap-3">
+        <h2 className="text-ui">{t("dev.progress")}</h2>
+        <ProgressBar
+          label={t("dev.progressLabel")}
+          valueText={t("dev.progressValue")}
+          value={34}
+          max={89}
+        />
+      </section>
+
+      <section className="flex max-w-xs flex-col gap-3">
+        <h2 className="text-ui">{t("dev.selectField")}</h2>
+        <SelectField
+          value={t("watchlist.showValue", {
+            filter: t("watchlist.filters.all"),
+            count: "89",
+          })}
+          expanded={false}
+          controls="dev-select"
+          onClick={() => undefined}
+        />
+      </section>
+
+      <section className="flex flex-col gap-3">
+        <h2 className="text-ui">{t("dev.menu")}</h2>
+        <MenuButton
+          label={t("watchlist.sortLabel", {
+            option: t("watchlist.sort.added"),
+          })}
+          options={[
+            {
+              id: "added",
+              label: t("watchlist.sort.added"),
+              hint: t("watchlist.sort.addedHint"),
+            },
+            {
+              id: "title",
+              label: t("watchlist.sort.title"),
+              hint: t("watchlist.sort.titleHint"),
+            },
+          ]}
+          selected="added"
+          open={menuOpen}
+          onOpenChange={setMenuOpen}
+          onSelect={() => setMenuOpen(false)}
+        />
       </section>
 
       <section className="flex flex-col gap-3">

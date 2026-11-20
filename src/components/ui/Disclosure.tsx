@@ -8,6 +8,8 @@ type DisclosureProps = {
   label: string;
   children: ReactNode;
   defaultExpanded?: boolean;
+  /** `card` is the bordered row on the watchlist. `plain` is the text toggle. */
+  variant?: "plain" | "card";
 };
 
 /** Button that shows or hides a section. The expanded state is aria-expanded. */
@@ -15,18 +17,30 @@ export function Disclosure({
   label,
   children,
   defaultExpanded = false,
+  variant = "plain",
 }: DisclosureProps) {
   const [expanded, setExpanded] = useState(defaultExpanded);
   const panelId = useId();
+  const card = variant === "card";
 
   return (
-    <div>
+    <div
+      className={
+        card
+          ? "rounded-xl border border-border-subtle bg-surface-card"
+          : undefined
+      }
+    >
       <button
         type="button"
         aria-expanded={expanded}
         aria-controls={panelId}
         onClick={() => setExpanded((open) => !open)}
-        className={`flex min-h-11 w-full cursor-pointer items-center justify-between gap-2 rounded-button px-2.5 text-start text-body font-medium text-text-default hover:bg-primary-200 active:bg-primary-300 ${motionColor} ${focusRing}`}
+        className={`flex min-h-11 w-full cursor-pointer items-center justify-between gap-2 text-start font-medium text-text-default ${motionColor} ${focusRing} ${
+          card
+            ? "rounded-xl p-4 text-ui hover:bg-primary-200 active:bg-primary-300"
+            : "rounded-button px-2.5 text-body hover:bg-primary-200 active:bg-primary-300"
+        }`}
       >
         {label}
         <span
@@ -39,7 +53,11 @@ export function Disclosure({
       <div
         id={panelId}
         hidden={!expanded}
-        className="pt-2 text-body text-text-default"
+        className={
+          card
+            ? "flex flex-col gap-2 px-4 pb-4 text-body text-text-default"
+            : "pt-2 text-body text-text-default"
+        }
       >
         {children}
       </div>

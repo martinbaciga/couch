@@ -7,6 +7,7 @@ type ChipProps = {
   count?: string;
   children: ReactNode;
   disabled?: boolean;
+  id?: string;
 };
 
 /**
@@ -19,9 +20,11 @@ export function Chip({
   count,
   children,
   disabled = false,
+  id,
 }: ChipProps) {
   return (
     <button
+      id={id}
       type="button"
       aria-pressed={pressed}
       disabled={disabled}
