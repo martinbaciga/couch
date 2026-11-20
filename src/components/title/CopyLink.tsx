@@ -8,8 +8,14 @@ import { useToast } from "@/components/ui/Toast";
 
 const COPIED_MS = 3000;
 
-/** Copies this page's path, without the view query. Slugs are MAR-18. */
-export function CopyLink({ className }: { className?: string }) {
+/** Copies the canonical title URL, with its slug and without the view query. */
+export function CopyLink({
+  path,
+  className,
+}: {
+  path: string;
+  className?: string;
+}) {
   const t = useTranslations();
   const { showToast } = useToast();
   const [copied, setCopied] = useState(false);
@@ -22,7 +28,7 @@ export function CopyLink({ className }: { className?: string }) {
   }, []);
 
   async function onCopy() {
-    const url = `${window.location.origin}${window.location.pathname}`;
+    const url = new URL(path, window.location.origin).href;
     if (!(await copyText(url))) return;
     showToast(t("toast.linkCopied"));
     setCopied(true);

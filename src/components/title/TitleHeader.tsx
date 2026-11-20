@@ -10,6 +10,7 @@ import {
   titleMetaParts,
 } from "@/lib/title-details";
 import type { TitleDetails } from "@/lib/tmdb/types";
+import { titlePath } from "@/lib/title-ref";
 import { posterUrl } from "@/lib/tmdb/poster";
 import { CopyLink } from "./CopyLink";
 import { Synopsis } from "./Synopsis";
@@ -87,7 +88,10 @@ export function TitleHeader({
             {yearLine}
           </p>
           {meta ? <p className="text-small text-text-muted">{meta}</p> : null}
-          <CopyLink className="self-start md:order-2" />
+          <CopyLink
+            path={titlePath(details.kind, details.id, details.title)}
+            className="self-start md:order-2"
+          />
         </div>
       </div>
       {synopsis || links.length > 0 ? (

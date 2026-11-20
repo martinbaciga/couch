@@ -51,7 +51,9 @@ describe("isSearchableQuery", () => {
 describe("search urls", () => {
   it("builds the results page and a title page", () => {
     expect(searchUrl(" fight club ")).toBe("/search?q=fight%20club");
-    expect(titleUrl("tv", 1396)).toBe("/title/tv/1396");
+    expect(titleUrl("tv", 1396, "Breaking Bad")).toBe(
+      "/title/tv/1396/breaking-bad",
+    );
   });
 });
 

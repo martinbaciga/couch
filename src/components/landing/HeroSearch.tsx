@@ -26,7 +26,7 @@ export function HeroSearch() {
         {tryTitles.map((title) => (
           <Link
             key={`${title.kind}-${title.id}`}
-            href={titleUrl(title.kind, title.id)}
+            href={titleUrl(title.kind, title.id, title.label)}
             className={`inline-flex min-h-8 items-center rounded-panel bg-primary-100 px-3 py-1.5 text-body font-medium text-primary-800 hover:bg-primary-200 active:bg-primary-300 ${motionColor} ${focusRing}`}
           >
             {title.label}

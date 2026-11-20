@@ -244,7 +244,7 @@ export function SearchCombobox({
     const row = shown[index];
     if (!row) return;
     rememberViewed(row);
-    go(titleUrl(row.kind, row.id));
+    go(titleUrl(row.kind, row.id, row.title));
   }
 
   function onSubmit(event: FormEvent<HTMLFormElement>) {

@@ -62,7 +62,7 @@ export function SearchResultsPanel({
           {tryTitles.map((title) => (
             <Link
               key={`${title.kind}-${title.id}`}
-              href={titleUrl(title.kind, title.id)}
+              href={titleUrl(title.kind, title.id, title.label)}
               onClick={onClose}
               className={`inline-flex min-h-8 items-center rounded-panel border border-border-subtle px-3 py-1.5 text-body font-medium text-primary-800 hover:bg-primary-200 ${focusRing}`}
             >
@@ -111,7 +111,7 @@ export function SearchResultsPanel({
             <TitleRow
               key={`${row.kind}-${row.id}`}
               density="compact"
-              href={titleUrl(row.kind, row.id)}
+              href={titleUrl(row.kind, row.id, row.title)}
               title={row.title}
               year={row.year}
               kind={row.kind}

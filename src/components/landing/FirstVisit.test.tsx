@@ -51,8 +51,8 @@ describe("FirstVisit", () => {
     );
     expect(hrefs()).toEqual(
       expect.arrayContaining([
-        "/title/movie/550",
-        "/title/movie/603",
+        "/title/movie/550/fight-club",
+        "/title/movie/603/the-matrix",
         "/settings",
         "/watchlist",
         "https://letterboxd.com",

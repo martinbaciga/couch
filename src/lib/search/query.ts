@@ -1,3 +1,4 @@
+import { titlePath } from "@/lib/title-ref";
 import type { SearchHit } from "@/lib/tmdb/types";
 
 export const SEARCH_DEBOUNCE_MS = 250;
@@ -66,8 +67,12 @@ export function searchUrl(query: string): string {
   return `/search?q=${encodeURIComponent(normaliseQuery(query))}`;
 }
 
-export function titleUrl(kind: "movie" | "tv", id: number): string {
-  return `/title/${kind}/${id}`;
+export function titleUrl(
+  kind: "movie" | "tv",
+  id: number,
+  title: string,
+): string {
+  return titlePath(kind, id, title);
 }
 
 /** The fields the browser is allowed to see. Original titles stay on the server. */

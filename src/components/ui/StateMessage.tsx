@@ -25,6 +25,8 @@ type StateMessageProps = {
   onRetry?: () => void;
   onClear?: () => void;
   onChoose?: () => void;
+  /** Title not-found. Opens the search dialog instead of leaving the page. */
+  onSearch?: () => void;
 };
 
 /** The seven system states. Copy comes from messages, not from the caller. */
@@ -37,6 +39,7 @@ export function StateMessage({
   onRetry,
   onClear,
   onChoose,
+  onSearch,
 }: StateMessageProps) {
   const t = useTranslations();
 
@@ -68,7 +71,12 @@ export function StateMessage({
         {t("states.emptyFile.action")}
       </Button>
     ) : state === "not-found" ? (
-      <Button variant="secondary" size="small" href="/search">
+      <Button
+        variant="secondary"
+        size="small"
+        href={onSearch ? undefined : "/search"}
+        onClick={onSearch}
+      >
         {t("states.notFound.action")}
       </Button>
     ) : null;

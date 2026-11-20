@@ -135,7 +135,7 @@ function Hit({
   return (
     <TitleRow
       density="card"
-      href={titleUrl(kind, id)}
+      href={titleUrl(kind, id, title)}
       title={title}
       year={year}
       kind={kind}
