@@ -16,6 +16,8 @@
     "importWatchlist": "Import watchlist",
     "setup": "Set country & services",
     "setupSummary": "{country} · {count, plural, one {# service} other {# services}}",
+    "setupAccessible": "{country}, {count, plural, one {# service} other {# services}}. Open settings.",
+    "setupAccessibleEmpty": "Set country and services. Open settings.",
     "search": "Search",
     "settings": "Settings",
     "setupShort": "Set up",

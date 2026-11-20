@@ -8,6 +8,11 @@ type NavItemProps = {
   label: string;
   /** Visible label on a small screen when it is shorter than `label`. */
   shortLabel?: string;
+  /**
+   * Accessible name when it is not the visible label. The short label stays
+   * visual only.
+   */
+  accessibleName?: string;
   iconOnly?: boolean;
   tooltipAlign?: "center" | "end";
   href?: string;
@@ -26,12 +31,17 @@ export function NavItem({
   icon,
   label,
   shortLabel,
+  accessibleName,
   iconOnly = false,
   tooltipAlign = "center",
   href,
   onClick,
 }: NavItemProps) {
   const className = iconOnly ? iconClass : textClass;
+  const ariaLabel =
+    accessibleName || iconOnly || shortLabel
+      ? (accessibleName ?? label)
+      : undefined;
   const content = (
     <>
       <span className="size-5 shrink-0" aria-hidden="true">
@@ -49,18 +59,14 @@ export function NavItem({
   );
 
   const control = href ? (
-    <Link
-      href={href}
-      className={className}
-      aria-label={iconOnly || shortLabel ? label : undefined}
-    >
+    <Link href={href} className={className} aria-label={ariaLabel}>
       {content}
     </Link>
   ) : (
     <button
       type="button"
       className={className}
-      aria-label={iconOnly || shortLabel ? label : undefined}
+      aria-label={ariaLabel}
       onClick={onClick}
     >
       {content}

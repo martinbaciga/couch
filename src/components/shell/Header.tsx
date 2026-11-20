@@ -9,37 +9,37 @@ import { focusRing } from "@/components/ui/styles";
 import { useSettings } from "@/lib/storage/use-settings";
 import { useSearch } from "./search-context";
 
-function regionName(code: string): string {
-  try {
-    return (
-      new Intl.DisplayNames("en", { type: "region" }).of(code.toUpperCase()) ??
-      code.toUpperCase()
-    );
-  } catch {
-    return code.toUpperCase();
-  }
+/** English names from the regions list, keyed by ISO code. */
+export type RegionNames = Readonly<Record<string, string>>;
+
+function countryName(regions: RegionNames, code: string): string {
+  const key = code.toUpperCase();
+  return regions[key] ?? key;
 }
 
-/** Charcoal lockup on every page. Landing uses text items; every other page uses icons. */
-export function Header() {
+/** Charcoal lockup. Settings shows the saved country and services on every page. */
+export function Header({ regions }: { regions: RegionNames }) {
   const t = useTranslations();
   const pathname = usePathname();
   const settings = useSettings();
   const { openSearch } = useSearch();
   const landing = pathname === "/";
+  const country = settings?.country ?? null;
+  const count = settings?.serviceIds.length ?? 0;
+  const name = country ? countryName(regions, country) : null;
 
-  const setupLabel = settings?.country
-    ? t("header.setupSummary", {
-        country: regionName(settings.country),
-        count: settings.serviceIds.length,
-      })
+  const setupLabel = name
+    ? t("header.setupSummary", { country: name, count })
     : t("header.setup");
-  const setupShort = settings?.country
+  const setupShort = country
     ? t("header.setupCompact", {
-        code: settings.country.toUpperCase(),
-        count: settings.serviceIds.length,
+        code: country.toUpperCase(),
+        count,
       })
     : t("header.setupShort");
+  const setupAccessible = name
+    ? t("header.setupAccessible", { country: name, count })
+    : t("header.setupAccessibleEmpty");
 
   return (
     <header className="relative z-20">
@@ -61,32 +61,11 @@ export function Header() {
         </Link>
         <nav className="flex flex-wrap items-center justify-end gap-1">
           {landing ? (
-            <>
-              {/* No search icon here: the hero field is the search. On a
-                  small screen the import label does not fit beside "Set up". */}
-              <div className="md:hidden">
-                <NavItem
-                  iconOnly
-                  href="/watchlist"
-                  icon={<ImportIcon />}
-                  label={t("header.importWatchlist")}
-                  tooltipAlign="end"
-                />
-              </div>
-              <div className="hidden md:block">
-                <NavItem
-                  href="/watchlist"
-                  icon={<ImportIcon />}
-                  label={t("header.importWatchlist")}
-                />
-              </div>
-              <NavItem
-                href="/settings"
-                icon={<SettingsIcon />}
-                label={setupLabel}
-                shortLabel={setupShort}
-              />
-            </>
+            <NavItem
+              href="/watchlist"
+              icon={<ImportIcon />}
+              label={t("header.importWatchlist")}
+            />
           ) : (
             <>
               <NavItem
@@ -103,14 +82,15 @@ export function Header() {
                 label={t("header.importWatchlist")}
                 tooltipAlign="end"
               />
-              <NavItem
-                href="/settings"
-                icon={<SettingsIcon />}
-                label={setupLabel}
-                shortLabel={setupShort}
-              />
             </>
           )}
+          <NavItem
+            href="/settings"
+            icon={<SettingsIcon />}
+            label={setupLabel}
+            shortLabel={setupShort}
+            accessibleName={setupAccessible}
+          />
         </nav>
       </div>
     </header>

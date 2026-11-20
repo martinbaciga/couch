@@ -3,8 +3,8 @@ import { Suspense, type ReactNode } from "react";
 import { Bricolage_Grotesque, Figtree } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages, getTranslations } from "next-intl/server";
+import { AppHeader } from "@/components/shell/AppHeader";
 import { Footer } from "@/components/shell/Footer";
-import { Header } from "@/components/shell/Header";
 import { SearchProvider } from "@/components/shell/SearchProvider";
 import { ToastProvider } from "@/components/ui/Toast";
 import "@/styles/globals.css";
@@ -51,7 +51,7 @@ export default async function RootLayout({
           <ToastProvider>
             <SearchProvider>
               <Suspense fallback={<div className="h-nav" />}>
-                <Header />
+                <AppHeader />
               </Suspense>
               <main className="mx-auto w-full min-w-0 max-w-page flex-1 px-gutter py-6">
                 {children}
