@@ -1,6 +1,6 @@
 "use client";
 
-import { useId } from "react";
+import { Suspense, useId } from "react";
 import { useFormatter, useTranslations } from "next-intl";
 import { Button } from "@/components/ui/Button";
 import { Flag } from "@/components/ui/Flag";
@@ -13,6 +13,7 @@ import type { PlanNote, Settings } from "@/lib/availability/status";
 import type { TitleAvailability } from "@/lib/availability/types";
 import type { ServiceMark } from "@/lib/services/marks";
 import { posterUrl } from "@/lib/tmdb/poster";
+import { useSettingsHref } from "@/lib/use-settings-href";
 
 const regionNames = new Intl.DisplayNames("en", { type: "region" });
 
@@ -97,16 +98,47 @@ export function HomeCard({ availability, settings, services }: HomeCardProps) {
         <OtherWays model={model} marks={marks} />
       ) : null}
       {model.kind === "no-settings" ? (
-        <Button href="/settings" className="self-start">
-          {t("homeCard.setCountry")}
-        </Button>
+        <SettingsEntry label={t("homeCard.setCountry")} />
       ) : null}
       {model.kind === "no-services" ? (
-        <Button tone="inverse" href="/settings" className="self-start">
-          {t("homeCard.setServices")}
-        </Button>
+        <SettingsEntry tone="inverse" label={t("homeCard.setServices")} />
       ) : null}
     </section>
+  );
+}
+
+function SettingsEntry({
+  label,
+  tone = "default",
+}: {
+  label: string;
+  tone?: "default" | "inverse";
+}) {
+  return (
+    <Suspense
+      fallback={
+        <Button href="/settings" tone={tone} className="self-start">
+          {label}
+        </Button>
+      }
+    >
+      <SettingsEntryLink label={label} tone={tone} />
+    </Suspense>
+  );
+}
+
+function SettingsEntryLink({
+  label,
+  tone,
+}: {
+  label: string;
+  tone: "default" | "inverse";
+}) {
+  const href = useSettingsHref();
+  return (
+    <Button href={href} tone={tone} className="self-start">
+      {label}
+    </Button>
   );
 }
 

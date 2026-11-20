@@ -1,12 +1,15 @@
 "use client";
 
+import { Suspense } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { SearchCombobox } from "@/components/search/SearchCombobox";
 import { focusRing, motionColor } from "@/components/ui/styles";
 import { tryTitles } from "@/config/try-titles";
+import { settingsHref } from "@/lib/return-path";
 import { titleUrl } from "@/lib/search/query";
 import { useNeedsSetup } from "@/lib/storage/use-settings";
+import { useSettingsHref } from "@/lib/use-settings-href";
 
 const setupClass = `items-center py-3 text-body text-primary-900 underline underline-offset-2 ${focusRing}`;
 
@@ -33,12 +36,9 @@ export function HeroSearch() {
           </Link>
         ))}
         {showSetup ? (
-          <Link
-            href="/settings"
+          <SetupLink
             className={`${setupClass} -my-3 ms-auto hidden md:inline-flex`}
-          >
-            {t("landing.setup")}
-          </Link>
+          />
         ) : null}
       </div>
       <div className="md:order-1">
@@ -46,11 +46,32 @@ export function HeroSearch() {
       </div>
       {showSetup ? (
         <div className="px-2.5 md:hidden">
-          <Link href="/settings" className={`inline-flex ${setupClass}`}>
-            {t("landing.setup")}
-          </Link>
+          <SetupLink className={`inline-flex ${setupClass}`} />
         </div>
       ) : null}
     </div>
+  );
+}
+
+function SetupLink({ className }: { className: string }) {
+  return (
+    <Suspense
+      fallback={<SetupAnchor href={settingsHref("/")} className={className} />}
+    >
+      <CurrentSetupLink className={className} />
+    </Suspense>
+  );
+}
+
+function CurrentSetupLink({ className }: { className: string }) {
+  return <SetupAnchor href={useSettingsHref()} className={className} />;
+}
+
+function SetupAnchor({ href, className }: { href: string; className: string }) {
+  const t = useTranslations();
+  return (
+    <Link href={href} className={className}>
+      {t("landing.setup")}
+    </Link>
   );
 }

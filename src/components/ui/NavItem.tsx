@@ -16,6 +16,8 @@ type NavItemProps = {
   iconOnly?: boolean;
   tooltipAlign?: "center" | "end";
   href?: string;
+  /** Marks the item for the page already on screen. */
+  current?: boolean;
   onClick?: () => void;
 };
 
@@ -35,6 +37,7 @@ export function NavItem({
   iconOnly = false,
   tooltipAlign = "center",
   href,
+  current = false,
   onClick,
 }: NavItemProps) {
   const className = iconOnly ? iconClass : textClass;
@@ -59,7 +62,12 @@ export function NavItem({
   );
 
   const control = href ? (
-    <Link href={href} className={className} aria-label={ariaLabel}>
+    <Link
+      href={href}
+      className={className}
+      aria-label={ariaLabel}
+      aria-current={current ? "page" : undefined}
+    >
       {content}
     </Link>
   ) : (

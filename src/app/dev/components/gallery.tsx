@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type ReactNode } from "react";
+import { Suspense, useState, type ReactNode } from "react";
 import { useFormatter, useTranslations } from "next-intl";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
@@ -25,6 +25,7 @@ import { TitleLoading } from "@/components/title/TitleLoading";
 import { OtherCountries } from "@/components/title/OtherCountries";
 import type { Offer, TitleAvailability } from "@/lib/availability/types";
 import type { ServiceMark } from "@/lib/services/marks";
+import { useSettingsHref } from "@/lib/use-settings-href";
 
 /** Living style page. Not linked, and not rendered in production. */
 export function Gallery() {
@@ -70,11 +71,17 @@ export function Gallery() {
             icon={<ImportIcon />}
             label={t("header.importWatchlist")}
           />
-          <NavItem
-            href="/settings"
-            icon={<SettingsIcon />}
-            label={t("header.settings")}
-          />
+          <Suspense
+            fallback={
+              <NavItem
+                href="/settings"
+                icon={<SettingsIcon />}
+                label={t("header.settings")}
+              />
+            }
+          >
+            <GallerySettingsLink />
+          </Suspense>
         </div>
       </section>
 
@@ -330,6 +337,14 @@ export function Gallery() {
         </div>
       </section>
     </div>
+  );
+}
+
+function GallerySettingsLink() {
+  const t = useTranslations();
+  const href = useSettingsHref();
+  return (
+    <NavItem href={href} icon={<SettingsIcon />} label={t("header.settings")} />
   );
 }
 

@@ -187,6 +187,27 @@ export function YouTubeIcon({ className }: IconProps) {
   );
 }
 
+/** Left chevron from the settings back link. Width and height match the asset. */
+export function ChevronLeftIcon() {
+  return (
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 16 16"
+      fill="none"
+      aria-hidden="true"
+    >
+      <path
+        d="M10 4L6 8L10 12"
+        stroke="currentColor"
+        strokeWidth="1.33333"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
 /** Chevron for a disclosure. Points down, rotate when open. */
 export function ChevronIcon({ className }: IconProps) {
   return (

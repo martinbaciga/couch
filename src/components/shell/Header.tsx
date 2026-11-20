@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -7,10 +8,39 @@ import { ImportIcon, SearchIcon, SettingsIcon } from "@/components/ui/icons";
 import { NavItem } from "@/components/ui/NavItem";
 import { focusRing } from "@/components/ui/styles";
 import { useSettings } from "@/lib/storage/use-settings";
+import { useSettingsHref } from "@/lib/use-settings-href";
 import { useSearch } from "./search-context";
 
 /** English names from the regions list, keyed by ISO code. */
 export type RegionNames = Readonly<Record<string, string>>;
+
+/**
+ * The settings item reads the query string, so it has its own boundary.
+ * The rest of the header can still prerender.
+ */
+function SettingsHeaderItem({
+  label,
+  shortLabel,
+  accessibleName,
+}: {
+  label: string;
+  shortLabel: string;
+  accessibleName: string;
+}) {
+  const pathname = usePathname();
+  const href = useSettingsHref();
+  const onSettings = pathname === "/settings";
+  return (
+    <NavItem
+      href={href}
+      current={onSettings}
+      icon={<SettingsIcon />}
+      label={label}
+      shortLabel={shortLabel}
+      accessibleName={accessibleName}
+    />
+  );
+}
 
 function countryName(regions: RegionNames, code: string): string {
   const key = code.toUpperCase();
@@ -84,13 +114,23 @@ export function Header({ regions }: { regions: RegionNames }) {
               />
             </>
           )}
-          <NavItem
-            href="/settings"
-            icon={<SettingsIcon />}
-            label={setupLabel}
-            shortLabel={setupShort}
-            accessibleName={setupAccessible}
-          />
+          <Suspense
+            fallback={
+              <NavItem
+                href="/settings"
+                icon={<SettingsIcon />}
+                label={setupLabel}
+                shortLabel={setupShort}
+                accessibleName={setupAccessible}
+              />
+            }
+          >
+            <SettingsHeaderItem
+              label={setupLabel}
+              shortLabel={setupShort}
+              accessibleName={setupAccessible}
+            />
+          </Suspense>
         </nav>
       </div>
     </header>

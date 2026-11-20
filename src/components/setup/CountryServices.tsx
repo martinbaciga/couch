@@ -17,7 +17,7 @@ type CountryServicesProps = {
 };
 
 /**
- * Country field and service list shared by Settings and the first-run dialog.
+ * Country field and service list on Settings.
  * Nothing here is written until the parent handles a choice.
  */
 export function CountryServices({

@@ -55,6 +55,10 @@
   },
   "settings": {
     "title": "Settings",
+    "backTitle": "Back to title",
+    "backHome": "Back to home",
+    "backResults": "Back to results",
+    "back": "Back",
     "subtitle": "Changes are saved on this device as you make them.",
     "country": "Your country",
     "countryPlaceholder": "Choose your country",

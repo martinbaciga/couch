@@ -18,6 +18,8 @@ const push = vi.hoisted(() => vi.fn());
 
 vi.mock("next/navigation", () => ({
   useRouter: () => ({ push }),
+  usePathname: () => "/",
+  useSearchParams: () => new URLSearchParams(),
 }));
 
 describe("FirstVisit", () => {
@@ -53,7 +55,7 @@ describe("FirstVisit", () => {
       expect.arrayContaining([
         "/title/movie/550/fight-club",
         "/title/movie/603/the-matrix",
-        "/settings",
+        "/settings?return=%2F",
         "/watchlist",
         "https://letterboxd.com",
       ]),

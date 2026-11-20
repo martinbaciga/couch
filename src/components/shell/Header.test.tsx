@@ -14,9 +14,11 @@ declare global {
 }
 
 const pathname = vi.hoisted(() => ({ current: "/settings" }));
+const search = vi.hoisted(() => ({ current: "" }));
 
 vi.mock("next/navigation", () => ({
   usePathname: () => pathname.current,
+  useSearchParams: () => new URLSearchParams(search.current),
 }));
 
 const ireland: RegionNames = { IE: "Ireland" };
@@ -29,6 +31,7 @@ describe("Header settings item", () => {
   beforeEach(() => {
     globalThis.IS_REACT_ACT_ENVIRONMENT = true;
     pathname.current = "/settings";
+    search.current = "";
     localStorage.clear();
     resetSettingsStore();
   });
@@ -123,6 +126,40 @@ describe("Header settings item", () => {
     );
   });
 
+  it("changes the settings href with the route", () => {
+    pathname.current = "/";
+    renderHeader(ireland);
+    expect(settingsLink()?.getAttribute("href")).toBe("/settings?return=%2F");
+    expect(settingsLink()?.getAttribute("aria-current")).toBeNull();
+
+    act(() => root?.unmount());
+    container?.remove();
+    pathname.current = "/search";
+    search.current = "q=heat";
+    renderHeader(ireland);
+    expect(settingsLink()?.getAttribute("href")).toBe(
+      "/settings?return=%2Fsearch%3Fq%3Dheat",
+    );
+
+    act(() => root?.unmount());
+    container?.remove();
+    pathname.current = "/title/movie/550/fight-club";
+    search.current = "view=country";
+    renderHeader(ireland);
+    expect(settingsLink()?.getAttribute("href")).toBe(
+      "/settings?return=%2Ftitle%2Fmovie%2F550%2Ffight-club%3Fview%3Dcountry",
+    );
+  });
+
+  it("has no return on the settings page", () => {
+    pathname.current = "/settings";
+    search.current = "return=%2Fsearch%3Fq%3Dheat";
+    renderHeader(ireland);
+
+    expect(settingsLink()?.getAttribute("href")).toBe("/settings");
+    expect(settingsLink()?.getAttribute("aria-current")).toBe("page");
+  });
+
   it("shows text for every landing item", () => {
     pathname.current = "/";
     renderHeader(ireland);
@@ -158,7 +195,7 @@ describe("Header settings item", () => {
   }
 
   function settingsLink() {
-    return container?.querySelector('a[href="/settings"]');
+    return container?.querySelector('a[href^="/settings"]');
   }
 
   function save(country: string, serviceIds: number[]) {
