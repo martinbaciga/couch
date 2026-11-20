@@ -1,10 +1,11 @@
 // @vitest-environment happy-dom
 
-import { act } from "react";
+import { Activity, act } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import { NextIntlClientProvider } from "next-intl";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import messages from "../../../messages/en.json";
+import { SEARCH_DEBOUNCE_MS } from "@/lib/search/query";
 import { resetRecentStore, type RecentTitle } from "@/lib/storage/recent";
 import { SearchCombobox } from "./SearchCombobox";
 
@@ -65,6 +66,7 @@ describe("SearchCombobox", () => {
     localStorage.clear();
     resetRecentStore();
     vi.unstubAllGlobals();
+    vi.useRealTimers();
   });
 
   it("shows Esc until the field has text, then Enter", () => {
@@ -121,6 +123,22 @@ describe("SearchCombobox", () => {
     expect(rowHint()).toBeNull();
   });
 
+  it("keeps the highlight when the pointer has not moved", () => {
+    seed([parasite, bear]);
+    renderCombobox();
+    key(field(), "ArrowDown");
+
+    act(() => {
+      window.dispatchEvent(
+        new PointerEvent("pointermove", { movementX: 0, movementY: 0 }),
+      );
+    });
+
+    expect(
+      container?.querySelector("[aria-selected='true']")?.textContent,
+    ).toContain("Parasite");
+  });
+
   it("removes one recently viewed title and announces it", () => {
     seed([parasite, bear]);
     renderCombobox();
@@ -168,6 +186,27 @@ describe("SearchCombobox", () => {
     expect(document.activeElement).toBe(field());
   });
 
+  it("clears the landing field when the page is hidden", async () => {
+    vi.useFakeTimers();
+    renderHero("visible");
+    const input = field();
+    setField(input, "fight");
+    await act(async () => {
+      vi.advanceTimersByTime(SEARCH_DEBOUNCE_MS);
+    });
+
+    expect(input.value).toBe("fight");
+    expect(input.getAttribute("aria-expanded")).toBe("true");
+
+    renderHero("hidden");
+    renderHero("visible");
+
+    const again = field();
+    expect(again.value).toBe("");
+    expect(again.getAttribute("aria-expanded")).toBe("false");
+    vi.useRealTimers();
+  });
+
   it("clears recently viewed and returns to the empty hint", () => {
     seed([parasite]);
     renderCombobox();
@@ -185,6 +224,23 @@ describe("SearchCombobox", () => {
     expect(container?.textContent).not.toContain("Parasite");
     expect(document.activeElement).toBe(field());
   });
+
+  function renderHero(mode: "visible" | "hidden") {
+    if (!container) {
+      container = document.createElement("div");
+      document.body.appendChild(container);
+      root = createRoot(container);
+    }
+    act(() => {
+      root?.render(
+        <NextIntlClientProvider locale="en" messages={messages}>
+          <Activity mode={mode}>
+            <SearchCombobox variant="hero" />
+          </Activity>
+        </NextIntlClientProvider>,
+      );
+    });
+  }
 
   function renderCombobox() {
     container = document.createElement("div");

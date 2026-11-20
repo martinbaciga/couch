@@ -94,6 +94,11 @@
   --size-toggle-height: 42px;
   --size-toggle-width: 230px;
   --size-search: 650px;
+  --size-landing-copy: 720px;
+  --size-hero-width: 355px;
+  --size-hero-height: 200px;
+  --landing-peek: 72px;
+  --space-landing-bottom: 28px;
   --size-results: 760px;
   --size-message: 420px;
   --size-settings: 720px;

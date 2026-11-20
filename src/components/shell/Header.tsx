@@ -43,7 +43,7 @@ export function Header() {
 
   return (
     <header className="relative z-20">
-      <div className="mx-auto flex min-h-nav w-full max-w-page flex-wrap items-center justify-between gap-1 px-gutter">
+      <div className="mx-auto flex min-h-nav w-full min-w-0 max-w-page flex-wrap items-center justify-between gap-1 px-gutter">
         <Link
           href="/"
           aria-label={t("header.home")}
@@ -62,15 +62,29 @@ export function Header() {
         <nav className="flex flex-wrap items-center justify-end gap-1">
           {landing ? (
             <>
-              <NavItem
-                href="/watchlist"
-                icon={<ImportIcon />}
-                label={t("header.importWatchlist")}
-              />
+              {/* No search icon here: the hero field is the search. On a
+                  small screen the import label does not fit beside "Set up". */}
+              <div className="md:hidden">
+                <NavItem
+                  iconOnly
+                  href="/watchlist"
+                  icon={<ImportIcon />}
+                  label={t("header.importWatchlist")}
+                  tooltipAlign="end"
+                />
+              </div>
+              <div className="hidden md:block">
+                <NavItem
+                  href="/watchlist"
+                  icon={<ImportIcon />}
+                  label={t("header.importWatchlist")}
+                />
+              </div>
               <NavItem
                 href="/settings"
                 icon={<SettingsIcon />}
                 label={setupLabel}
+                shortLabel={setupShort}
               />
             </>
           ) : (

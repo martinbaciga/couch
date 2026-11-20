@@ -14,6 +14,8 @@ import {
 
 let cachedRaw: string | null | undefined;
 let snapshot: RecentTitle[] = [];
+// A new array on every call makes React treat the server snapshot as changed.
+const serverSnapshot: RecentTitle[] = [];
 const listeners = new Set<() => void>();
 
 function emit() {
@@ -66,7 +68,7 @@ function getSnapshot(): RecentTitle[] {
 
 /** Up to five titles opened on this device, newest first. */
 export function useRecentlyViewed(): RecentTitle[] {
-  return useSyncExternalStore(subscribe, getSnapshot, () => []);
+  return useSyncExternalStore(subscribe, getSnapshot, () => serverSnapshot);
 }
 
 export function rememberViewed(title: RecentTitle): void {

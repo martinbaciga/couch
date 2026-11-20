@@ -8,7 +8,7 @@ export async function Footer() {
 
   return (
     <footer className="mt-auto border-t border-primary-800 text-footer text-primary-800">
-      <div className="mx-auto flex w-full max-w-page flex-wrap items-center justify-between gap-x-4 gap-y-2 px-gutter py-footer">
+      <div className="mx-auto flex w-full max-w-page flex-col items-start gap-2 px-gutter py-6 md:flex-row md:items-center md:justify-between md:py-footer">
         <p>{t("footer.credit")}</p>
         <Link
           href="/about"

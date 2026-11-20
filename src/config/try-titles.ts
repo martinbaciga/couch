@@ -7,11 +7,11 @@ export type TryTitle = {
 };
 
 /**
- * The two suggestions in the search modal before anything has been viewed.
- * Labels and ids are the titles drawn in the Figma start frame. The owner
- * can replace them; the landing page reads this same list.
+ * The two suggestions on the first-visit landing and in the search modal
+ * before anything has been viewed. Labels are the first-visit frames.
+ * The owner can replace this list.
  */
 export const tryTitles: TryTitle[] = [
   { kind: "movie", id: 550, label: "Fight Club" },
-  { kind: "movie", id: 13, label: "Forrest Gump" },
+  { kind: "movie", id: 603, label: "The Matrix" },
 ];

@@ -25,7 +25,10 @@ export function useComboboxNavigation(signature: string, count: number) {
 
   useEffect(() => {
     if (!keyboard) return;
-    function onPointerMove() {
+    function onPointerMove(event: PointerEvent) {
+      // A list scroll under a still pointer also fires this, with no movement.
+      // That must not drop the highlight, or arrowing past the fold stops.
+      if (event.movementX === 0 && event.movementY === 0) return;
       setKeyboard(false);
       setActive(-1);
     }

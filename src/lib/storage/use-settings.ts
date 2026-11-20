@@ -55,6 +55,18 @@ export function useSettings(): Settings | null {
   return useSyncExternalStore(subscribe, getSnapshot, () => null);
 }
 
+/**
+ * True when the setup prompt should show. The server snapshot stays false
+ * so a saved country is never painted and then removed.
+ */
+export function useNeedsSetup(): boolean {
+  return useSyncExternalStore(
+    subscribe,
+    () => !getSnapshot()?.country,
+    () => false,
+  );
+}
+
 export function saveSettings(settings: Settings): void {
   writeSettings(window.localStorage, settings);
   emit();

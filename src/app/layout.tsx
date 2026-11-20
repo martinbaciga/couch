@@ -53,7 +53,7 @@ export default async function RootLayout({
               <Suspense fallback={<div className="h-nav" />}>
                 <Header />
               </Suspense>
-              <main className="mx-auto w-full max-w-page flex-1 px-gutter py-6">
+              <main className="mx-auto w-full min-w-0 max-w-page flex-1 px-gutter py-6">
                 {children}
               </main>
               <Footer />

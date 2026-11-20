@@ -2,8 +2,14 @@
   "meta": {
     "title": "Couch"
   },
-  "home": {
-    "title": "Couch"
+  "landing": {
+    "title": "See where films are streaming",
+    "subtitle": "Search any film or series, and see in which countries they are available",
+    "setup": "Set country & services for tailored results",
+    "importTitle": "Import your Letterboxd watchlist",
+    "importBody": "Find out which films on your list are streaming, and where to watch them in the world.",
+    "chooseCsv": "Choose CSV file",
+    "exportHelp": "How to export from Letterboxd"
   },
   "header": {
     "home": "Couch",

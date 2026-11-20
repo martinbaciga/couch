@@ -1,6 +1,5 @@
-import { getTranslations } from "next-intl/server";
+import { FirstVisit } from "@/components/landing/FirstVisit";
 
-export default async function Home() {
-  const t = await getTranslations();
-  return <h1 className="text-heading">{t("home.title")}</h1>;
+export default function Home() {
+  return <FirstVisit />;
 }
