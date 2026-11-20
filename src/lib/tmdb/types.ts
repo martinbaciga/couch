@@ -7,6 +7,8 @@ export type SearchHit = {
   originalTitle: string;
   year: number | null;
   posterPath: string | null;
+  /** Kept for match tie-breaks. Omitted when TMDB does not send one. */
+  popularity?: number;
 };
 
 export type SearchPage = {

@@ -325,16 +325,17 @@ function parseSearchHit(
       ? asString(value.release_date)
       : asString(value.first_air_date);
   if (!title) return [];
-  return [
-    {
-      id,
-      kind,
-      title,
-      originalTitle: originalTitle ?? title,
-      year: yearFromDate(date),
-      posterPath: asString(value.poster_path),
-    },
-  ];
+  const hit: SearchHit = {
+    id,
+    kind,
+    title,
+    originalTitle: originalTitle ?? title,
+    year: yearFromDate(date),
+    posterPath: asString(value.poster_path),
+  };
+  const popularity = asNumber(value.popularity);
+  if (popularity !== null) hit.popularity = popularity;
+  return [hit];
 }
 
 function parseTitle(body: unknown, kind: MediaKind): TitleDetails {

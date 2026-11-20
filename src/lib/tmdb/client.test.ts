@@ -87,6 +87,27 @@ describe("TMDB client", () => {
     expect(init?.signal).toBeInstanceOf(AbortSignal);
   });
 
+  it("keeps popularity so a match can break a tie", async () => {
+    fetchMock.mockResolvedValue(
+      jsonResponse({
+        results: [
+          {
+            id: 1,
+            title: "Heat",
+            original_title: "Heat",
+            release_date: "1995-12-15",
+            poster_path: "/heat.jpg",
+            popularity: 42.5,
+          },
+        ],
+      }),
+    );
+
+    const page = await searchMovie("Heat", 1995);
+
+    expect(page.results[0]?.popularity).toBe(42.5);
+  });
+
   it("searches films and series with an optional year", async () => {
     fetchMock.mockImplementation(() =>
       Promise.resolve(jsonResponse({ results: [] })),
