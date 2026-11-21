@@ -8,6 +8,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import messages from "../../../messages/en.json";
 import { SETTINGS_KEY } from "@/lib/storage/settings";
 import { resetRecentStore } from "@/lib/storage/recent";
+import { WATCHLIST_IMPORT_PATH } from "@/lib/watchlist/paths";
 import { FirstVisit } from "./FirstVisit";
 
 declare global {
@@ -56,7 +57,7 @@ describe("FirstVisit", () => {
         "/title/movie/550/fight-club",
         "/title/movie/603/the-matrix",
         "/settings?return=%2F",
-        "/watchlist",
+        WATCHLIST_IMPORT_PATH,
         "https://letterboxd.com",
       ]),
     );
@@ -89,7 +90,9 @@ describe("FirstVisit", () => {
     renderLanding();
 
     expect(link("Set country & services for tailored results")).toBeUndefined();
-    expect(link("Choose CSV file")?.getAttribute("href")).toBe("/watchlist");
+    expect(link("Choose CSV file")?.getAttribute("href")).toBe(
+      WATCHLIST_IMPORT_PATH,
+    );
   });
 
   it("submits the typed title and ignores an empty search", () => {

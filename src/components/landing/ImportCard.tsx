@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/Button";
 import { ImportIcon } from "@/components/ui/icons";
 import { focusRing } from "@/components/ui/styles";
+import { WATCHLIST_IMPORT_PATH } from "@/lib/watchlist/paths";
 
 const LETTERBOXD_URL = "https://letterboxd.com";
 
@@ -23,7 +24,7 @@ export function ImportCard() {
         <Button
           variant="secondary"
           size="small"
-          href="/watchlist"
+          href={WATCHLIST_IMPORT_PATH}
           icon={<ImportIcon />}
         >
           {t("landing.chooseCsv")}

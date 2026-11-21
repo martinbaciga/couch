@@ -31,6 +31,7 @@ import {
   type WatchlistSource,
 } from "@/lib/storage/watchlist";
 import { useSettingsHref } from "@/lib/use-settings-href";
+import { WATCHLIST_IMPORT_PATH } from "@/lib/watchlist/paths";
 import {
   PAGE_SIZE,
   categoryCounts,
@@ -232,11 +233,10 @@ function WatchlistView({
               ) : null}
             </div>
           </div>
-          {/* MAR-19 owns the import screen this opens. */}
           <Button
             variant="secondary"
             size="small"
-            href="/watchlist?import=1"
+            href={WATCHLIST_IMPORT_PATH}
             icon={<ImportIcon />}
             className="self-start"
           >

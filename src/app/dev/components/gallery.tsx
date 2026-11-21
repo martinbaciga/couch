@@ -11,6 +11,7 @@ import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 import { Disclosure } from "@/components/ui/Disclosure";
 import { ImportIcon, SearchIcon, SettingsIcon } from "@/components/ui/icons";
 import { NavItem } from "@/components/ui/NavItem";
+import { WATCHLIST_IMPORT_PATH } from "@/lib/watchlist/paths";
 import { MenuButton } from "@/components/ui/MenuButton";
 import { Poster } from "@/components/ui/Poster";
 import { ProgressBar } from "@/components/ui/ProgressBar";
@@ -71,7 +72,7 @@ export function Gallery() {
         <h2 className="text-ui">{t("dev.navItem")}</h2>
         <div className="flex flex-wrap items-center gap-3">
           <NavItem
-            href="/watchlist"
+            href={WATCHLIST_IMPORT_PATH}
             icon={<ImportIcon />}
             label={t("header.importWatchlist")}
           />

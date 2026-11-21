@@ -23,6 +23,24 @@
     "setupShort": "Set up",
     "setupCompact": "{code} · {count}"
   },
+  "import": {
+    "title": "Import your Letterboxd watchlist",
+    "subtitle": "Find out which films on your list are streaming on your services, and where else in the world. Your watchlist is saved on this device only.",
+    "step1Title": "Open your watchlist on Letterboxd",
+    "step1Body": "Use the Letterboxd website, the export isn’t in the mobile app. Go to your profile and open Watchlist.",
+    "step2Title": "Export it",
+    "step2Body": "Use Export watchlist. You get a CSV file.",
+    "step3Title": "Choose it here",
+    "step3Body": "Drop the file in the box, or pick it from your computer.",
+    "dropHeading": "Drop your watchlist CSV here",
+    "or": "or",
+    "chooseFile": "Choose CSV file",
+    "dropCaption": "or choose it from your computer",
+    "found": "{count, plural, one {# film found} other {# films found}}",
+    "tooBigEyebrow": "Too large",
+    "tooBigTitle": "This file is too large",
+    "tooBigBody": "A watchlist file can be up to 2 MB and {limit, number} films. Choose a shorter export."
+  },
   "footer": {
     "credit": "Availability data from JustWatch via TMDB.",
     "about": "About this data"

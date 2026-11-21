@@ -9,6 +9,7 @@ import { NavItem } from "@/components/ui/NavItem";
 import { focusRing } from "@/components/ui/styles";
 import { useSettings } from "@/lib/storage/use-settings";
 import { useSettingsHref } from "@/lib/use-settings-href";
+import { WATCHLIST_IMPORT_PATH } from "@/lib/watchlist/paths";
 import { useSearch } from "./search-context";
 
 /** English names from the regions list, keyed by ISO code. */
@@ -92,7 +93,7 @@ export function Header({ regions }: { regions: RegionNames }) {
         <nav className="flex flex-wrap items-center justify-end gap-1">
           {landing ? (
             <NavItem
-              href="/watchlist"
+              href={WATCHLIST_IMPORT_PATH}
               icon={<ImportIcon />}
               label={t("header.importWatchlist")}
             />
@@ -107,7 +108,7 @@ export function Header({ regions }: { regions: RegionNames }) {
               />
               <NavItem
                 iconOnly
-                href="/watchlist"
+                href={WATCHLIST_IMPORT_PATH}
                 icon={<ImportIcon />}
                 label={t("header.importWatchlist")}
                 tooltipAlign="end"

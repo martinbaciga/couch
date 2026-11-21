@@ -6,6 +6,7 @@ import { NextIntlClientProvider } from "next-intl";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import messages from "../../../messages/en.json";
 import { SETTINGS_KEY, resetSettingsStore } from "@/lib/storage/settings";
+import { WATCHLIST_IMPORT_PATH } from "@/lib/watchlist/paths";
 import { Header, type RegionNames } from "./Header";
 import { SearchContext, createSearchContext } from "./search-context";
 
@@ -158,6 +159,9 @@ describe("Header settings item", () => {
 
     expect(settingsLink()?.getAttribute("href")).toBe("/settings");
     expect(settingsLink()?.getAttribute("aria-current")).toBe("page");
+    expect(
+      container?.querySelector(`a[href="${WATCHLIST_IMPORT_PATH}"]`),
+    ).not.toBeNull();
   });
 
   it("shows text for every landing item", () => {
@@ -165,7 +169,8 @@ describe("Header settings item", () => {
     renderHeader(ireland);
 
     const imports = [
-      ...(container?.querySelectorAll('a[href="/watchlist"]') ?? []),
+      ...(container?.querySelectorAll(`a[href="${WATCHLIST_IMPORT_PATH}"]`) ??
+        []),
     ];
     expect(imports).toHaveLength(1);
     expect(imports[0]?.textContent).toContain("Import watchlist");

@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { getTranslations } from "next-intl/server";
-import { WatchlistResults } from "@/components/watchlist/WatchlistResults";
+import {
+  WatchlistScreen,
+  WatchlistSkeleton,
+} from "@/components/watchlist/WatchlistScreen";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations();
@@ -8,5 +12,9 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default function WatchlistPage() {
-  return <WatchlistResults />;
+  return (
+    <Suspense fallback={<WatchlistSkeleton />}>
+      <WatchlistScreen />
+    </Suspense>
+  );
 }
