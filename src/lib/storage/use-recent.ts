@@ -66,7 +66,7 @@ function getSnapshot(): RecentTitle[] {
   }
 }
 
-/** Up to five titles opened on this device, newest first. */
+/** Up to ten titles opened on this device, newest first. */
 export function useRecentlyViewed(): RecentTitle[] {
   return useSyncExternalStore(subscribe, getSnapshot, () => serverSnapshot);
 }

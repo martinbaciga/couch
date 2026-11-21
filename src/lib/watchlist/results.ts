@@ -85,6 +85,20 @@ export function checkedStamp(
   return computedAt ?? importedAt;
 }
 
+/** The earliest readable availability timestamp. Misses are skipped. */
+export function oldestFetchedAt(
+  stamps: ReadonlyArray<string | null | undefined>,
+): string | null {
+  let oldest: { time: number; iso: string } | null = null;
+  for (const stamp of stamps) {
+    if (!stamp) continue;
+    const time = Date.parse(stamp);
+    if (Number.isNaN(time)) continue;
+    if (!oldest || time < oldest.time) oldest = { time, iso: stamp };
+  }
+  return oldest?.iso ?? null;
+}
+
 /**
  * The chip a film belongs to. With no country, every film stays on All.
  * Streaming here (no services chosen) is not its own chip, so it stays on All.

@@ -40,19 +40,16 @@ describe("recent titles", () => {
     expect(parseRecent(JSON.stringify({ titles: [{ id: 1 }] }))).toEqual([]);
   });
 
-  it("keeps the newest five and moves a repeat to the front", () => {
+  it("keeps the newest ten and moves a repeat to the front", () => {
     const storage = memoryStorage();
-    const titles = [550, 13, 680, 155, 78].map((id) => ({
-      ...fight,
-      id,
-      title: `Title ${id}`,
-    }));
-    for (const title of titles) rememberRecent(storage, title);
-    const again = titles[0];
-    if (!again) throw new Error("missing title");
-    rememberRecent(storage, again);
-    const saved = readRecent(storage);
-    expect(saved.map((title) => title.id)).toEqual([550, 78, 155, 680, 13]);
+    const ids = [550, 13, 680, 155, 78, 11, 12, 14, 15, 16, 17];
+    for (const id of ids) {
+      rememberRecent(storage, { ...fight, id, title: `Title ${id}` });
+    }
+    rememberRecent(storage, { ...fight, id: 550, title: "Title 550" });
+    expect(readRecent(storage).map((title) => title.id)).toEqual([
+      550, 17, 16, 15, 14, 12, 11, 78, 155, 680,
+    ]);
   });
 
   it("removes one title and leaves the rest in order", () => {

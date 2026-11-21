@@ -23,9 +23,7 @@ export function parseWatchlistSummary(raw: string): WatchlistSummary | null {
     if (!Array.isArray(value.entries)) return null;
     const summary = isRecord(value.summary) ? value.summary : null;
     const checkedAt =
-      summary && typeof summary.computedAt === "string"
-        ? summary.computedAt
-        : null;
+      stamp(summary, "checkedAt") ?? stamp(summary, "computedAt");
     return {
       count: value.entries.length,
       importedAt: value.importedAt,
@@ -83,13 +81,20 @@ export type SavedEntry = {
   match: WatchlistMatch | null;
 };
 
+export type SummaryStamp = {
+  /** Settings `updatedAt` the counts were computed with. Null when none were set. */
+  settingsAt: string | null;
+  /** Oldest availability `fetchedAt` among the titles. Null until results have loaded. */
+  checkedAt: string | null;
+};
+
 export type SavedWatchlist = {
   importedAt: string;
   entries: SavedEntry[];
   summary: {
     computedAt: string | null;
     counts: CategoryCounts | null;
-  };
+  } & SummaryStamp;
 };
 
 export function emptyCounts(): CategoryCounts {
@@ -120,11 +125,10 @@ export function parseSavedWatchlist(raw: string): SavedWatchlist | null {
       importedAt: value.importedAt,
       entries: value.entries.flatMap(parseEntry),
       summary: {
-        computedAt:
-          summary && typeof summary.computedAt === "string"
-            ? summary.computedAt
-            : null,
+        computedAt: stamp(summary, "computedAt"),
         counts: summary ? parseCounts(summary.counts) : null,
+        settingsAt: stamp(summary, "settingsAt"),
+        checkedAt: stamp(summary, "checkedAt"),
       },
     };
   } catch {
@@ -152,6 +156,7 @@ export function writeWatchlistSummary(
   storage: Pick<Storage, "getItem" | "setItem">,
   counts: CategoryCounts,
   computedAt: string,
+  written?: SummaryStamp,
 ): boolean {
   try {
     const raw = storage.getItem(WATCHLIST_KEY);
@@ -162,6 +167,10 @@ export function writeWatchlistSummary(
     const summary = isRecord(value.summary) ? { ...value.summary } : {};
     summary.counts = counts;
     summary.computedAt = computedAt;
+    if (written) {
+      summary.settingsAt = written.settingsAt;
+      summary.checkedAt = written.checkedAt;
+    }
     value.summary = summary;
     storage.setItem(WATCHLIST_KEY, JSON.stringify(value));
     return true;
@@ -220,6 +229,15 @@ function parseCounts(value: unknown): CategoryCounts | null {
     counts[key] = count;
   }
   return counts;
+}
+
+function stamp(
+  summary: Record<string, unknown> | null,
+  key: "computedAt" | "settingsAt" | "checkedAt",
+): string | null {
+  if (!summary) return null;
+  const value = summary[key];
+  return typeof value === "string" ? value : null;
 }
 
 function parseYear(value: unknown): number | null {

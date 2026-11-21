@@ -24,6 +24,7 @@ import {
   scrollTopForFirstOption,
   scrollTopForOption,
 } from "@/lib/search/scroll";
+import { RECENT_SHOWN } from "@/lib/storage/recent";
 import {
   clearViewed,
   rememberViewed,
@@ -107,7 +108,8 @@ export function SearchCombobox({
   const [dismissedQuery, setDismissedQuery] = useState("");
   const query = normaliseQuery(value);
   const search = useTitleSearch(value, { live: true });
-  const recent = useRecentlyViewed();
+  // Ten are stored so a removal can reveal the next. This list stays at five.
+  const recent = useRecentlyViewed().slice(0, RECENT_SHOWN);
   const { state } = search;
 
   if (dismissed && dismissedQuery !== query) {
@@ -208,7 +210,8 @@ export function SearchCombobox({
       return;
     }
     const extra =
-      panel.getBoundingClientRect().bottom - root.getBoundingClientRect().bottom;
+      panel.getBoundingClientRect().bottom -
+      root.getBoundingClientRect().bottom;
     if (extra > 1) root.style.marginBottom = `${Math.ceil(extra)}px`;
     else root.style.removeProperty("margin-bottom");
   }, [variant, panelOpen, signature, narrow]);

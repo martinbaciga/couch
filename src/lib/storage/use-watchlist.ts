@@ -8,6 +8,7 @@ import {
   writeWatchlistSummary,
   type CategoryCounts,
   type SavedWatchlist,
+  type SummaryStamp,
   type WatchlistSummary,
 } from "./watchlist";
 
@@ -74,8 +75,9 @@ export function useSavedWatchlist(): SavedWatchlist | null {
 export function saveWatchlistSummary(
   counts: CategoryCounts,
   computedAt: string,
+  stamp?: SummaryStamp,
 ): void {
-  writeWatchlistSummary(window.localStorage, counts, computedAt);
+  writeWatchlistSummary(window.localStorage, counts, computedAt, stamp);
   cachedRaw = undefined;
   cachedListRaw = undefined;
   window.dispatchEvent(new Event("couch-storage"));

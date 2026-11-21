@@ -11,6 +11,7 @@ import {
   displayFilter,
   hasMore,
   isStale,
+  oldestFetchedAt,
   PAGE_SIZE,
   sortFilms,
   visibleFilms,
@@ -39,6 +40,23 @@ describe("defaultFilter", () => {
     expect(defaultFilter(null)).toBe("all");
     expect(defaultFilter({ country: "IE", serviceIds: [] })).toBe("all");
     expect(defaultFilter({ country: null, serviceIds: [8] })).toBe("all");
+  });
+});
+
+describe("oldestFetchedAt", () => {
+  it("keeps the earliest readable timestamp", () => {
+    expect(
+      oldestFetchedAt([
+        "2026-11-20T00:00:00.000Z",
+        null,
+        "not-a-date",
+        "2026-11-18T00:00:00.000Z",
+      ]),
+    ).toBe("2026-11-18T00:00:00.000Z");
+  });
+
+  it("returns null when nothing can be read", () => {
+    expect(oldestFetchedAt([null, undefined, "nope"])).toBeNull();
   });
 });
 

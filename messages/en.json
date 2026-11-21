@@ -9,7 +9,24 @@
     "importTitle": "Import your Letterboxd watchlist",
     "importBody": "Find out which films on your list are streaming, and where to watch them in the world.",
     "chooseCsv": "Choose CSV file",
-    "exportHelp": "How to export from Letterboxd"
+    "exportHelp": "How to export from Letterboxd",
+    "watchlistLabel": "Your watchlist · {count, plural, one {# film} other {# films}}",
+    "streaming": "{count, plural, one {# is streaming on your services} other {# are streaming on your services}}",
+    "rows": {
+      "onYourServices": "On your services here",
+      "freeOrAds": "Free or with ads here",
+      "otherServices": "On other services here",
+      "rentOrBuy": "Rent or buy only here",
+      "otherCountries": "Only in other countries",
+      "noData": "No data found"
+    },
+    "explore": "Explore",
+    "reimport": "Re-import",
+    "imported": "Imported {date}",
+    "importedChecked": "Imported {date} · Checked {when}",
+    "justNow": "just now",
+    "recalculating": "Recalculating...",
+    "recentEmpty": "Films and series you open will appear here."
   },
   "header": {
     "home": "Couch",

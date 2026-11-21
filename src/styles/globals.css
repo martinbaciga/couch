@@ -338,6 +338,25 @@ h3 {
     "wght" 700;
 }
 
+/* Returning-card eyebrow. Same type as `.eyebrow`, in the card's brown. */
+.landing-eyebrow {
+  font-size: var(--type-body);
+  line-height: var(--type-eyebrow-leading);
+  font-weight: 500;
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--primary-700);
+}
+
+/* "Recently viewed" on the landing. Figtree, not the display face on h2. */
+.landing-label {
+  font-family: var(--font-figtree), sans-serif;
+  font-size: var(--type-ui);
+  line-height: var(--type-ui-leading);
+  font-weight: 500;
+  color: var(--text-default);
+}
+
 .landing-card-title {
   font-family: var(--font-bricolage), sans-serif;
   font-size: var(--type-service);
@@ -361,6 +380,12 @@ h3 {
     padding-bottom: calc(
       var(--space-landing-bottom) + env(safe-area-inset-bottom)
     );
+  }
+
+  /* Returning visit stays short so the summary card sits above the fold. */
+  .landing-top.landing-return {
+    min-height: 0;
+    padding-bottom: 0;
   }
 }
 

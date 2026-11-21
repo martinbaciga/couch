@@ -1,7 +1,10 @@
 import type { Kind } from "@/lib/availability/types";
 
 export const RECENT_KEY = "couch:recent:v1";
-const MAX_RECENT = 5;
+/** Kept so removing one still leaves a title to show. */
+export const RECENT_STORED = 10;
+/** The landing and the rows drawn for it. */
+export const RECENT_SHOWN = 5;
 
 export type RecentTitle = {
   kind: Kind;
@@ -25,12 +28,12 @@ export function isRecentMemory(): boolean {
   return usingMemory;
 }
 
-/** Newest first, at most five. A bad value reads as an empty list. */
+/** Newest first, at most ten. A bad value reads as an empty list. */
 export function parseRecent(raw: string): RecentTitle[] {
   try {
     const value: unknown = JSON.parse(raw);
     if (!isRecord(value) || !Array.isArray(value.titles)) return [];
-    return value.titles.filter(isRecentTitle).slice(0, MAX_RECENT);
+    return value.titles.filter(isRecentTitle).slice(0, RECENT_STORED);
   } catch {
     return [];
   }
@@ -47,7 +50,7 @@ export function readRecent(storage: Pick<Storage, "getItem">): RecentTitle[] {
   }
 }
 
-/** Puts the title first and drops the oldest past five. */
+/** Puts the title first and drops the oldest past ten. */
 export function rememberRecent(
   storage: StorageLike,
   title: RecentTitle,
@@ -57,7 +60,7 @@ export function rememberRecent(
     ...readRecent(storage).filter(
       (item) => item.kind !== title.kind || item.id !== title.id,
     ),
-  ].slice(0, MAX_RECENT);
+  ].slice(0, RECENT_STORED);
   return writeRecent(storage, next);
 }
 

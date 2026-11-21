@@ -43,6 +43,7 @@ import {
   displayCounts,
   hasMore,
   isStale,
+  oldestFetchedAt,
   sortFilms,
   visibleFilms,
   type Classified,
@@ -74,7 +75,12 @@ type RowModel = Film &
 const NOTHING_SAVED: SavedWatchlist = {
   importedAt: "",
   entries: [],
-  summary: { computedAt: null, counts: null },
+  summary: {
+    computedAt: null,
+    counts: null,
+    settingsAt: null,
+    checkedAt: null,
+  },
 };
 
 /** Results for a saved watchlist. No list yet still shows the empty results frame. */
@@ -150,6 +156,13 @@ function WatchlistView({
   const needsSetup =
     !availability.country || availability.serviceIds.length === 0;
   const counted = CATEGORY_KEYS.reduce((sum, key) => sum + stored[key], 0);
+  const fetchedAt = oldestFetchedAt(
+    matches.map((film) => {
+      const lookup = lookups[filmKey(film.match)];
+      return lookup && lookup !== "miss" ? lookup.availability.fetchedAt : null;
+    }),
+  );
+  const settingsAt = settings?.updatedAt ?? null;
 
   useEffect(() => {
     if (!saved.importedAt || !complete || counted !== matches.length) return;
@@ -159,11 +172,19 @@ function WatchlistView({
       previous && !isStale(previous, now)
         ? previous
         : new Date(now).toISOString();
-    if (countsEqual(saved.summary.counts, stored) && previous === nextChecked) {
+    if (
+      countsEqual(saved.summary.counts, stored) &&
+      previous === nextChecked &&
+      saved.summary.settingsAt === settingsAt &&
+      saved.summary.checkedAt === fetchedAt
+    ) {
       return;
     }
-    saveWatchlistSummary(stored, nextChecked);
-  }, [complete, counted, matches.length, saved, stored]);
+    saveWatchlistSummary(stored, nextChecked, {
+      settingsAt,
+      checkedAt: fetchedAt,
+    });
+  }, [complete, counted, fetchedAt, matches.length, saved, settingsAt, stored]);
 
   const imported = saved.importedAt
     ? format.dateTime(new Date(saved.importedAt), {

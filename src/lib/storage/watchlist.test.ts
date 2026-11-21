@@ -71,7 +71,12 @@ describe("parseSavedWatchlist", () => {
     expect(parsed?.entries).toHaveLength(2);
     expect(parsed?.entries[0]?.match?.tmdbId).toBe(949);
     expect(parsed?.entries[1]?.match).toBeNull();
-    expect(parsed?.summary).toEqual({ computedAt: null, counts: null });
+    expect(parsed?.summary).toEqual({
+      computedAt: null,
+      counts: null,
+      settingsAt: null,
+      checkedAt: null,
+    });
   });
 
   it("reads stored category counts", () => {
@@ -107,6 +112,28 @@ describe("writeWatchlistSummary", () => {
     expect(next?.summary.counts).toEqual(counts);
     expect(readWatchlistSummary(storage)?.checkedAt).toBe(
       "2026-11-20T00:00:00.000Z",
+    );
+  });
+
+  it("stores the settings stamp and the oldest fetched time", () => {
+    const store = new Map<string, string>([
+      [WATCHLIST_KEY, JSON.stringify(saved)],
+    ]);
+    const storage = {
+      getItem: (key: string) => store.get(key) ?? null,
+      setItem: (key: string, value: string) => {
+        store.set(key, value);
+      },
+    };
+    writeWatchlistSummary(storage, emptyCounts(), "2026-11-21T00:00:00.000Z", {
+      settingsAt: "2026-11-02T00:00:00.000Z",
+      checkedAt: "2026-11-18T00:00:00.000Z",
+    });
+    const next = readSavedWatchlist(storage);
+    expect(next?.summary.settingsAt).toBe("2026-11-02T00:00:00.000Z");
+    expect(next?.summary.checkedAt).toBe("2026-11-18T00:00:00.000Z");
+    expect(readWatchlistSummary(storage)?.checkedAt).toBe(
+      "2026-11-18T00:00:00.000Z",
     );
   });
 
